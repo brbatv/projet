@@ -30,12 +30,11 @@ void usage_error( char *command ) {
 }
 
 
-object nil;
+object nil=NULL;
 
-void init_interpreter ( void ) {
+void init_interpreter ( void ) { 
 
-    nil      = make_nil();
-
+    nil = make_nil();
 }
 
 int main ( int argc, char *argv[] ) {

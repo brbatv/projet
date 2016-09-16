@@ -21,12 +21,30 @@ object make_object( uint type ) {
     return t;
 }
 
+/*fonction qui alloue nil la 1ere fois et qui retourne celle ci ensuite */
 object make_nil( void ) {
-
-    object t = make_object( SFS_NIL );
-
-    t->this.special = t;
-
-    return t;
+	
+	if(nil == NULL){
+		object p = make_object(SFS_NIL);
+		return p;
+		}
+	else return nil;
+    /*t->this.special = t;*/
 }
 
+/*object make_boolean (unsigned int i) {
+	if(i == 0){
+		if (faux == NULL){
+			object p = make_object(SFS_BOOLEAN);
+		
+
+}*/
+
+object make_integer(int i) {
+	
+	object t = make_object(SFS_NUMBER);
+	t->this.number.numtype = NUM_INTEGER;
+	t->this.number.this.integer = i;
+	return t;
+
+}
