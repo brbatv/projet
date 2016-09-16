@@ -10,7 +10,6 @@
 
 #include <stdio.h>
 #include <ctype.h>
-
 #include "read.h"
 
 
@@ -307,7 +306,12 @@ object sfs_read( char *input, uint *here ) {
 
 object sfs_read_atom( char *input, uint *here ) {
 
-    object atom = NULL;
+	object atom = NULL;
+	atom=make_object(SFS_NUMBER);
+	int i;
+	i=atoi(input); /* atoi ou strtol ? */
+	atom->this.number.numtype = NUM_INTEGER;
+	atom->this.number.this.integer = i;
 
     return atom;
 }

@@ -13,7 +13,9 @@
 #include <stdio.h>
 
 void sfs_print_atom( object o ) {
-
+	
+	printf("%d",o->this.number.this.integer);
+	
     return;
 }
 
