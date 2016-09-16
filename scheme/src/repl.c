@@ -31,10 +31,15 @@ void usage_error( char *command ) {
 
 
 object nil=NULL;
+object false = NULL;
+object true = NULL;
 
 void init_interpreter ( void ) { 
 
-    nil = make_nil();
+   	nil = make_nil();
+	false = make_boolean(FALSE);
+	true = make_boolean(TRUE);
+
 }
 
 int main ( int argc, char *argv[] ) {

@@ -56,7 +56,8 @@ object make_boolean(unsigned int);
 
 
 extern object nil;
-extern object faux;
+extern object false;
+extern object true; 
 
 #ifdef __cplusplus
 }

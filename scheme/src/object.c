@@ -32,13 +32,21 @@ object make_nil( void ) {
     /*t->this.special = t;*/
 }
 
-/*object make_boolean (unsigned int i) {
-	if(i == 0){
-		if (faux == NULL){
+object make_boolean (unsigned int i) {
+	if(i == FALSE){
+		if (false == NULL){
 			object p = make_object(SFS_BOOLEAN);
+			return p;
+			}
+		else return false;
+	}
+	else if (true == NULL){
+			object p = make_object(SFS_BOOLEAN);
+			return p;
+			}
+		else return true;
 		
-
-}*/
+}
 
 object make_integer(int i) {
 	
