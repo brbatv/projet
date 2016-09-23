@@ -306,6 +306,21 @@ object sfs_read( char *input, uint *here ) {
 
 object sfs_read_atom( char *input, uint *here ) {
         
+	uint etat;
+	etat=INIT;
+	
+	switch(etat) {
+	
+	case INIT:
+	if (input[*here]=='#') etat=HASH_DETECTED;
+	else if (isspace(input[*here])
+	break
+
+	
+
+
+
+
 	object atom = NULL;
 	/* cas entier 
 	int i;
@@ -319,11 +334,13 @@ object sfs_read_atom( char *input, uint *here ) {
 	else if (input[1]=='t') atom=make_boolean(TRUE);
 	else printf("Il fallait mettre soit true soit false soit un caractere après antislash \n");
 	
+
+
+
 	/* cas caractère (on sait qu'il y a un # et un antislash */
 	
+	}
 
-
-	
 	
 	
 
