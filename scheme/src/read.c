@@ -307,14 +307,20 @@ object sfs_read( char *input, uint *here ) {
 object sfs_read_atom( char *input, uint *here ) {
 
 	object atom = NULL;
-	/* cas entier */
+	/* cas entier 
 	int i;
-	i=atoi(input); /* atoi ou strtol ? */
-	atom=make_integer(i);
+	i=atoi(input); atoi ou strtol ? 
+	atom=make_integer(i); */
 	
 	
 	
 	/* cas booleen */ 
+	if (input[1]=='f') atom=make_boolean(FALSE);
+	else if (input[1]=='t') atom=make_boolean(TRUE);
+	else printf("Il fallait mettre soit true soit false soit un caractere après antislash \n");
+	
+	/* cas caractère */
+	
 	
 
     return atom;

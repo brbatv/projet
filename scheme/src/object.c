@@ -56,3 +56,11 @@ object make_integer(int i) {
 	return t;
 
 }
+
+object make_character(char c) {
+
+	object t = make_object(SFS_CHARACTER);
+	t->this.character=c;
+	return t;
+
+}
