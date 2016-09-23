@@ -14,7 +14,22 @@
 
 void sfs_print_atom( object o ) {
 	
+	switch(o->type)
+
+	{
+	case SFS_NUMBER:
 	printf("%d",o->this.number.this.integer);
+	break;
+
+	case SFS_BOOLEAN:
+	if (o==true) printf("#t");
+	if (o==false) printf("#f");
+	break;
+
+	case SFS_NIL:
+	printf("()");
+
+	}
 	
     return;
 }
