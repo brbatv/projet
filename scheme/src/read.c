@@ -289,6 +289,7 @@ uint  sfs_get_sexpr( char *input, FILE *fp ) {
 
 object sfs_read( char *input, uint *here ) {
 
+    input = first_usefull_char(input + *here);
     if ( input[*here] == '(' ) {
         if ( input[(*here)+1] == ')' ) {
             *here += 2;
@@ -310,6 +311,9 @@ object sfs_read_atom( char *input, uint *here ) {
     enum ETATS etat = INIT;
     object atom = NULL;
     uint bool;
+    uint base = 10;
+    char *endptr;
+    uint integer = 0;
 
     while (etat != END)
     {
@@ -321,6 +325,10 @@ object sfs_read_atom( char *input, uint *here ) {
             {
                 etat = HASH_DETECTED;
                 (*here)++;
+            }
+            if (input[*here] == '-' || input[*here] == '+' || isdigit(input[*here]))
+            {
+                etat = INT_IN_PROG;
             }
             break;
         /* cas ou l'atome debute par un # */
@@ -346,15 +354,25 @@ object sfs_read_atom( char *input, uint *here ) {
             atom = make_boolean(bool);
             etat = END;
             break;
-        /* cas caractère (on sait qu'il y a un # et un antislash) */
+        /* cas caractere (on sait qu'il y a un # et un antislash) */
         case CHAR_IN_PROG :
             break;
         case CHAR :
             etat = END;
             break;
+        /* cas entier*/
         case INT_IN_PROG :
+            integer = strtol(input + *here,&endptr,base);
+            /*gestion des erreurs avec endptr*/
+            /*if(endptr==NULL) printf("c'etait pour ca bitch \n ");
+                if(!isspace(*endptr) || &endptr != NULL)
+                {
+                    WARNING_MSG("NUMBER ERROR : not a number");
+                }*/
+            etat = INT;
             break;
         case INT:
+            atom = make_integer(integer);
             etat = END;
             break;
         case END:
@@ -366,20 +384,9 @@ object sfs_read_atom( char *input, uint *here ) {
 
         }
     }
-
-    /* cas entier
-    int i;
-    i=atoi(input); atoi ou strtol ?
-    atom=make_integer(i); */
-
-
-
-    /* cas booleen (on sait qu'il y a un # et pas d'antislash */
-    /*if (input[1]=='f') atom=make_boolean(FALSE);
-    else if (input[1]=='t') atom=make_boolean(TRUE);
-    else printf("Il fallait mettre soit true soit false soit un caractere apres antislash \n");*/
-
+    return;
 }
+
 
 object sfs_read_pair( char *stream, uint *i ) {
 
