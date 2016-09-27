@@ -69,7 +69,7 @@ char* first_usefull_char(char* line) {
  * Les parentheses dans des chaines et les caracteres Scheme #\( et #\)
  * ne sont pas comptes.
  *
- * Si le compte devient zéro et que 
+ * Si le compte devient zéro et que
  *        - la ligne est fini, la fonction retourne S_OK
  * 				- la ligne n'est pas fini la fonction retourne S_KO
  *
@@ -167,7 +167,7 @@ uint  sfs_get_sexpr( char *input, FILE *fp ) {
             }
         }
 
-        /* si la ligne est inutile 
+        /* si la ligne est inutile
         	=> on va directement à la prochaine iteration */
         if (first_usefull_char(chunk) == NULL) {
             continue;
@@ -305,46 +305,80 @@ object sfs_read( char *input, uint *here ) {
 }
 
 object sfs_read_atom( char *input, uint *here ) {
-        
-	uint etat;
-	etat=INIT;
-	
-	switch(etat) {
-	
-	case INIT:
-	if (input[*here]=='#') etat=HASH_DETECTED;
-	else if (isspace(input[*here])
-	break
 
-	
+    enum ETATS {INIT, HASH_DETECTED, BOOL, CHAR_IN_PROG, CHAR, INT_IN_PROG, INT, END};
+    enum ETATS etat = INIT;
+    object atom = NULL;
+    uint bool;
+
+    while (etat != END)
+    {
+        switch(etat)
+        {
+
+        case INIT:
+            if (input[*here] == '#')
+            {
+                etat = HASH_DETECTED;
+                (*here)++;
+            }
+            break;
+        /* cas ou l'atome debute par un # */
+        case HASH_DETECTED:
+            if (input[*here] == 'f')
+            {
+                bool = FALSE;
+                etat = BOOL;
+            }
+            else if (input[*here] =='t')
+            {
+                bool = TRUE;
+                etat = BOOL;
+            }
+            else if (input[*here] == '\\')
+            {
+                (*here)++;
+                etat = CHAR_IN_PROG;
+            }
+            break;
+        /* cas booleen (on sait qu'il y a un # puis un f ou un t) */
+        case BOOL:
+            atom = make_boolean(bool);
+            etat = END;
+            break;
+        /* cas caractère (on sait qu'il y a un # et un antislash) */
+        case CHAR_IN_PROG :
+            break;
+        case CHAR :
+            etat = END;
+            break;
+        case INT_IN_PROG :
+            break;
+        case INT:
+            etat = END;
+            break;
+        case END:
+            return atom;
+            break;
+        default:
+            printf("error : switch not ended sfs_read_atom\n");
+            break;
+
+        }
+    }
+
+    /* cas entier
+    int i;
+    i=atoi(input); atoi ou strtol ?
+    atom=make_integer(i); */
 
 
 
+    /* cas booleen (on sait qu'il y a un # et pas d'antislash */
+    /*if (input[1]=='f') atom=make_boolean(FALSE);
+    else if (input[1]=='t') atom=make_boolean(TRUE);
+    else printf("Il fallait mettre soit true soit false soit un caractere apres antislash \n");*/
 
-	object atom = NULL;
-	/* cas entier 
-	int i;
-	i=atoi(input); atoi ou strtol ? 
-	atom=make_integer(i); */
-	
-	
-	
-	/* cas booleen (on sait qu'il y a un # et pas d'antislash */ 
-	if (input[1]=='f') atom=make_boolean(FALSE);
-	else if (input[1]=='t') atom=make_boolean(TRUE);
-	else printf("Il fallait mettre soit true soit false soit un caractere après antislash \n");
-	
-
-
-
-	/* cas caractère (on sait qu'il y a un # et un antislash */
-	
-	}
-
-	
-	
-
-    return atom;
 }
 
 object sfs_read_pair( char *stream, uint *i ) {
