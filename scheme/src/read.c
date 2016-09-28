@@ -307,15 +307,19 @@ object sfs_read( char *input, uint *here ) {
 
 object sfs_read_atom( char *input, uint *here ) {
 
-    enum ETATS {INIT, HASH_DETECTED, BOOL, CHAR_IN_PROG, CHAR, INT_IN_PROG, INT, END};
+    enum ETATS {INIT, HASH_DETECTED, BOOL, CHAR_IN_PROG, CHAR, INT_IN_PROG, INT, END, EXIT};
     enum ETATS etat = INIT;
     object atom = NULL;
+
+    /* mandatory objects for strtol */
     uint bool;
     uint base = 10;
     char *endptr;
-    uint integer = 0;
 
-    while (etat != END)
+    long int integer = 0;
+    /* end */
+
+    while (etat != EXIT)
     {
         switch(etat)
         {
@@ -326,7 +330,7 @@ object sfs_read_atom( char *input, uint *here ) {
                 etat = HASH_DETECTED;
                 (*here)++;
             }
-            if (input[*here] == '-' || input[*here] == '+' || isdigit(input[*here]))
+            if ((input[*here] == '-' && !isspace(input[*here+1])) || (input[*here] == '+' && !isspace(input[*here+1])) || isdigit(input[*here])) /* on verifie qu'apres un signe il y n'y a pas d'espace, le cas ou il n'y a pas de chiffre apres est gere par strtol */
             {
                 etat = INT_IN_PROG;
             }
@@ -362,14 +366,16 @@ object sfs_read_atom( char *input, uint *here ) {
             break;
         /* cas entier*/
         case INT_IN_PROG :
-            integer = strtol(input + *here,&endptr,base);
+            integer = strtol(input + *here, &endptr , base);
             /*gestion des erreurs avec endptr*/
-            /*if(endptr==NULL) printf("c'etait pour ca bitch \n ");
-                if(!isspace(*endptr) || &endptr != NULL)
-                {
-                    WARNING_MSG("NUMBER ERROR : not a number");
-                }*/
-            etat = INT;
+            if(endptr != NULL && isgraph(*endptr))
+            {
+                WARNING_MSG("NUMBER ERROR : not a number");
+                etat = EXIT;
+            }
+            else {
+                etat = INT;
+            }
             break;
         case INT:
             atom = make_integer(integer);
@@ -377,6 +383,7 @@ object sfs_read_atom( char *input, uint *here ) {
             break;
         case END:
             return atom;
+            etat = EXIT;
             break;
         default:
             printf("error : switch not ended sfs_read_atom\n");
@@ -384,7 +391,8 @@ object sfs_read_atom( char *input, uint *here ) {
 
         }
     }
-    return;
+    return nil ; /* pour eviter attention : ‘return’ with no value, in function returning non-void [-Wreturn-type]
+ */
 }
 
 
