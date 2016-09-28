@@ -18,7 +18,7 @@ void sfs_print_atom( object o ) {
 
 	{
 	case SFS_NUMBER:
-	printf("%d",o->this.number.this.integer);
+	printf("%ld",o->this.number.this.integer);
 	break;
 
 	case SFS_BOOLEAN:

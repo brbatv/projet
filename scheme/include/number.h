@@ -33,7 +33,7 @@ typedef struct num_t {
     union {
 
         double       real;
-        int       integer;
+        long int       integer;
     } this;
 
 } num;

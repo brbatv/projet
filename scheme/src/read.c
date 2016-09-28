@@ -289,7 +289,7 @@ uint  sfs_get_sexpr( char *input, FILE *fp ) {
 
 object sfs_read( char *input, uint *here ) {
 
-    input = first_usefull_char(input + *here);
+    input = first_usefull_char(input + *here); /* added for managing spaces */
     if ( input[*here] == '(' ) {
         if ( input[(*here)+1] == ')' ) {
             *here += 2;
@@ -341,11 +341,13 @@ object sfs_read_atom( char *input, uint *here ) {
             {
                 bool = FALSE;
                 etat = BOOL;
+		(*here)++;
             }
             else if (input[*here] =='t')
             {
                 bool = TRUE;
                 etat = BOOL;
+		(*here)++;
             }
             else if (input[*here] == '\\')
             {
@@ -355,6 +357,7 @@ object sfs_read_atom( char *input, uint *here ) {
             break;
         /* cas booleen (on sait qu'il y a un # puis un f ou un t) */
         case BOOL:
+	    if (isgraph(input[*here])) { }
             atom = make_boolean(bool);
             etat = END;
             break;
