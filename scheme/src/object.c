@@ -26,6 +26,7 @@ object make_nil( void ) {
 	
 	if(nil == NULL){
 		object p = make_object(SFS_NIL);
+		p->this.special = p;
 		return p;
 		}
 	else return nil;
@@ -36,12 +37,14 @@ object make_boolean (unsigned int i) {
 	if(i == FALSE){
 		if (false == NULL){
 			object p = make_object(SFS_BOOLEAN);
+			p->this.special = p;			
 			return p;
 			}
 		else return false;
 	}
 	else if (true == NULL){
 			object p = make_object(SFS_BOOLEAN);
+			p->this.special = p;
 			return p;
 			}
 		else return true;
@@ -62,5 +65,15 @@ object make_character(char c) {
 	object t = make_object(SFS_CHARACTER);
 	t->this.character=c;
 	return t;
+
+}
+
+object make_pair(object car , object cdr){
+
+	object t = make_object(SFS_PAIR);
+	t->this.pair.car = car;
+	t->this.pair.cdr = cdr;
+	return t;
+
 
 }

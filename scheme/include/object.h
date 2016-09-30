@@ -46,6 +46,7 @@ object make_nil(void);
 object make_integer(int);
 object make_boolean(unsigned int);
 object make_character(char);
+object make_pair(object,object);
 
 #define SFS_NUMBER       0x00
 #define SFS_CHARACTER    0x01

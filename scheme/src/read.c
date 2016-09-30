@@ -290,6 +290,7 @@ uint  sfs_get_sexpr( char *input, FILE *fp ) {
 object sfs_read( char *input, uint *here ) {
 
     input = first_usefull_char(input + *here); /* added for managing spaces */
+    *here = 0;
     if ( input[*here] == '(' ) {
         if ( input[(*here)+1] == ')' ) {
             *here += 2;
@@ -307,7 +308,7 @@ object sfs_read( char *input, uint *here ) {
 
 object sfs_read_atom( char *input, uint *here ) {
 
-    enum ETATS {INIT, HASH_DETECTED, BOOL, CHAR_IN_PROG, CHAR, INT_IN_PROG, INT, END, EXIT};
+    enum ETATS {INIT, NIL, HASH_DETECTED, BOOL, CHAR_IN_PROG, CHAR, INT_IN_PROG, INT, END, EXIT};
     enum ETATS etat = INIT;
     object atom = NULL;
 
@@ -318,6 +319,9 @@ object sfs_read_atom( char *input, uint *here ) {
 
     long int integer = 0;
     /* end */
+
+    input = first_usefull_char(input + *here); /* added for managing spaces */
+    *here = 0;
 
     while (etat != EXIT)
     {
@@ -334,6 +338,15 @@ object sfs_read_atom( char *input, uint *here ) {
             {
                 etat = INT_IN_PROG;
             }
+            if (input[*here] == ')')
+            {
+                etat = NIL;
+                (*here)++;
+            }
+            break;
+        case NIL:
+            atom = nil;
+            etat = END;
             break;
         /* cas ou l'atome debute par un # */
         case HASH_DETECTED:
@@ -341,13 +354,13 @@ object sfs_read_atom( char *input, uint *here ) {
             {
                 bool = FALSE;
                 etat = BOOL;
-		(*here)++;
+                (*here)++;
             }
             else if (input[*here] =='t')
             {
                 bool = TRUE;
                 etat = BOOL;
-		(*here)++;
+                (*here)++;
             }
             else if (input[*here] == '\\')
             {
@@ -357,7 +370,7 @@ object sfs_read_atom( char *input, uint *here ) {
             break;
         /* cas booleen (on sait qu'il y a un # puis un f ou un t) */
         case BOOL:
-	    if (isgraph(input[*here])) { }
+            if (isgraph(input[*here])) { }
             atom = make_boolean(bool);
             etat = END;
             break;
@@ -401,7 +414,15 @@ object sfs_read_atom( char *input, uint *here ) {
 
 object sfs_read_pair( char *stream, uint *i ) {
 
+    stream = first_usefull_char(stream + *i); /* added for managing spaces */
+    *i = 0;
     object pair = NULL;
+    object car = NULL;
+    object cdr = NULL;
+    car = sfs_read_atom (stream,i);
+    cdr = sfs_read (stream,i);
+    pair = make_pair(car,cdr);
+
 
     return pair;
 }
