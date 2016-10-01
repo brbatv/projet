@@ -68,6 +68,25 @@ object make_character(char c) {
 
 }
 
+object make_string(char* s) {
+
+	object t=make_object(SFS_STRING);
+	strcpy(t->this.string,s);
+	return t;
+
+}
+
+
+
+object make_scharacter(char* s) 
+{
+object t= make_object(SFS_SCHARACTER);
+strcpy(t->this.string,s);
+return t;
+}
+
+
+
 object make_pair(object car , object cdr){
 
 	object t = make_object(SFS_PAIR);
@@ -77,3 +96,5 @@ object make_pair(object car , object cdr){
 
 
 }
+
+

@@ -308,17 +308,19 @@ object sfs_read( char *input, uint *here ) {
 
 object sfs_read_atom( char *input, uint *here ) {
 
-    enum ETATS {INIT, NIL, HASH_DETECTED, BOOL, CHAR_IN_PROG, CHAR, INT_IN_PROG, INT, END, EXIT};
+    enum ETATS {INIT, NIL, HASH_DETECTED, BOOL, CHAR_IN_PROG, CHAR, STRING, INT_IN_PROG, INT, END, EXIT};
     enum ETATS etat = INIT;
     object atom = NULL;
+   
 
     /* mandatory objects for strtol */
     uint bool;
     uint base = 10;
     char *endptr;
+    char s[256];
 
     long int integer = 0;
-    /* end */
+    /* end of mandatory objects*/
 
     input = first_usefull_char(input + *here); /* added for managing spaces */
     *here = 0;
@@ -342,8 +344,15 @@ object sfs_read_atom( char *input, uint *here ) {
             {
                 etat = NIL;
                 (*here)++;
-            }
+            } /* inutile? : ) renvoie impossible to start with ) */
+
+	    if(input[*here]=='"')
+		{etat=STRING;
+			(*here)++;}
+
             break;
+
+	   
         case NIL:
             atom = nil;
             etat = END;
@@ -367,20 +376,67 @@ object sfs_read_atom( char *input, uint *here ) {
                 (*here)++;
                 etat = CHAR_IN_PROG;
             }
+		else {   WARNING_MSG("NOT A PROPER BOOLEAN OR CHARACTER");
+                etat=END;
+            }
             break;
         /* cas booleen (on sait qu'il y a un # puis un f ou un t) */
         case BOOL:
-            if (isgraph(input[*here])) { }
-            atom = make_boolean(bool);
-            etat = END;
+            if (isgraph(input[*here]))
+            {   WARNING_MSG("NOT A PROPER BOOLEAN OR CHARACTER");
+                etat=END;
+            } /* erreur si il y a qqch apres #f ou #t */
+            else {atom = make_boolean(bool);
+            etat = END;}
             break;
         /* cas caractere (on sait qu'il y a un # et un antislash) */
         case CHAR_IN_PROG :
+            if (isgraph(input[*here]) && isgraph(input[*here+1])) /* si plus de deux lettres */
+            {   if (input[*here]=='s' && input[*here+1]=='p' && input[*here+2]=='a' && input[*here+3]=='c' && input[*here+4]=='e' && !isgraph(input[*here+5])) /*si space est ecrit */
+                {
+                    atom=make_scharacter("space");
+		   etat=END;
+                }
+
+                /* if (input[*here]=='n' && input[*here+1]=='e' && input[*here+2]=='w' && input[*here+3]=='l' && input[*here+4]=='i' && input [*here+5]=='n' && input [*here+6]=='e' && !isgraph(input[*here+7])) si newline est ecrit
+                {
+                    atom=make_scharacter("newline");
+			etat=END;
+                } */
+
+
+
+                else {
+                    WARNING_MSG("NOT A PROPER CHARACTER : TOO LONG OR NOT EXACTLY NEWLINE NOR SPACE");
+			etat=END;
+                }
+
+            }
+            else if (isgraph(input[*here]))
+            {   atom=make_character(input[*here]);
+                etat=END;
+            }
+	    else {   WARNING_MSG("NOT A PROPER CHARACTER");
+                etat=END;
+            }
             break;
         case CHAR :
             etat = END;
             break;
-        /* cas entier*/
+	case STRING:
+		
+		while(input[*here]!='"')
+		{size_t tmp=strlen(s);
+		s[tmp]=input[*here];
+		s[tmp+1]='\0';
+		(*here)++;
+		}
+		
+		
+		atom=make_string(s);
+		etat=END;
+	     break; 
+         /*cas entier*/
         case INT_IN_PROG :
             integer = strtol(input + *here, &endptr , base);
             /*gestion des erreurs avec endptr*/
@@ -407,8 +463,7 @@ object sfs_read_atom( char *input, uint *here ) {
 
         }
     }
-    return nil ; /* pour eviter attention : ‘return’ with no value, in function returning non-void [-Wreturn-type]
- */
+    return nil; /* pour eviter attention : ‘return’ with no value, in function returning non-void [-Wreturn-type] */
 }
 
 

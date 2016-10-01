@@ -28,7 +28,18 @@ void sfs_print_atom( object o ) {
 
 	case SFS_NIL:
 	printf("()");
+	
+	case SFS_CHARACTER:
+	printf("#\\%c",o->this.character); 
+	break;
+	
+	case SFS_SCHARACTER:
+	printf("#\\%s",o->this.string);
+	break;
 
+	case SFS_STRING:
+	printf("%s",o->this.string);
+	break;	
 	}
 	
     return;
