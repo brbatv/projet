@@ -311,13 +311,14 @@ object sfs_read_atom( char *input, uint *here ) {
     enum ETATS {INIT, NIL, HASH_DETECTED, BOOL, CHAR_IN_PROG, CHAR, STRING, INT_IN_PROG, INT, END, EXIT};
     enum ETATS etat = INIT;
     object atom = NULL;
+    char s[256];
    
 
     /* mandatory objects for strtol */
     uint bool;
     uint base = 10;
     char *endptr;
-    char s[256];
+    
 
     long int integer = 0;
     /* end of mandatory objects*/
@@ -426,10 +427,16 @@ object sfs_read_atom( char *input, uint *here ) {
 	case STRING:
 		
 		while(input[*here]!='"')
-		{size_t tmp=strlen(s);
-		s[tmp]=input[*here];
-		s[tmp+1]='\0';
-		(*here)++;
+		{		
+			size_t tmp=strlen(s);
+			s[tmp]=input[*here];
+			s[tmp+1]='\0';
+			if (input[*here]=='\\' && input[*here+1]=='\"' && isgraph(input[*here+2]))
+			{s[tmp]='"';
+			 *here=*here+2;
+			}
+			else {(*here)++;}
+			
 		}
 		
 		
