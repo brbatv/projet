@@ -39,6 +39,9 @@ void sfs_print_atom( object o ) {
 
 	case SFS_STRING:
 	printf("%s",o->this.string);
+	break;
+	case SFS_SYMBOL:
+	printf("%s",o->this.symbol);
 	break;	
 	}
 	

@@ -308,17 +308,17 @@ object sfs_read( char *input, uint *here ) {
 
 object sfs_read_atom( char *input, uint *here ) {
 
-    enum ETATS {INIT, NIL, HASH_DETECTED, BOOL, CHAR_IN_PROG, CHAR, STRING, INT_IN_PROG, INT, END, EXIT};
+    enum ETATS {INIT, NIL, HASH_DETECTED, BOOL, CHAR_IN_PROG, SYMBOL, STRING, INT_IN_PROG, INT, END, EXIT};
     enum ETATS etat = INIT;
     object atom = NULL;
     char s[256];
-   
+
 
     /* mandatory objects for strtol */
     uint bool;
     uint base = 10;
     char *endptr;
-    
+
 
     long int integer = 0;
     /* end of mandatory objects*/
@@ -337,23 +337,26 @@ object sfs_read_atom( char *input, uint *here ) {
                 etat = HASH_DETECTED;
                 (*here)++;
             }
-            if ((input[*here] == '-' && !isspace(input[*here+1])) || (input[*here] == '+' && !isspace(input[*here+1])) || isdigit(input[*here])) /* on verifie qu'apres un signe il y n'y a pas d'espace, le cas ou il n'y a pas de chiffre apres est gere par strtol */
+            else if ((input[*here] == '-' && isdigit(input[*here+1]))  || (input[*here] == '+' && isdigit(input[*here+1])) || isdigit(input[*here])) /* voir case INT_IN_PROG : la gestion des erreurs est peut etre inutile depuis que jai changé !isspace en isdigit*/
             {
                 etat = INT_IN_PROG;
             }
-            if (input[*here] == ')')
+            else if (input[*here] == ')')
             {
                 etat = NIL;
                 (*here)++;
-            } /* inutile? : ) renvoie impossible to start with ) */
+            } /* inutile? : ')' renvoie impossible to start with ) */
 
-	    if(input[*here]=='"')
-		{etat=STRING;
-			(*here)++;}
-
+            else if(input[*here]=='"')
+            {   etat=STRING;
+                (*here)++;
+            }
+            else {
+                etat=SYMBOL;
+            }
             break;
 
-	   
+
         case NIL:
             atom = nil;
             etat = END;
@@ -377,7 +380,8 @@ object sfs_read_atom( char *input, uint *here ) {
                 (*here)++;
                 etat = CHAR_IN_PROG;
             }
-		else {   WARNING_MSG("NOT A PROPER BOOLEAN OR CHARACTER");
+            else {
+                WARNING_MSG("NOT A PROPER BOOLEAN OR CHARACTER");
                 etat=END;
             }
             break;
@@ -387,8 +391,10 @@ object sfs_read_atom( char *input, uint *here ) {
             {   WARNING_MSG("NOT A PROPER BOOLEAN OR CHARACTER");
                 etat=END;
             } /* erreur si il y a qqch apres #f ou #t */
-            else {atom = make_boolean(bool);
-            etat = END;}
+            else {
+                atom = make_boolean(bool);
+                etat = END;
+            }
             break;
         /* cas caractere (on sait qu'il y a un # et un antislash) */
         case CHAR_IN_PROG :
@@ -396,20 +402,20 @@ object sfs_read_atom( char *input, uint *here ) {
             {   if (input[*here]=='s' && input[*here+1]=='p' && input[*here+2]=='a' && input[*here+3]=='c' && input[*here+4]=='e' && !isgraph(input[*here+5])) /*si space est ecrit */
                 {
                     atom=make_scharacter("space");
-		   etat=END;
+                    etat=END;
                 }
 
                 /* if (input[*here]=='n' && input[*here+1]=='e' && input[*here+2]=='w' && input[*here+3]=='l' && input[*here+4]=='i' && input [*here+5]=='n' && input [*here+6]=='e' && !isgraph(input[*here+7])) si newline est ecrit
                 {
                     atom=make_scharacter("newline");
-			etat=END;
-                } */
+                etat=END;
+                             } */
 
 
 
                 else {
                     WARNING_MSG("NOT A PROPER CHARACTER : TOO LONG OR NOT EXACTLY NEWLINE NOR SPACE");
-			etat=END;
+                    etat=END;
                 }
 
             }
@@ -417,33 +423,42 @@ object sfs_read_atom( char *input, uint *here ) {
             {   atom=make_character(input[*here]);
                 etat=END;
             }
-	    else {   WARNING_MSG("NOT A PROPER CHARACTER");
+            else {
+                WARNING_MSG("NOT A PROPER CHARACTER");
                 etat=END;
             }
             break;
-        case CHAR :
-            etat = END;
+
+        case SYMBOL :
+		
+	    strcpy(s,input);
+		
+            atom=make_symbol(s);
+            etat=END;
+
+            break; 
+        case STRING:
+
+            while(input[*here]!='"')
+            {
+                size_t tmp=strlen(s);
+                s[tmp]=input[*here];
+                s[tmp+1]='\0';
+                if (input[*here]=='\\' && input[*here+1]=='\"' && isgraph(input[*here+2]))
+                {   s[tmp]='"';
+                    *here=*here+2;
+                }
+                else {
+                    (*here)++;
+                }
+
+            }
+
+
+            atom=make_string(s);
+            etat=END;
             break;
-	case STRING:
-		
-		while(input[*here]!='"')
-		{		
-			size_t tmp=strlen(s);
-			s[tmp]=input[*here];
-			s[tmp+1]='\0';
-			if (input[*here]=='\\' && input[*here+1]=='\"' && isgraph(input[*here+2]))
-			{s[tmp]='"';
-			 *here=*here+2;
-			}
-			else {(*here)++;}
-			
-		}
-		
-		
-		atom=make_string(s);
-		etat=END;
-	     break; 
-         /*cas entier*/
+        /*cas entier*/
         case INT_IN_PROG :
             integer = strtol(input + *here, &endptr , base);
             /*gestion des erreurs avec endptr*/

@@ -76,6 +76,12 @@ object make_string(char* s) {
 
 }
 
+object make_symbol(char* s)
+{ 	
+	object t=make_object(SFS_SYMBOL);
+	strcpy(t->this.symbol,s);
+	return t;
+}
 
 
 object make_scharacter(char* s) 

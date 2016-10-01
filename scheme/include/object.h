@@ -49,6 +49,7 @@ object make_character(char);
 object make_pair(object,object);
 object make_scharacter(char*);
 object make_string(char*);
+object make_symbol(char*);
 
 #define SFS_NUMBER       0x00
 #define SFS_CHARACTER    0x01

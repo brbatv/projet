@@ -34,11 +34,11 @@ object nil=NULL;
 object false = NULL;
 object true = NULL;
 
-void init_interpreter ( void ) { 
+void init_interpreter ( void ) {
 
-   	nil = make_nil();
-	false = make_boolean(FALSE);
-	true = make_boolean(TRUE);
+    nil = make_nil();
+    false = make_boolean(FALSE);
+    true = make_boolean(TRUE);
 
 }
 
