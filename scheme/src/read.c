@@ -444,7 +444,7 @@ object sfs_read_atom( char *input, uint *here ) {
                 size_t tmp=strlen(s);
                 s[tmp]=input[*here];
                 s[tmp+1]='\0';
-                if (input[*here]=='\\' && input[*here+1]=='\"' && isgraph(input[*here+2]))
+                if (input[*here]=='\\' && input[*here+1]=='\"' && isprint(input[*here+2]))
                 {   s[tmp]='"';
                     *here=*here+2;
                 }
