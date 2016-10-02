@@ -110,7 +110,7 @@ int main ( int argc, char *argv[] ) {
                 /* Cas S-Expression mal formee dans le fichier script */
                 ERROR_MSG("Malformed S-expression --- Aborts");
             }
-            /*sinon on rend la main à l'utilisateur*/
+            /*sinon on rend la main a l'utilisateur*/
             continue;
         }
 
@@ -135,7 +135,7 @@ int main ( int argc, char *argv[] ) {
                 /*macro ERROR_MSG : message d'erreur puis fin de programme ! */
                 ERROR_MSG("Invalid S-expression --- Aborts");
             }
-            /*sinon on rend la main à l'utilisateur*/
+            /*sinon on rend la main a l'utilisateur*/
             continue ;
         }
 
@@ -147,7 +147,7 @@ int main ( int argc, char *argv[] ) {
                 /*macro ERROR_MSG : message d'erreur puis fin de programme ! */
                 ERROR_MSG("Error while evaluating input --- Aborts");
             }
-            /*sinon on rend la main à l'utilisateur*/
+            /*sinon on rend la main a l'utilisateur*/
             continue ;
         }
 
