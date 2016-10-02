@@ -69,14 +69,14 @@ char* first_usefull_char(char* line) {
  * Les parentheses dans des chaines et les caracteres Scheme #\( et #\)
  * ne sont pas comptes.
  *
- * Si le compte devient zéro et que
+ * Si le compte devient zero et que
  *        - la ligne est fini, la fonction retourne S_OK
  * 				- la ligne n'est pas fini la fonction retourne S_KO
  *
  * S'il y a plus de parentheses fermantes qu'ouvrantes,
  * la fonction retourne S_KO.
  * Les commentaires et espaces qui figurent a la fin de chaque ligne
- * sont remplacés par un espace.
+ * sont remplaces par un espace.
  * Les espaces qui figurent a la fin de la S-Expression (y compris '\n')
  * sont supprimés.
  *
@@ -289,8 +289,8 @@ uint  sfs_get_sexpr( char *input, FILE *fp ) {
 
 object sfs_read( char *input, uint *here ) {
 
-    input = first_usefull_char(input + *here); /* added for managing spaces */
-    *here = 0;
+    while (isspace(input[*here])){(*here)++;} /* added for managing spaces */
+
     if ( input[*here] == '(' ) {
         if ( input[(*here)+1] == ')' ) {
             *here += 2;
@@ -323,9 +323,6 @@ object sfs_read_atom( char *input, uint *here ) {
     long int integer = 0;
     /* end of mandatory objects*/
 
-    input = first_usefull_char(input + *here); /* added for managing spaces */
-    *here = 0;
-
     while (etat != EXIT)
     {
         switch(etat)
@@ -337,7 +334,7 @@ object sfs_read_atom( char *input, uint *here ) {
                 etat = HASH_DETECTED;
                 (*here)++;
             }
-            else if ((input[*here] == '-' && isdigit(input[*here+1]))  || (input[*here] == '+' && isdigit(input[*here+1])) || isdigit(input[*here])) /* voir case INT_IN_PROG : la gestion des erreurs est peut etre inutile depuis que jai changé !isspace en isdigit*/
+            else if ((input[*here] == '-' && isdigit(input[*here+1]))  || (input[*here] == '+' && isdigit(input[*here+1])) || isdigit(input[*here])) /* voir case INT_IN_PROG : la gestion des erreurs est peut etre inutile depuis que jai change !isspace en isdigit*/
             {
                 etat = INT_IN_PROG;
             }
@@ -345,7 +342,7 @@ object sfs_read_atom( char *input, uint *here ) {
             {
                 etat = NIL;
                 (*here)++;
-            } /* inutile? : ')' renvoie impossible to start with ) */
+            } /* condition d'arret de la recursivite croisee */
 
             else if(input[*here]=='"')
             {   etat=STRING;
@@ -387,7 +384,7 @@ object sfs_read_atom( char *input, uint *here ) {
             break;
         /* cas booleen (on sait qu'il y a un # puis un f ou un t) */
         case BOOL:
-            if (isgraph(input[*here]))
+            if (input[*here] != ')' && isgraph(input[*here]))
             {   WARNING_MSG("NOT A PROPER BOOLEAN OR CHARACTER");
                 etat=END;
             } /* erreur si il y a qqch apres #f ou #t */
@@ -414,13 +411,15 @@ object sfs_read_atom( char *input, uint *here ) {
 
 
                 else {
-                    WARNING_MSG("NOT A PROPER CHARACTER : TOO LONG OR NOT EXACTLY NEWLINE NOR SPACE");
+                    WARNING_MSG("NOT A PROPER CHARACTER : TOO LONG OR NOT EXACTLY NEWLINE OR SPACE");
                     etat=END;
                 }
 
             }
             else if (isgraph(input[*here]))
-            {   atom=make_character(input[*here]);
+            {   
+		atom=make_character(input[*here]);
+		(*here)++;
                 etat=END;
             }
             else {
@@ -468,6 +467,7 @@ object sfs_read_atom( char *input, uint *here ) {
                 etat = EXIT;
             }
             else {
+		/**here = input - endptr;*/
                 etat = INT;
             }
             break;
@@ -491,19 +491,18 @@ object sfs_read_atom( char *input, uint *here ) {
 
 object sfs_read_pair( char *stream, uint *i ) {
 
-    stream = first_usefull_char(stream + *i); /* added for managing spaces */
-    *i = 0;
+    while (isspace(stream[*i])){(*i)++;} /* added for managing spaces */
+    if ( stream[*i] == ')' ) {
+            (*i)++ ;
+            return nil;
+        }
     object pair = NULL;
     object car = NULL;
     object cdr = NULL;
-    car = sfs_read_atom (stream,i);
-    cdr = sfs_read (stream,i);
+    car = sfs_read (stream,i);
+    cdr = sfs_read_pair (stream,i);
     pair = make_pair(car,cdr);
 
 
     return pair;
 }
-
-/*test git*/
-
-

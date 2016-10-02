@@ -99,8 +99,4 @@ object make_pair(object car , object cdr){
 	t->this.pair.car = car;
 	t->this.pair.cdr = cdr;
 	return t;
-
-
 }
-
-

@@ -50,6 +50,15 @@ void sfs_print_atom( object o ) {
 
 void sfs_print_pair( object o ) {
 
+if (o->this.pair.cdr != nil){
+	printf("(");
+	}
+	sfs_print(o->this.pair.car);
+	if (o->this.pair.cdr != nil){
+		printf(" ");
+		sfs_print(o->this.pair.cdr);		
+		}
+	else printf(")");
     return;
 }
 
@@ -61,5 +70,4 @@ void sfs_print( object o ) {
     else {
         sfs_print_atom( o );
     }
-
 }
