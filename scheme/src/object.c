@@ -93,10 +93,48 @@ return t;
 
 
 
-object make_pair(object car , object cdr){
+object make_pair(object car , object cdr , int isroot){
 
 	object t = make_object(SFS_PAIR);
 	t->this.pair.car = car;
 	t->this.pair.cdr = cdr;
+	t->this.pair.isroot = isroot;
 	return t;
+}
+
+int ispair(object o){
+	if (o->type == 	SFS_PAIR)
+		return TRUE;
+	else return FALSE;
+}
+
+int isroot(object o){
+	if (ispair(o))
+		return o->this.pair.isroot;
+	else {
+		WARNING_MSG("CALLING ISROOT OF AN ATOM");
+		return FALSE;
+	}
+}
+
+int isatom(object o){
+	return !ispair(o);
+}
+
+object car(object o){
+	if (ispair(o))
+		return o->this.pair.car;
+	else {
+		WARNING_MSG("CALLING THE CAR OF AN ATOM");
+		return nil;
+	}
+}
+
+object cdr(object o){
+	if (ispair(o))
+		return o->this.pair.cdr;
+	else {
+		WARNING_MSG("CALLING THE CDR OF AN ATOM");
+		return nil;
+	}
 }

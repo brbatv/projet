@@ -32,6 +32,7 @@ typedef struct object_t {
         struct pair_t {
             struct object_t *car;
             struct object_t *cdr;
+		int isroot; /*permet de savoir si il s'agit de la racine l'arbre ou non*/
         }                pair;
 
         struct object_t *special;
@@ -41,15 +42,20 @@ typedef struct object_t {
 } *object;
 
 
-object make_object(uint type);
+object make_object(uint);
 object make_nil(void);
 object make_integer(int);
-object make_boolean(unsigned int);
+object make_boolean(uint);
 object make_character(char);
-object make_pair(object,object);
+object make_pair(object,object,int);
 object make_scharacter(char*);
 object make_string(char*);
 object make_symbol(char*);
+int ispair(object);
+int isatom (object);
+int isroot(object);
+object car(object);
+object cdr(object);
 
 #define SFS_NUMBER       0x00
 #define SFS_CHARACTER    0x01

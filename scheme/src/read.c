@@ -489,19 +489,28 @@ object sfs_read_atom( char *input, uint *here ) {
 }
 
 
-object sfs_read_pair( char *stream, uint *i ) {
-
-    while (isspace(stream[*i])){(*i)++;} /* added for managing spaces */
-    if ( stream[*i] == ')' ) {
-            (*i)++ ;
-            return nil;
-        }
+object sfs_read_pair( char *input, uint *here ) {
     object pair = NULL;
     object car = NULL;
     object cdr = NULL;
-    car = sfs_read (stream,i);
-    cdr = sfs_read_pair (stream,i);
-    pair = make_pair(car,cdr);
+    int isroot = TRUE;
+    uint i = *here - 1;
+
+    while(i != 0){
+	if (isgraph(input[i]))
+		isroot = FALSE;
+	i--;
+	}
+
+    while (isspace(input[*here])){(*here)++;} /* added for managing spaces */
+    if ( input[*here] == ')' ) {
+            (*here)++ ;
+            return nil;
+        }
+
+    car = sfs_read (input,here);
+    cdr = sfs_read_pair (input,here);
+    pair = make_pair(car,cdr,isroot);
 
 
     return pair;
