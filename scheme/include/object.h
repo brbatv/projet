@@ -47,7 +47,6 @@ object make_integer(int);
 object make_boolean(uint);
 object make_character(char);
 object make_pair(object,object,int);
-object make_scharacter(char*);
 object make_string(char*);
 object make_symbol(char*);
 int ispair(object);
@@ -62,7 +61,6 @@ object cdr(object);
 #define SFS_NIL          0x04
 #define SFS_BOOLEAN      0x05
 #define SFS_SYMBOL       0x06
-#define SFS_SCHARACTER   0x07
 
 
 extern object nil;

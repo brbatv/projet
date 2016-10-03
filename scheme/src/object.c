@@ -84,14 +84,6 @@ object make_symbol(char* s)
 }
 
 
-object make_scharacter(char* s) 
-{
-object t= make_object(SFS_SCHARACTER);
-strcpy(t->this.string,s);
-return t;
-}
-
-
 
 object make_pair(object car , object cdr , int isroot){
 

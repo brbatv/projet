@@ -39,10 +39,6 @@ void sfs_print_atom( object o ) {
 	else 
 		printf("#\\%c",o->this.character); 
 	break;
-	
-	case SFS_SCHARACTER:
-	printf("#\\%s",o->this.string);
-	break;
 
 	case SFS_STRING:
 	printf("\"%s\"",o->this.string);
