@@ -400,16 +400,14 @@ object sfs_read_atom( char *input, uint *here ) {
         /* cas caractere (on sait qu'il y a un # et un antislash) */
         case CHAR_IN_PROG :
 
-            if (isgraph(input[*here]) && isgraph(input[*here+1]) && input[*here+1] != ')')
-		{
-		   if(strncmp(input + *here, "space",5))
-		{
+            if (isgraph(input[*here]) && isgraph(input[*here+1]) && input[*here+1] != ')'){
+		if(strncmp(input + *here, "space", 5) == 0){
 			(*here) += 5;
 			atom=make_character(' ');
-		        etat=END;
+			etat=END;
 		}
 
-                 if(strncmp(input + *here, "newline",7)){
+                 else if(strncmp(input + *here, "newline", 7) == 0){
 			(*here) += 7;
 			atom=make_character('\n');
 			etat=END;
