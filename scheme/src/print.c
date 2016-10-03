@@ -28,8 +28,10 @@ void sfs_print_atom( object o ) {
 
 	case SFS_NIL:
 	printf("()");
+	break;
 	
 	case SFS_CHARACTER:
+	if(o-
 	printf("#\\%c",o->this.character); 
 	break;
 	
@@ -67,7 +69,7 @@ if (ispair( car( o ) )){
 
 void sfs_print( object o ) {
 
-    if (ispair(o)) {
+    if (ispair(o) ) {
         sfs_print_pair( o );
     }
     else {

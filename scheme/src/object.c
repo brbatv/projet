@@ -102,39 +102,54 @@ object make_pair(object car , object cdr , int isroot){
 	return t;
 }
 
+/*fonction qui test si l'objet est une pair*/
 int ispair(object o){
+
 	if (o->type == 	SFS_PAIR)
 		return TRUE;
 	else return FALSE;
+
 }
 
+/*fonction qui test si une pair est a la racine, affiche une erreur et renvoie FALSE si object o n'est pas une pair*/
 int isroot(object o){
+
 	if (ispair(o))
 		return o->this.pair.isroot;
 	else {
 		WARNING_MSG("CALLING ISROOT OF AN ATOM");
 		return FALSE;
 	}
+
 }
 
+/*fonction qui test si l'objet est un atom*/
 int isatom(object o){
+
 	return !ispair(o);
+
 }
 
+/*retourne le car de la pair object o, nil si object o n'est pas une pair aisni qu'un message d'erreur*/
 object car(object o){
+
 	if (ispair(o))
 		return o->this.pair.car;
 	else {
 		WARNING_MSG("CALLING THE CAR OF AN ATOM");
 		return nil;
 	}
+
 }
 
+/*retourne le cdr de la pair object o, nil si object o n'est pas une pair aisni qu'un message d'erreur*/
 object cdr(object o){
+
 	if (ispair(o))
 		return o->this.pair.cdr;
 	else {
 		WARNING_MSG("CALLING THE CDR OF AN ATOM");
 		return nil;
 	}
+
 }
