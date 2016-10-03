@@ -31,7 +31,7 @@ void sfs_print_atom( object o ) {
 	break;
 	
 	case SFS_CHARACTER:
-	if(o-
+	
 	printf("#\\%c",o->this.character); 
 	break;
 	

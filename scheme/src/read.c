@@ -318,7 +318,7 @@ int isspecialchar(char c){
 
 object sfs_read_atom( char *input, uint *here ) {
 
-    enum ETATS {INIT, HASH_DETECTED, BOOL, CHAR_IN_PROG, SYMBOL, STRING, INT_IN_PROG, INT, END, EXIT};
+    enum ETATS {INIT, HASH_DETECTED, BOOL, CHAR_IN_PROG, SYMBOL, STRING, INT_IN_PROG, INT, END, EXIT, ERROR};
     enum ETATS etat = INIT;
     object atom = NULL;
     char s[256];
@@ -332,7 +332,7 @@ object sfs_read_atom( char *input, uint *here ) {
     long int integer = 0;
     /* end of mandatory objects*/
 
-    while (etat != EXIT)
+    while (etat != EXIT || etat!=ERROR)
     {
         switch(etat)
         {
@@ -381,7 +381,7 @@ object sfs_read_atom( char *input, uint *here ) {
             }
             else {
                 WARNING_MSG("NOT A PROPER BOOLEAN OR CHARACTER");
-                etat=END;
+                etat=ERROR;
             }
             break;
 
@@ -389,7 +389,7 @@ object sfs_read_atom( char *input, uint *here ) {
         case BOOL:
             if (input[*here] != ')' && isgraph(input[*here]))
             {   WARNING_MSG("NOT A PROPER BOOLEAN OR CHARACTER");
-                etat=END;
+                etat=ERROR;
             } /* erreur si il y a qqch apres #f ou #t */
             else {
                 atom = make_boolean(bool);
@@ -400,20 +400,24 @@ object sfs_read_atom( char *input, uint *here ) {
         /* cas caractere (on sait qu'il y a un # et un antislash) */
         case CHAR_IN_PROG :
 
-            if (isgraph(input[*here]) && isgraph(input[*here+1]) && input[*here+1] != ')'){
-		if(strncmp(input + *here, "space",5)){
+            if (isgraph(input[*here]) && isgraph(input[*here+1]) && input[*here+1] != ')')
+		{
+		   if(strncmp(input + *here, "space",5))
+		{
 			(*here) += 5;
 			atom=make_character(' ');
+		        etat=END;
 		}
 
                  if(strncmp(input + *here, "newline",7)){
 			(*here) += 7;
 			atom=make_character('\n');
+			etat=END;
 		}
 
                 else {
                     WARNING_MSG("NOT A PROPER CHARACTER : TOO LONG OR NOT EXACTLY NEWLINE OR SPACE");
-                    etat=END;
+                    etat=ERROR;
                 }
 		}
             else if (isgraph(input[*here]))
@@ -424,7 +428,7 @@ object sfs_read_atom( char *input, uint *here ) {
             }
             else {
                 WARNING_MSG("NOT A PROPER CHARACTER");
-                etat=END;
+                etat=ERROR;
             }
             break;
 
@@ -486,6 +490,8 @@ object sfs_read_atom( char *input, uint *here ) {
             return atom;
             etat = EXIT;
             break;
+	case ERROR:
+	    return NULL;
 
         default:
             printf("error : switch not ended sfs_read_atom\n");
