@@ -32,7 +32,6 @@ typedef struct object_t {
         struct pair_t {
             struct object_t *car;
             struct object_t *cdr;
-		int isroot; /*permet de savoir si il s'agit de la racine l'arbre ou non*/
         }                pair;
 
         struct object_t *special;
@@ -53,7 +52,6 @@ object make_string(char*);
 object make_symbol(char*);
 int ispair(object);
 int isatom (object);
-int isroot(object);
 object car(object);
 object cdr(object);
 

@@ -98,7 +98,6 @@ object make_pair(object car , object cdr , int isroot){
 	object t = make_object(SFS_PAIR);
 	t->this.pair.car = car;
 	t->this.pair.cdr = cdr;
-	t->this.pair.isroot = isroot;
 	return t;
 }
 
@@ -108,18 +107,6 @@ int ispair(object o){
 	if (o->type == 	SFS_PAIR)
 		return TRUE;
 	else return FALSE;
-
-}
-
-/*fonction qui test si une pair est a la racine, affiche une erreur et renvoie FALSE si object o n'est pas une pair*/
-int isroot(object o){
-
-	if (ispair(o))
-		return o->this.pair.isroot;
-	else {
-		WARNING_MSG("CALLING ISROOT OF AN ATOM");
-		return FALSE;
-	}
 
 }
 

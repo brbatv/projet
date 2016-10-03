@@ -55,27 +55,28 @@ void sfs_print_atom( object o ) {
     return;
 }
 
-void sfs_print_pair( object o ) {
+void sfs_print_pair( object o, uint * root) {
 
-if (isroot( o ) ){
-	printf("(");
-}
 if (ispair( car( o ) )){
 	printf("(");
 	}
-	sfs_print( car( o ) );
+	sfs_print( car( o ) , root);
 	if (cdr( o ) != nil){
 		printf(" ");
-		sfs_print_pair( cdr( o ) );		
+		sfs_print_pair( cdr( o ) , root);		
 		}
 	else printf(")");
     return;
 }
 
-void sfs_print( object o ) {
+void sfs_print( object o , uint * root) {
 
     if (ispair(o) ) {
-        sfs_print_pair( o );
+	if (*root == TRUE){
+	   printf("(");
+	   *root = FALSE;
+           }
+        sfs_print_pair( o , root );
     }
     else {
         sfs_print_atom( o );

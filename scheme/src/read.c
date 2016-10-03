@@ -306,10 +306,11 @@ object sfs_read( char *input, uint *here ) {
     }
 }
 
+/*fonction qui test si char c est un caractere special parmi ceux que l'on peut inclure dans les symboles*/
 int isspecialchar(char c){
-	char s[14] = "!$%&*/:<=>?^_~";
+	char s[16] = "+-!$%&*/:<=>?^_~";
 	int i;
-	for(i=0;i<14;i++){
+	for(i=0;i<16;i++){
 		if (s[i] == c)
 			return TRUE;
 	}
@@ -343,7 +344,8 @@ object sfs_read_atom( char *input, uint *here ) {
                 etat = HASH_DETECTED;
                 (*here)++;
             }
-            else if ((input[*here] == '-' && isdigit(input[*here+1]))  || (input[*here] == '+' && isdigit(input[*here+1])) || isdigit(input[*here])) /* voir case INT_IN_PROG : la gestion des erreurs est peut etre inutile depuis que jai change !isspace en isdigit*/
+	    /* on verifie si l'utilisateur rentre bien un int qui commence eventuellement par un moins ou un plus */
+            else if ((input[*here] == '-' && isdigit(input[*here+1]))  || (input[*here] == '+' && isdigit(input[*here+1])) || isdigit(input[*here])) /* on verifie si l'utilisateur rentre bien un int qui commence eventuellement par un moins ou un plus */
             {
                 etat = INT_IN_PROG;
             }
@@ -506,23 +508,13 @@ object sfs_read_pair( char *input, uint *here ) {
     object car = NULL;
     object cdr = NULL;
     int isroot = TRUE;
-	
-    /*i est initialise au rang 0 avant juste avant la parenthese ouvrante*/
-    uint i = *here - 1;
-
-    /*reperage d'un eventuel caractere autre qu'un espace avant premier parenthese*/
-    while(i != 0){
-	if (isgraph(input[i]))
-		/*dans le cas d'un caractere non espace avant la premier parenthese, la pair n'est pas a la racine de l'arbre*/
-		isroot = FALSE;
-	i--;
-	}
 
     while (isspace(input[*here])){(*here)++;} /* added for managing spaces */
-    if ( input[*here] == ')' ) {
+
+	    if ( input[*here] == ')' ) {
             (*here)++ ;
             return nil;
-        }
+        }	
 
     car = sfs_read (input,here);
     cdr = sfs_read_pair (input,here);
