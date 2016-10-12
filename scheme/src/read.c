@@ -286,12 +286,18 @@ uint  sfs_get_sexpr( char *input, FILE *fp ) {
     return S_OK;
 }
 
+/* managing spaces */
+void next_usefull_char(char *input, uint *here ) {
+
+    while (isspace(input[*here])) {
+        (*here)++;
+    }
+
+    }
 
 object sfs_read( char *input, uint *here ) {
 
-    while (isspace(input[*here])) {
-        (*here)++;   /* added for managing spaces */
-    }
+    next_usefull_char(input, here);
 
     if ( input[*here] == '(' ) {
         if ( input[(*here)+1] == ')' ) {
@@ -441,16 +447,12 @@ object sfs_read_atom( char *input, uint *here ) {
             break;
 
         case SYMBOL :
-<<<<<<< HEAD
-
-=======
 	    while(isgraph(input[*here]) && is_not_separator(input[*here])){
 		s[i] = input[*here];
 		i++;
-		(*here)++;		
+		(*here)++;
 	    }
-	    s[i] = '\0';	
->>>>>>> c718338a685885bdbc0d9360aa09cbbf8b2172c7
+	    s[i] = '\0';
             atom=make_symbol(s);
             etat=END;
 
@@ -524,9 +526,7 @@ object sfs_read_pair( char *input, uint *here ) {
     object cdr = NULL;
     int isroot = TRUE;
 
-    while (isspace(input[*here])) {
-        (*here)++;   /* added for managing spaces */
-    }
+    next_usefull_char(input, here);
 
     if ( input[*here] == ')' ) {
         (*here)++ ;

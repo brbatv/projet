@@ -53,6 +53,13 @@ int ispair(object);
 int isatom (object);
 object car(object);
 object cdr(object);
+/*gestion des formes*/
+int isquote(object);
+int isdefine(object);
+int isset(object);
+int isif(object);
+int isand(object);
+int isor(object);
 
 #define SFS_NUMBER       0x00
 #define SFS_CHARACTER    0x01

@@ -21,7 +21,7 @@ extern "C" {
 
 enum {S_OK, S_KO, S_END};
 
-uint   sfs_get_sexpr( string input, FILE *fp );
+uint sfs_get_sexpr( string input, FILE *fp );
 int is_not_separator(char);
 object sfs_read( char *, uint * );
 object sfs_read_atom( char *, uint * );
