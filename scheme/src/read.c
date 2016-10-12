@@ -318,6 +318,12 @@ int isspecialchar(char c) {
     }
     return FALSE;
 }
+int is_not_separator(char c)
+{
+ if (c!= ')' && c!='(' && !isspace(c)){
+return TRUE;}
+return FALSE;
+}
 
 object sfs_read_atom( char *input, uint *here ) {
 
@@ -391,7 +397,7 @@ object sfs_read_atom( char *input, uint *here ) {
 
         /* cas booleen (on sait qu'il y a un # puis un f ou un t) */
         case BOOL:
-            if (input[*here] != ')' && isgraph(input[*here]))
+            if (is_not_separator(input[*here]) && isgraph(input[*here]))
             {   WARNING_MSG("NOT A PROPER BOOLEAN OR CHARACTER");
                 etat=ERROR;
             } /* erreur si il y a qqch apres #f ou #t */
@@ -435,12 +441,16 @@ object sfs_read_atom( char *input, uint *here ) {
             break;
 
         case SYMBOL :
-            while(isgraph(input[*here]) && input[*here] != '(' && input[*here] != ')') {
-                s[i] = input[*here];
-                i++;
-                (*here)++;
-            }
-            s[i] = '\0';
+<<<<<<< HEAD
+
+=======
+	    while(isgraph(input[*here]) && is_not_separator(input[*here])){
+		s[i] = input[*here];
+		i++;
+		(*here)++;		
+	    }
+	    s[i] = '\0';	
+>>>>>>> c718338a685885bdbc0d9360aa09cbbf8b2172c7
             atom=make_symbol(s);
             etat=END;
 
@@ -472,7 +482,7 @@ object sfs_read_atom( char *input, uint *here ) {
         case INT_IN_PROG :
             integer = strtol(input + *here, &endptr , base);
             /*gestion des erreurs avec endptr*/
-            if(endptr != NULL && isgraph(*endptr) && (*endptr) != ')')
+            if(endptr != NULL && isgraph(*endptr) && is_not_separator(*endptr))
             {
                 WARNING_MSG("NUMBER ERROR : not a number");
                 etat = ERROR;
