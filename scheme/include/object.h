@@ -65,7 +65,8 @@ object cdr(object);
 
 extern object nil;
 extern object false;
-extern object true; 
+extern object true;
+extern object quote;
 
 #ifdef __cplusplus
 }

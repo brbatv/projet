@@ -33,12 +33,16 @@ void usage_error( char *command ) {
 object nil=NULL;
 object false = NULL;
 object true = NULL;
+object quote = NULL;
 
 void init_interpreter ( void ) {
 
     nil = make_nil();
     false = make_boolean(FALSE);
     true = make_boolean(TRUE);
+    /*quote = make_quote();*/
+
+    /*ajouter l'initialisation des formes scheme de base (quote, define, set!, if, and et or */
 
 }
 
@@ -46,7 +50,6 @@ int main ( int argc, char *argv[] ) {
 
     char     input[BIGSTRING];
     uint     here = 0;
-    uint     root = TRUE;
     object   output = NULL;
     object   sexpr = NULL;
     inter_mode mode;
@@ -94,7 +97,6 @@ int main ( int argc, char *argv[] ) {
     while ( 1 ) {
         input[0]='\0';
         here = 0;
-        root = TRUE;
         output = NULL;
         sexpr = NULL;
         uint Sexpr_err;
@@ -154,7 +156,7 @@ int main ( int argc, char *argv[] ) {
         }
 
         printf( "==> " );
-        sfs_print( output , &root);
+        sfs_print( output );
         printf( "\n" );
     }
 

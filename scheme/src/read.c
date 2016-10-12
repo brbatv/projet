@@ -289,7 +289,9 @@ uint  sfs_get_sexpr( char *input, FILE *fp ) {
 
 object sfs_read( char *input, uint *here ) {
 
-    while (isspace(input[*here])){(*here)++;} /* added for managing spaces */
+    while (isspace(input[*here])) {
+        (*here)++;   /* added for managing spaces */
+    }
 
     if ( input[*here] == '(' ) {
         if ( input[(*here)+1] == ')' ) {
@@ -307,14 +309,14 @@ object sfs_read( char *input, uint *here ) {
 }
 
 /*fonction qui test si char c est un caractere special parmi ceux que l'on peut inclure dans les symboles*/
-int isspecialchar(char c){
-	char s[16] = "+-!$%&*/:<=>?^_~";
-	int i;
-	for(i=0;i<16;i++){
-		if (s[i] == c)
-			return TRUE;
-	}
-	return FALSE;
+int isspecialchar(char c) {
+    char s[16] = "+-!$%&*/:<=>?^_~";
+    int i;
+    for(i=0; i<16; i++) {
+        if (s[i] == c)
+            return TRUE;
+    }
+    return FALSE;
 }
 
 object sfs_read_atom( char *input, uint *here ) {
@@ -333,7 +335,7 @@ object sfs_read_atom( char *input, uint *here ) {
     long int integer = 0;
     /* end of mandatory objects*/
 
-    while (etat != EXIT || etat!=ERROR)
+    while (etat != EXIT || etat != ERROR)
     {
         switch(etat)
         {
@@ -344,7 +346,7 @@ object sfs_read_atom( char *input, uint *here ) {
                 etat = HASH_DETECTED;
                 (*here)++;
             }
-	    /* on verifie si l'utilisateur rentre bien un int qui commence eventuellement par un moins ou un plus */
+            /* on verifie si l'utilisateur rentre bien un int qui commence eventuellement par un moins ou un plus */
             else if ((input[*here] == '-' && isdigit(input[*here+1]))  || (input[*here] == '+' && isdigit(input[*here+1])) || isdigit(input[*here])) /* on verifie si l'utilisateur rentre bien un int qui commence eventuellement par un moins ou un plus */
             {
                 etat = INT_IN_PROG;
@@ -354,11 +356,11 @@ object sfs_read_atom( char *input, uint *here ) {
             {   etat=STRING;
                 (*here)++;
             }
-            else if(isspecialchar(input[*here]) || isalpha(input[*here])){
+            else if(isspecialchar(input[*here]) || isalpha(input[*here])) {
                 etat=SYMBOL;
             }
-	    else
-		etat = EXIT;
+            else
+                etat = EXIT;
             break;
 
 
@@ -402,28 +404,28 @@ object sfs_read_atom( char *input, uint *here ) {
         /* cas caractere (on sait qu'il y a un # et un antislash) */
         case CHAR_IN_PROG :
 
-            if (isgraph(input[*here]) && isgraph(input[*here+1]) && input[*here+1] != ')'){
-		if(strncmp(input + *here, "space", 5) == 0){
-			(*here) += 5;
-			atom=make_character(' ');
-			etat=END;
-		}
+            if (isgraph(input[*here]) && isgraph(input[*here+1]) && input[*here+1] != ')') {
+                if(strncmp(input + *here, "space", 5) == 0) {
+                    (*here) += 5;
+                    atom=make_character(' ');
+                    etat=END;
+                }
 
-                 else if(strncmp(input + *here, "newline", 7) == 0){
-			(*here) += 7;
-			atom=make_character('\n');
-			etat=END;
-		}
+                else if(strncmp(input + *here, "newline", 7) == 0) {
+                    (*here) += 7;
+                    atom=make_character('\n');
+                    etat=END;
+                }
 
                 else {
                     WARNING_MSG("NOT A PROPER CHARACTER : TOO LONG OR NOT EXACTLY NEWLINE OR SPACE");
                     etat=ERROR;
                 }
-		}
+            }
             else if (isgraph(input[*here]))
-            {   
-		atom=make_character(input[*here]);
-		(*here)++;
+            {
+                atom=make_character(input[*here]);
+                (*here)++;
                 etat=END;
             }
             else {
@@ -433,12 +435,12 @@ object sfs_read_atom( char *input, uint *here ) {
             break;
 
         case SYMBOL :
-	    while(isgraph(input[*here]) && input[*here] != '(' && input[*here] != ')'){
-		s[i] = input[*here];
-		i++;
-		(*here)++;		
-	    }
-	    s[i] = '\0';	
+            while(isgraph(input[*here]) && input[*here] != '(' && input[*here] != ')') {
+                s[i] = input[*here];
+                i++;
+                (*here)++;
+            }
+            s[i] = '\0';
             atom=make_symbol(s);
             etat=END;
 
@@ -460,7 +462,7 @@ object sfs_read_atom( char *input, uint *here ) {
                 }
 
             }
-		(*here)++;
+            (*here)++;
 
             atom=make_string(s);
             etat=END;
@@ -473,10 +475,10 @@ object sfs_read_atom( char *input, uint *here ) {
             if(endptr != NULL && isgraph(*endptr) && (*endptr) != ')')
             {
                 WARNING_MSG("NUMBER ERROR : not a number");
-                etat = EXIT;
+                etat = ERROR;
             }
             else {
-		*here = endptr - input;
+                *here = endptr - input;
                 etat = INT;
             }
             break;
@@ -490,11 +492,14 @@ object sfs_read_atom( char *input, uint *here ) {
             return atom;
             etat = EXIT;
             break;
-	case ERROR:
-	    return NULL;
+        case ERROR:
+            return NULL;
+            break;
 
         default:
-            printf("error : switch not ended sfs_read_atom\n");
+            WARNING_MSG("error : switch not ended sfs_read_atom\n");
+            return nil;
+            etat = EXIT;
             break;
 
         }
@@ -509,12 +514,14 @@ object sfs_read_pair( char *input, uint *here ) {
     object cdr = NULL;
     int isroot = TRUE;
 
-    while (isspace(input[*here])){(*here)++;} /* added for managing spaces */
+    while (isspace(input[*here])) {
+        (*here)++;   /* added for managing spaces */
+    }
 
-	    if ( input[*here] == ')' ) {
-            (*here)++ ;
-            return nil;
-        }	
+    if ( input[*here] == ')' ) {
+        (*here)++ ;
+        return nil;
+    }
 
     car = sfs_read (input,here);
     cdr = sfs_read_pair (input,here);
