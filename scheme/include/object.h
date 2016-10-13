@@ -60,6 +60,7 @@ int isset(object);
 int isif(object);
 int isand(object);
 int isor(object);
+object make_env(object);
 
 #define SFS_NUMBER       0x00
 #define SFS_CHARACTER    0x01
@@ -73,7 +74,7 @@ int isor(object);
 extern object nil;
 extern object false;
 extern object true;
-extern object quote;
+extern object top_level;
 
 #ifdef __cplusplus
 }

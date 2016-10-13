@@ -34,12 +34,14 @@ object nil=NULL;
 object false = NULL;
 object true = NULL;
 object quote = NULL;
+object top_level = NULL;
 
 void init_interpreter ( void ) {
 
     nil = make_nil();
     false = make_boolean(FALSE);
     true = make_boolean(TRUE);
+    top_level=make_env(nil);
     /*quote = make_quote();*/
 
     /*ajouter l'initialisation des formes scheme de base (quote, define, set!, if, and et or */

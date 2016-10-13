@@ -54,7 +54,7 @@ object make_boolean (unsigned int i) {
 }
 
 object make_integer(int i) {
-
+    DEBUG_MSG("Making an int");
     object t = make_object(SFS_NUMBER);
     t->this.number.numtype = NUM_INTEGER;
     t->this.number.this.integer = i;
@@ -63,7 +63,7 @@ object make_integer(int i) {
 }
 
 object make_character(char c) {
-
+     DEBUG_MSG("Making a char");
     object t = make_object(SFS_CHARACTER);
     t->this.character=c;
     return t;
@@ -71,7 +71,7 @@ object make_character(char c) {
 }
 
 object make_string(char* s) {
-
+    DEBUG_MSG("Making a string...");
     object t=make_object(SFS_STRING);
     strcpy(t->this.string,s);
     return t;
@@ -79,7 +79,7 @@ object make_string(char* s) {
 }
 
 object make_symbol(char* s) {
-
+    DEBUG_MSG("Making a symbol...");
     object t=make_object(SFS_SYMBOL);
     strcpy(t->this.symbol,s);
     return t;
@@ -93,6 +93,11 @@ object make_pair(object car , object cdr ) {
     t->this.pair.cdr = cdr;
     return t;
 }
+
+
+/* fonction qui permet de creer un nouvel environnement sous cdr */
+object make_env(object cdr)
+{return make_pair(nil,cdr);}
 
 /*fonction qui test si l'objet est une pair*/
 int ispair(object o) {
