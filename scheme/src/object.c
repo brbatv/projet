@@ -86,7 +86,7 @@ object make_symbol(char* s) {
 
 }
 
-object make_pair(object car , object cdr , int isroot) {
+object make_pair(object car , object cdr ) {
 
     object t = make_object(SFS_PAIR);
     t->this.pair.car = car;

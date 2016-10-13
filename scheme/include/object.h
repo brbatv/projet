@@ -46,7 +46,7 @@ object make_nil(void);
 object make_integer(int);
 object make_boolean(uint);
 object make_character(char);
-object make_pair(object,object,int);
+object make_pair(object,object);
 object make_string(char*);
 object make_symbol(char*);
 int ispair(object);

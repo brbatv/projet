@@ -299,6 +299,16 @@ object sfs_read( char *input, uint *here ) {
 
     next_usefull_char(input, here);
 
+
+    if (input[*here]=='\'' )
+    {(*here)++;
+     next_usefull_char(input,here);
+
+    return make_pair(make_symbol("quote"),sfs_read(input,here));
+
+
+    }
+
     if ( input[*here] == '(' ) {
         if ( input[(*here)+1] == ')' ) {
             *here += 2;
@@ -524,7 +534,6 @@ object sfs_read_pair( char *input, uint *here ) {
     object pair = NULL;
     object car = NULL;
     object cdr = NULL;
-    int isroot = TRUE;
 
     next_usefull_char(input, here);
 
@@ -535,7 +544,7 @@ object sfs_read_pair( char *input, uint *here ) {
 
     car = sfs_read (input,here);
     cdr = sfs_read_pair (input,here);
-    pair = make_pair(car,cdr,isroot);
+    pair = make_pair(car,cdr);
 
 
     return pair;
