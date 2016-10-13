@@ -87,7 +87,7 @@ object make_symbol(char* s) {
 }
 
 object make_pair(object car , object cdr ) {
-
+    DEBUG_MSG("Making a pair ...");
     object t = make_object(SFS_PAIR);
     t->this.pair.car = car;
     t->this.pair.cdr = cdr;
@@ -135,61 +135,61 @@ object cdr(object o) {
 }
 
 /*fonction qui renvoie un booleen en fonction de si oui ou non o est le symbole quote*/
-int isquote(object o){
+int isquote(object o) {
 
-	if(o->type == SFS_SYMBOL && strcmp(o->this.symbol,"quote") == 0)
-		return TRUE;
-	else
-		return FALSE;
+    if(o->type == SFS_SYMBOL && strcmp(o->this.symbol,"quote") == 0)
+        return TRUE;
+    else
+        return FALSE;
 
 }
 
 /*fonction qui renvoie un booleen en fonction de si oui ou non o est le symbole define*/
-int isdefine(object o){
+int isdefine(object o) {
 
-	if(o->type == SFS_SYMBOL && strcmp(o->this.symbol,"define") == 0)
-		return TRUE;
-	else
-		return FALSE;
+    if(o->type == SFS_SYMBOL && strcmp(o->this.symbol,"define") == 0)
+        return TRUE;
+    else
+        return FALSE;
 
 }
 
 /*fonction qui renvoie un booleen en fonction de si oui ou non o est le symbole set!*/
-int isset(object o){
+int isset(object o) {
 
-	if( o->type == SFS_SYMBOL && strcmp(o->this.symbol,"set!") == 0)
-		return TRUE;
-	else
-		return FALSE;
+    if( o->type == SFS_SYMBOL && strcmp(o->this.symbol,"set!") == 0)
+        return TRUE;
+    else
+        return FALSE;
 
 }
 
 /*fonction qui renvoie un booleen en fonction de si oui ou non o est le symbole if*/
-int isif(object o){
+int isif(object o) {
 
-	if(o->type == SFS_SYMBOL && strcmp(o->this.symbol,"if") == 0)
-		return TRUE;
-	else
-		return FALSE;
+    if(o->type == SFS_SYMBOL && strcmp(o->this.symbol,"if") == 0)
+        return TRUE;
+    else
+        return FALSE;
 
 }
 
 /*fonction qui renvoie un booleen en fonction de si oui ou non o est le symbole and*/
-int isand(object o){
+int isand(object o) {
 
-	if(o->type == SFS_SYMBOL && strcmp(o->this.symbol,"and") == 0)
-		return TRUE;
-	else
-		return FALSE;
+    if(o->type == SFS_SYMBOL && strcmp(o->this.symbol,"and") == 0)
+        return TRUE;
+    else
+        return FALSE;
 
 }
 
 /*fonction qui renvoie un booleen en fonction de si oui ou non o est le symbole or*/
-int isor(object o){
+int isor(object o) {
 
-	if(o->type == SFS_SYMBOL && strcmp(o->this.symbol,"or") == 0)
-		return TRUE;
-	else
-		return FALSE;
+    if(o->type == SFS_SYMBOL && strcmp(o->this.symbol,"or") == 0)
+        return TRUE;
+    else
+        return FALSE;
 
 }

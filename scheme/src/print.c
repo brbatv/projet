@@ -13,6 +13,7 @@
 #include <stdio.h>
 
 void sfs_print_atom( object o ) {
+    DEBUG_MSG("Printing an atom");
 
     switch(o->type)
 
@@ -52,7 +53,7 @@ void sfs_print_atom( object o ) {
 }
 
 void sfs_print_pair( object o) {
-
+    DEBUG_MSG("Printing a pair...");
     printf("(");
     while (o != nil) {
         sfs_print( car( o ) ) ;

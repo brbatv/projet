@@ -12,10 +12,11 @@
 
 object sfs_eval( object input ) {
 
-	/* cas quote */
-	if (isquote(car(input)))
-	{  DEBUG_MSG("quote recognized");
-		return cdr(input);
+    /* cas quote */
+    if (isquote(car(input)))
+    {   DEBUG_MSG("quote recognized");
+
+        return car(cdr(input));
     }
 
     return input;
