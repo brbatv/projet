@@ -384,7 +384,9 @@ object sfs_read_atom( char *input, uint *here ) {
                 etat=SYMBOL;
             }
             else
-                etat = EXIT;
+                {DEBUG_MSG("No init");
+
+                etat=END;}
             break;
 
 
@@ -536,18 +538,18 @@ object sfs_read_atom( char *input, uint *here ) {
         etat = EXIT;
         break;
     case ERROR:
+        DEBUG_MSG("Error case");
         return NULL;
         break;
 
     default:
-        WARNING_MSG("error : switch not ended sfs_read_atom\n");
-        return nil;
         etat = EXIT;
         break;
 
     }
 }
-return nil; /* pour eviter attention : ‘return’ with no value, in function returning non-void [-Wreturn-type] */
+
+return NULL; /* pour eviter attention : ‘return’ with no value, in function returning non-void [-Wreturn-type] */
 }
 
 

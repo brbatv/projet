@@ -71,7 +71,7 @@ object make_character(char c) {
 }
 
 object make_string(char* s) {
-    DEBUG_MSG("Making a string...");
+    DEBUG_MSG("Making %s as a string...",s);
     object t=make_object(SFS_STRING);
     strcpy(t->this.string,s);
     return t;
@@ -79,7 +79,7 @@ object make_string(char* s) {
 }
 
 object make_symbol(char* s) {
-    DEBUG_MSG("Making a symbol...");
+    DEBUG_MSG("Making %s as a symbol... ",s);
     object t=make_object(SFS_SYMBOL);
     strcpy(t->this.symbol,s);
     return t;
@@ -87,7 +87,7 @@ object make_symbol(char* s) {
 }
 
 object make_pair(object car , object cdr ) {
-    DEBUG_MSG("Making a pair ...");
+    DEBUG_MSG("Making a pair of %s and %s ...",whattype(car),whattype(cdr));
     object t = make_object(SFS_PAIR);
     t->this.pair.car = car;
     t->this.pair.cdr = cdr;
@@ -96,9 +96,70 @@ object make_pair(object car , object cdr ) {
 
 
 /* fonction qui permet de creer un nouvel environnement sous cdr */
-object make_env(object cdr)
-{return make_pair(nil,cdr);}
+object make_env(object cdr){
+    DEBUG_MSG("Making a new environnement");
+    return make_pair(nil,cdr);}
 
+/*fonction qui permet de créer un nouveau binding en fin d'environnement, avec une valeur encore vide + le nouveau nil en fin d'environnement*/
+object make_binding(char* name, object environment){
+ DEBUG_MSG("Making a new binding...");
+  object obj_temp=car(environment);
+  while (cdr(obj_temp)!=nil)
+    {
+    obj_temp=cdr(obj_temp);
+    }
+    obj_temp=make_pair(nil,nil);
+    obj_temp=car(obj_temp);
+    obj_temp=make_pair(make_symbol(name),nil); /* le cdr nil de cette ligne sera remplace par la valeur prise par la variable plus tard ie cdr(make_binding(name,env))=valeur*/
+    DEBUG_MSG("Binding created successfully : name of variable is %s.",name);
+    return obj_temp; /* renvoie la paire tq car (paire) = nom variable et cdr (paire) = nil*/
+}
+
+object search_env(char* name, object env)
+{ DEBUG_MSG("Searching %s in environment...",name);
+ object obj_temp=car(env);
+ string string;
+ if (obj_temp==nil)
+    {
+    DEBUG_MSG("Environment is empty you stupid. Returning NIL");
+    return nil;
+    }
+while (ispair(obj_temp))
+    {
+        if(get_symbol(caar(obj_temp),string)==name)
+        {
+            DEBUG_MSG("%s has been found !",name);
+            return car(obj_temp);
+        }
+        obj_temp=cdr(obj_temp); /* a la fin du while obj_temp vaudra nil S et ne sera plus une paire*/
+    }
+
+return nil;
+}
+
+object search_under(char* name,object env){
+object env_temp=env;
+
+while (env_temp!=nil)
+    {
+    if (search_env(name,env)!=nil)
+        {
+        return search_env(name,env);
+        }
+     env_temp=cdr(env_temp);
+    }
+return nil;
+
+}
+
+
+/*fonction qui récupère la chaine de caractère d'un objet de type symbole et la copie dans string passe en entree. On pourrait utiliser strcmp aussi surement*/
+char* get_symbol (object symbol,char* string)
+{
+
+    strcpy(string,symbol->this.symbol);
+    return string;
+}
 /*fonction qui test si l'objet est une pair*/
 int ispair(object o) {
 
@@ -139,6 +200,28 @@ object cdr(object o) {
 
 }
 
+object caar(object o)
+{return car(car(o));}
+object cadr(object o)
+{return car(cdr(o));}
+object cddr(object o)
+{return cdr(cdr(o));}
+object cdar(object o)
+{return cdr(car(o));}
+
+char* whattype(object o)
+{if (o->type==SFS_SYMBOL)
+    {
+    return "symbol";
+    }
+if (o->type==SFS_PAIR) {return "pair";}
+if (o->type==SFS_BOOLEAN) {return "boleean";}
+if (o->type==SFS_CHARACTER) {return "character";}
+if (o->type==SFS_STRING){return "string";}
+if (o->type==SFS_NIL) {return "nil";}
+if (o->type==SFS_NUMBER) {return "number";}
+return "No type recognised";
+}
 /*fonction qui renvoie un booleen en fonction de si oui ou non o est le symbole quote*/
 int isquote(object o) {
 

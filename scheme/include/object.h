@@ -53,6 +53,10 @@ int ispair(object);
 int isatom (object);
 object car(object);
 object cdr(object);
+object caar(object);
+object cadr(object);
+object cddr(object);
+object cdar(object);
 /*gestion des formes*/
 int isquote(object);
 int isdefine(object);
@@ -61,6 +65,12 @@ int isif(object);
 int isand(object);
 int isor(object);
 object make_env(object);
+object make_binding(char*,object);
+object search_env(char*,object);
+object search_under(char*,object);
+char* get_symbol (object symbol,char*);
+char* whattype(object o);
+
 
 #define SFS_NUMBER       0x00
 #define SFS_CHARACTER    0x01

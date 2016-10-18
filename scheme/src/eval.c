@@ -11,13 +11,16 @@
 #include "eval.h"
 
 object sfs_eval( object input ) {
-
+    DEBUG_MSG("Evaluation has started");
     /* cas quote */
+    if (ispair(input))
+{
     if (isquote(car(input)))
     {   DEBUG_MSG("quote recognized");
 
         return car(cdr(input));
     }
-
+}
+    else {WARNING_MSG("Attention t'a juste mis un atome pourri");}
     return input;
 }
