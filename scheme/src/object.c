@@ -103,18 +103,28 @@ object make_env(object cdr){
 /*fonction qui permet de créer un nouveau binding en fin d'environnement, avec une valeur encore vide + le nouveau nil en fin d'environnement*/
 object make_binding(char* name, object environment){
  DEBUG_MSG("Making a new binding...");
-  object obj_temp=car(environment);
-  while (cdr(obj_temp)!=nil)
+  object binding=make_pair(nil,nil);
+  modify_car(binding,make_pair(make_symbol(name),nil));
+  object last_element_before_nil=car(environment);
+  while (cdr(last_element_before_nil)!=nil)
     {
-    obj_temp=cdr(obj_temp);
+    last_element_before_nil=cdr(last_element_before_nil);
     }
-    obj_temp=make_pair(nil,nil);
-    obj_temp=car(obj_temp);
-    obj_temp=make_pair(make_symbol(name),nil); /* le cdr nil de cette ligne sera remplace par la valeur prise par la variable plus tard ie cdr(make_binding(name,env))=valeur*/
-    DEBUG_MSG("Binding created successfully : name of variable is %s.",name);
-    return obj_temp; /* renvoie la paire tq car (paire) = nom variable et cdr (paire) = nil*/
+    modify_cdr(last_element_before_nil,binding);
+
+    DEBUG_MSG("New binding created successfully : name of variable is %s.",name);
+    return cadr(last_element_before_nil); /* le nouveau binding tq car(binding) = nom et cdr(binding)=valeur*/
 }
 
+object modify_binding(object binding, object value)
+{string string;
+modify_cdr(binding,value);
+DEBUG_MSG("Modifying value for %s ; type of existing value is %s and the new value is %s",get_symbol(car(binding),string),whattype(cdr(binding)),whattype(value));
+return cdr(binding);
+}
+
+
+/* fonction qui cherche une variable dans 1 environnement et renvoie binding si trouve, sinon renvoie nil*/
 object search_env(char* name, object env)
 { DEBUG_MSG("Searching %s in environment...",name);
  object obj_temp=car(env);
@@ -131,12 +141,12 @@ while (ispair(obj_temp))
             DEBUG_MSG("%s has been found !",name);
             return car(obj_temp);
         }
-        obj_temp=cdr(obj_temp); /* a la fin du while obj_temp vaudra nil S et ne sera plus une paire*/
+        obj_temp=cdr(obj_temp); /* a la fin du while obj_temp vaudra nil et ne sera plus une paire*/
     }
 
 return nil;
 }
-
+/* fonction qui cherche une variable dans ts les environnement en dessous et renvoie binding si trouve, sinon renvoie nil*/
 object search_under(char* name,object env){
 object env_temp=env;
 
@@ -151,29 +161,31 @@ while (env_temp!=nil)
 return nil;
 
 }
+/* fonction qui cherche si une variable existe dans l'environnement courant et en dessous, si existe modifie sa valeur, si n'existe pas la cree dans l'env courant et modifie sa valeur. Renvoie tjr le binding tq car(binding) = nom et cdr (binding) = valeur
+object search_and_modify(char* name, object env, object value)
+{if(search_under(name,env)!=nil)
+    {DEBUG_MSG("%s has been found in environment");
+    return modify_binding(search_under(name,env),value);
+
+
+    }
+ else
+ {make
+
+ }
+
+
+}
+*/
+
+
 
 
 /*fonction qui récupère la chaine de caractère d'un objet de type symbole et la copie dans string passe en entree. On pourrait utiliser strcmp aussi surement*/
 char* get_symbol (object symbol,char* string)
 {
-
     strcpy(string,symbol->this.symbol);
     return string;
-}
-/*fonction qui test si l'objet est une pair*/
-int ispair(object o) {
-
-    if (o->type == 	SFS_PAIR)
-        return TRUE;
-    else return FALSE;
-
-}
-
-/*fonction qui test si l'objet est un atom*/
-int isatom(object o) {
-
-    return !ispair(o);
-
 }
 
 /*retourne le car de la pair object o, nil si object o n'est pas une pair aisni qu'un message d'erreur*/
@@ -209,11 +221,17 @@ object cddr(object o)
 object cdar(object o)
 {return cdr(car(o));}
 
+
+object modify_car(object o, object car)
+{o->this.pair.car=car;
+return o;
+}
+object modify_cdr(object o, object cdr)
+{o->this.pair.cdr=cdr;
+return o;}
+
 char* whattype(object o)
-{if (o->type==SFS_SYMBOL)
-    {
-    return "symbol";
-    }
+{if (o->type==SFS_SYMBOL) {return "symbol";}
 if (o->type==SFS_PAIR) {return "pair";}
 if (o->type==SFS_BOOLEAN) {return "boleean";}
 if (o->type==SFS_CHARACTER) {return "character";}
@@ -222,6 +240,22 @@ if (o->type==SFS_NIL) {return "nil";}
 if (o->type==SFS_NUMBER) {return "number";}
 return "No type recognised";
 }
+
+/*fonction qui test si l'objet est une pair*/
+int ispair(object o) {
+
+    if (o->type == 	SFS_PAIR)
+        return TRUE;
+    else return FALSE;
+
+}
+
+/*fonction qui test si l'objet est un atom*/
+int isatom(object o) {
+
+    return !ispair(o);
+}
+
 /*fonction qui renvoie un booleen en fonction de si oui ou non o est le symbole quote*/
 int isquote(object o) {
 

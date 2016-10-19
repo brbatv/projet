@@ -66,11 +66,13 @@ int isand(object);
 int isor(object);
 object make_env(object);
 object make_binding(char*,object);
+object modify_binding(object, object);
 object search_env(char*,object);
 object search_under(char*,object);
 char* get_symbol (object symbol,char*);
 char* whattype(object o);
-
+object modify_car(object o, object car);
+object modify_cdr(object o, object cdr);
 
 #define SFS_NUMBER       0x00
 #define SFS_CHARACTER    0x01

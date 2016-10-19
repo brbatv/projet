@@ -21,6 +21,7 @@ extern "C" {
 void sfs_print( object );
 void sfs_print_atom( object );
 void sfs_print_pair( object );
+void print_env(object env);
 
 #ifdef __cplusplus
 }

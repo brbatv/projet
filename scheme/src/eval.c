@@ -20,7 +20,15 @@ object sfs_eval( object input ) {
 
         return car(cdr(input));
     }
+    if (isdefine(car(input)))
+    { DEBUG_MSG("define recognized");
+        if (!ispair(cdr(input))) /* expression du type (define x) */
+            {}
+
+
+
+    }
 }
     else {WARNING_MSG("Attention t'a juste mis un atome pourri");}
-    return input;
+    return NULL;
 }

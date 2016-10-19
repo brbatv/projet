@@ -37,11 +37,17 @@ object quote = NULL;
 object top_level = NULL;
 
 void init_interpreter ( void ) {
-
+    object i=make_symbol("nil");
     nil = make_nil();
     false = make_boolean(FALSE);
     true = make_boolean(TRUE);
     top_level=make_env(nil);
+    modify_car(top_level,make_pair(make_pair(i,nil),nil));
+    /*modify_cdr(top_level,make_pair(nil,nil));
+    sfs_print_pair(top_level);*/
+    object a=make_binding("yes",top_level);
+    modify_binding(a,make_string("YES CA MARCHE MON GARS"));
+    print_env(top_level);
     /*quote = make_quote();*/
 
     /*ajouter l'initialisation des formes scheme de base (quote, define, set!, if, and et or */
