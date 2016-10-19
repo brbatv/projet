@@ -51,6 +51,7 @@ object make_string(char*);
 object make_symbol(char*);
 int ispair(object);
 int isatom (object);
+int issymbol(object o);
 object car(object);
 object cdr(object);
 object caar(object);
@@ -67,6 +68,7 @@ int isor(object);
 object make_env(object);
 object make_binding(char*,object);
 object modify_binding(object, object);
+void make_and_modify_binding(object environment, char* name, object value);
 object search_env(char*,object);
 object search_under(char*,object);
 char* get_symbol (object symbol,char*);
@@ -87,6 +89,7 @@ extern object nil;
 extern object false;
 extern object true;
 extern object top_level;
+extern object current_env;
 
 #ifdef __cplusplus
 }

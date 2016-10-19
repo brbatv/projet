@@ -120,9 +120,11 @@ object modify_binding(object binding, object value)
 {string string;
 modify_cdr(binding,value);
 DEBUG_MSG("Modifying value for %s ; type of existing value is %s and the new value is %s",get_symbol(car(binding),string),whattype(cdr(binding)),whattype(value));
-return cdr(binding);
+return cdr(binding); /* renvoie la valeur du binding*/
 }
 
+void make_and_modify_binding(object environment, char* name, object value)
+{modify_binding(make_binding((name),environment),value);}
 
 /* fonction qui cherche une variable dans 1 environnement et renvoie binding si trouve, sinon renvoie nil*/
 object search_env(char* name, object env)
@@ -245,6 +247,13 @@ return "No type recognised";
 int ispair(object o) {
 
     if (o->type == 	SFS_PAIR)
+        return TRUE;
+    else return FALSE;
+
+}
+int issymbol(object o){
+
+    if (o->type ==  SFS_SYMBOL)
         return TRUE;
     else return FALSE;
 
