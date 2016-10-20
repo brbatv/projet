@@ -50,6 +50,7 @@ void init_interpreter ( void ) {
     make_binding("set",top_level);
     make_binding("+",top_level);
     modify_binding(make_binding(("yes"),top_level),make_string("YES CA MARCHE MON GARS"));
+    make_and_modify_binding(top_level,"bl",make_integer(45));
     print_env(top_level);
     /*quote = make_quote();*/
 

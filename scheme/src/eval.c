@@ -15,7 +15,6 @@ object sfs_eval( object input ) {
     DEBUG_MSG("Evaluation has started");
     string string;
     char* name_of_new_variable;
-    name_of_new_variable=get_symbol(cadr(input),string);
     if (ispair(input))
 {    /* cas quote */
     if (isquote(car(input)))
@@ -39,17 +38,20 @@ object sfs_eval( object input ) {
         if (!issymbol(car(cdr(input))))
             {WARNING_MSG("Define needs a symbol as first parameter");
              return NULL;}
-
+        strcpy(name_of_new_variable,get_symbol(cadr(input),string));
+        DEBUG_MSG("%s",name_of_new_variable);
         if (isatom(sfs_eval(car(cddr(input))))) /* si le 2eme parametre s'evalue en tant qu'atome*/
             {
             if (search_under(name_of_new_variable,current_env)==nil) /* si la nouvelle variable n'existe pas encore */
             {
-                if (issymbol(sfs_eval(car(cddr(input)))) && search_under(get_symbol(car(cddr(input)),string),current_env)!=nil)/* si le 2eme parametre est un symbole connu */
+                if (issymbol(sfs_eval(car(cddr(input)))) && search_under(get_symbol(sfs_eval(car(cddr(input))),string),current_env)!=nil)/* si le 2eme parametre est un symbole connu */
                 {
-                    DEBUG_MSG("%s has been found in environment. Assigning its value to %s",get_symbol(car(cddr(input)),string),name_of_new_variable);
-
-                    make_and_modify_binding(current_env,name_of_new_variable,search_under(get_symbol(car(cddr(input)),string),current_env));
-                    DEBUG_MSG("Done.");
+                    DEBUG_MSG("%s has been found in environment. Assigning its value to %s ..",get_symbol(car(cddr(input)),string),name_of_new_variable);
+                    char* symbol_second_parameter=get_symbol(car(cddr(input)),string);
+                    make_and_modify_binding(current_env,name_of_new_variable,cdr(search_under(symbol_second_parameter,current_env)));
+                    DEBUG_MSG("...done");
+                    DEBUG_MSG("%s",name_of_new_variable);
+                    print_env(current_env);
                     return NULL;
                 }
 
@@ -70,6 +72,8 @@ object sfs_eval( object input ) {
             else /* si la nouvelle variable existe déjà => sujet : on ne modifie pas, repl.it : on remplace sa valeur (ou alors on la cree dans un nouvel environnement ??)*/
             {
                 DEBUG_MSG("%s already exists in environment. NOT Replacing its value with %s",name_of_new_variable,whattype(sfs_eval(car(cddr(input)))));
+                print_env(current_env);
+                return NULL;
 
             }
 
@@ -81,6 +85,6 @@ object sfs_eval( object input ) {
 
     }
 }
-    else {WARNING_MSG("Attention t'a juste mis un atome pourri");}
+    else {DEBUG_MSG("Aucune forme détectée... pour l'instant. Input est de type %s ",whattype(input));}
     return input;
 }

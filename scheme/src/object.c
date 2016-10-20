@@ -123,8 +123,8 @@ DEBUG_MSG("Modifying value for %s ; type of existing value is %s and the new val
 return cdr(binding); /* renvoie la valeur du binding*/
 }
 
-void make_and_modify_binding(object environment, char* name, object value)
-{modify_binding(make_binding((name),environment),value);}
+void make_and_modify_binding(object environment, char* name, object value) /* fonction qui cree directement un nouveau binding et assigne la valeur value */
+{modify_binding(make_binding(name,environment),value);}
 
 /* fonction qui cherche une variable dans 1 environnement et renvoie binding si trouve, sinon renvoie nil*/
 object search_env(char* name, object env)
@@ -138,14 +138,16 @@ object search_env(char* name, object env)
     }
 while (ispair(obj_temp))
     {
-        if(get_symbol(caar(obj_temp),string)==name)
+        if(!strcmp(get_symbol(caar(obj_temp),string),name))
         {
+            DEBUG_MSG("Tried to compare %s with %s and found they were the same",get_symbol(caar(obj_temp),string),name);
             DEBUG_MSG("%s has been found !",name);
             return car(obj_temp);
         }
+        else {DEBUG_MSG("Tried to compare %s with %s and found they were different",get_symbol(caar(obj_temp),string),name);}
         obj_temp=cdr(obj_temp); /* a la fin du while obj_temp vaudra nil et ne sera plus une paire*/
     }
-
+DEBUG_MSG("Not found");
 return nil;
 }
 /* fonction qui cherche une variable dans ts les environnement en dessous et renvoie binding si trouve, sinon renvoie nil*/
@@ -154,9 +156,9 @@ object env_temp=env;
 
 while (env_temp!=nil)
     {
-    if (search_env(name,env)!=nil)
+    if (search_env(name,env_temp)!=nil)
         {
-        return search_env(name,env);
+        return search_env(name,env_temp);
         }
      env_temp=cdr(env_temp);
     }
@@ -194,7 +196,7 @@ char* get_symbol (object symbol,char* string)
 object car(object o) {
 
     if (ispair(o))
-        return o->this.pair.car;
+        {return o->this.pair.car;}
     else {
         WARNING_MSG("CALLING THE CAR OF AN ATOM");
         return nil;
@@ -206,7 +208,7 @@ object car(object o) {
 object cdr(object o) {
 
     if (ispair(o))
-        return o->this.pair.cdr;
+        {return o->this.pair.cdr;}
     else {
         WARNING_MSG("CALLING THE CDR OF AN ATOM");
         return nil;
