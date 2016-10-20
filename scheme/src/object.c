@@ -86,7 +86,7 @@ object make_symbol(char* s) {
 
 }
 
-object make_pair(object car , object cdr , int isroot) {
+object make_pair(object car , object cdr) {
 
     object t = make_object(SFS_PAIR);
     t->this.pair.car = car;
@@ -191,5 +191,15 @@ int isor(object o){
 		return TRUE;
 	else
 		return FALSE;
+
+}
+
+/*fonction qui test si l'objet o est vrai ou faux au sens du Scheme et renvoie la valeur FASLE ou TRUE au sens du C*/
+int istrue(object o){
+
+	if(o==false)
+		return FALSE;
+	else
+		return TRUE;
 
 }

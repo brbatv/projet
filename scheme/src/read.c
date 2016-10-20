@@ -524,7 +524,6 @@ object sfs_read_pair( char *input, uint *here ) {
     object pair = NULL;
     object car = NULL;
     object cdr = NULL;
-    int isroot = TRUE;
 
     next_usefull_char(input, here);
 
@@ -535,7 +534,7 @@ object sfs_read_pair( char *input, uint *here ) {
 
     car = sfs_read (input,here);
     cdr = sfs_read_pair (input,here);
-    pair = make_pair(car,cdr,isroot);
+    pair = make_pair(car,cdr);
 
 
     return pair;

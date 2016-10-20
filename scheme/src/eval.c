@@ -11,11 +11,6 @@
 #include "eval.h"
 
 object sfs_eval( object input ) {
-	
-	/* cas quote */
-	if (isquote(car(input))
-	{
-		return cdr(input)
 
     return input;
 }

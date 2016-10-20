@@ -46,7 +46,7 @@ object make_nil(void);
 object make_integer(int);
 object make_boolean(uint);
 object make_character(char);
-object make_pair(object,object,int);
+object make_pair(object,object);
 object make_string(char*);
 object make_symbol(char*);
 int ispair(object);
@@ -60,6 +60,8 @@ int isset(object);
 int isif(object);
 int isand(object);
 int isor(object);
+/*fin de gestion des formes*/
+int istrue(object);
 
 #define SFS_NUMBER       0x00
 #define SFS_CHARACTER    0x01
