@@ -13,6 +13,7 @@
 #include <stdio.h>
 
 void sfs_print_atom( object o ) {
+    DEBUG_MSG("Printing some %s",whattype(o));
 
     switch(o->type)
 
@@ -52,7 +53,7 @@ void sfs_print_atom( object o ) {
 }
 
 void sfs_print_pair( object o) {
-
+    DEBUG_MSG("Printing a pair...");
     printf("(");
     while (o != nil) {
         sfs_print( car( o ) ) ;
@@ -71,5 +72,23 @@ void sfs_print( object o) {
     }
     else {
         sfs_print_atom( o );
+    }
+}
+
+void print_env(object env)
+{DEBUG_MSG("Printing env");
+object obj_temp=car(env);
+while(obj_temp!=nil)
+    {sfs_print_atom(caar(obj_temp));
+    printf("\t ");
+    obj_temp=cdr(obj_temp);
+    }
+obj_temp=car(env);
+printf("\n");
+while(obj_temp!=nil)
+    {
+    sfs_print_atom(cdar(obj_temp));
+    printf("\t");
+    obj_temp=cdr(obj_temp);
     }
 }

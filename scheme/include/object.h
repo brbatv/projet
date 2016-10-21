@@ -51,8 +51,13 @@ object make_string(char*);
 object make_symbol(char*);
 int ispair(object);
 int isatom (object);
+int issymbol(object o);
 object car(object);
 object cdr(object);
+object caar(object);
+object cadr(object);
+object cddr(object);
+object cdar(object);
 /*gestion des formes*/
 int isquote(object);
 int isdefine(object);
@@ -60,8 +65,19 @@ int isset(object);
 int isif(object);
 int isand(object);
 int isor(object);
+<<<<<<< HEAD
 /*fin de gestion des formes*/
 int istrue(object);
+object make_env(object);
+object make_binding(char*,object);
+object modify_binding(object, object);
+void make_and_modify_binding(object environment, char* name, object value);
+object search_env(char*,object);
+object search_under(char*,object);
+char* get_symbol (object symbol,char*);
+char* whattype(object o);
+object modify_car(object o, object car);
+object modify_cdr(object o, object cdr);
 
 #define SFS_NUMBER       0x00
 #define SFS_CHARACTER    0x01
@@ -75,7 +91,8 @@ int istrue(object);
 extern object nil;
 extern object false;
 extern object true;
-extern object quote;
+extern object top_level;
+extern object current_env;
 
 #ifdef __cplusplus
 }
