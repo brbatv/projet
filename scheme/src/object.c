@@ -101,20 +101,23 @@ object make_env(object cdr){
     DEBUG_MSG("Making a new environnement");
     return make_pair(nil,cdr);}
 
-/*fonction qui permet de créer un nouveau binding en fin d'environnement, avec une valeur encore vide + le nouveau nil en fin d'environnement*/
+/* fonction qui permet de créer un nouveau binding en tete d'environnement de nom name et de valeur nil */
 object make_binding(char* name, object environment){
  DEBUG_MSG("Making a new binding...");
-  object binding=make_pair(nil,nil);
+  object binding = make_pair(nil,car(environment));
   modify_car(binding,make_pair(make_symbol(name),nil));
+  modify_car(environment,binding);/*
+  
+  
   object last_element_before_nil=car(environment);
   while (cdr(last_element_before_nil)!=nil)
     {
     last_element_before_nil=cdr(last_element_before_nil);
     }
-    modify_cdr(last_element_before_nil,binding);
+    modify_cdr(last_element_before_nil,binding);*/
 
     DEBUG_MSG("New binding created successfully : name of variable is %s.",name);
-    return cadr(last_element_before_nil); /* le nouveau binding tq car(binding) = nom et cdr(binding)=valeur*/
+    return car(binding); /* la nouvelle paire du binding tq car(pair) = nom et cdr(pair)=valeur*/
 }
 
 object modify_binding(object binding, object value)

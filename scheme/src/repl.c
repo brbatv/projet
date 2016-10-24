@@ -47,8 +47,7 @@ void init_interpreter ( void ) {
     modify_car(top_level,make_pair(make_pair(i,nil),nil));
 
     make_binding("quote",top_level);
-    make_binding("set",top_level);
-    make_binding("+",top_level);
+    make_binding("set!",top_level);
     modify_binding(make_binding(("yes"),top_level),make_string("YES CA MARCHE MON GARS"));
     make_and_modify_binding(top_level,"bl",make_integer(45));
     print_env(top_level);

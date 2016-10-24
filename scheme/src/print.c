@@ -91,4 +91,5 @@ while(obj_temp!=nil)
     printf("\t");
     obj_temp=cdr(obj_temp);
     }
+printf("\n");
 }

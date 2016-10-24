@@ -65,7 +65,6 @@ int isset(object);
 int isif(object);
 int isand(object);
 int isor(object);
-<<<<<<< HEAD
 /*fin de gestion des formes*/
 int istrue(object);
 object make_env(object);

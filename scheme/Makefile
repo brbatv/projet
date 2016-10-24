@@ -36,7 +36,7 @@ all :
 	@echo "make tarball => produce archive"
 
 debug   : $(OBJ_DBG)
-	$(LD) $^ $(LFLAGS) -o $(TARGET)
+	$(LD) -g $^ $(LFLAGS) -o $(TARGET)
 
 release : $(OBJ_RLS)
 	$(LD) $^ $(LFLAGS) -o $(TARGET)
