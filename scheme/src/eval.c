@@ -70,10 +70,47 @@ object define_eval(object input){
         else {WARNING_MSG("Define needs an atom as second parameter"); return NULL;}
 }	
 	
+object if_eval(object input){
+
+	object predicate = cadr(input);
+	object consequence = caddr(input);
+	object alternative = cadddr(input);
+	
+	if(isnil(predicate) || isnil(consequence)){
+		WARNING_MSG("Define needs two parameters");
+        	return NULL;
+		}
+	if(istrue(sfs_eval(predicate))){
+		DEBUG_MSG("JE PASSE PAR LA 1");
+		return sfs_eval(consequence);
+		}
+	else{
+		if(isnil(predicate)){
+			DEBUG_MSG("JE PASSE PAR LA 2");
+			return false;
+			}
+		else{
+			DEBUG_MSG("JE PASSE PAR LA 3");
+			return sfs_eval(alternative);
+		}
+	}
+			
+}
 
 object sfs_eval( object input ) {
 
     DEBUG_MSG("Evaluation has started");
+    if (isatom(input)){
+	if(issymbol(input)){
+		return NULL;
+		}
+	else{
+		if(istrue(input)){
+			return input;
+			}
+		else return false;
+		}
+	}
     if (ispair(input)){
 	if (!issymbol(car(input))){
 		WARNING_MSG("A pair has to begin with a symbol");
@@ -91,10 +128,16 @@ object sfs_eval( object input ) {
    /* cas define */
     if(isdefine(car(input)))
     { DEBUG_MSG("define recognized");
-	return define_eval(input);
+	return define_eval(input);}
+
+    /* cas if */
+    if (isif(car(input)))
+    {   DEBUG_MSG("if recognized");
+        return if_eval(input);
+    }
 }
 }
-}
+
     else {DEBUG_MSG("Aucune forme détectée... pour l'instant. Input est de type %s ",whattype(input));}
     return input;
 }

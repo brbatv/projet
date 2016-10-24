@@ -18,6 +18,8 @@ extern "C" {
 
 #include "object.h"
 
+object define_eval(object);
+object if_eval(object);
 object sfs_eval( object );
 
 #ifdef __cplusplus

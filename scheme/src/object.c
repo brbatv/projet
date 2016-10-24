@@ -228,6 +228,12 @@ object cddr(object o)
 {return cdr(cdr(o));}
 object cdar(object o)
 {return cdr(car(o));}
+object cdddr(object o)
+{return cdr(cddr(o));}
+object caddr(object o)
+{return car(cddr(o));}
+object cadddr(object o)
+{return car(cdddr(o));}
 
 
 object modify_car(object o, object car)
@@ -257,9 +263,20 @@ int ispair(object o) {
     else return FALSE;
 
 }
+
+/*fonction qui test si l'objet est un symbol*/
 int issymbol(object o){
 
     if (o->type ==  SFS_SYMBOL)
+        return TRUE;
+    else return FALSE;
+
+}
+
+/*fonction qui test si l'objet est nil*/
+int isnil(object o){
+
+    if (o == nil)
         return TRUE;
     else return FALSE;
 

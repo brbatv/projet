@@ -51,13 +51,17 @@ object make_string(char*);
 object make_symbol(char*);
 int ispair(object);
 int isatom (object);
-int issymbol(object o);
+int issymbol(object);
+int isnil(object);
 object car(object);
 object cdr(object);
 object caar(object);
 object cadr(object);
 object cddr(object);
 object cdar(object);
+object cdddr(object);
+object caddr(object);
+object cadddr(object);
 /*gestion des formes*/
 int isquote(object);
 int isdefine(object);
