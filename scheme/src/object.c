@@ -213,7 +213,7 @@ char* get_symbol (object symbol,char* string)
     return string;
 }
 
-/*retourne le car de la pair object o, nil si object o n'est pas une pair aisni qu'un message d'erreur*/
+/*retourne le car de la pair object o, nil si object o n'est pas une pair */
 object car(object o) {
 
     if (ispair(o))
@@ -221,13 +221,13 @@ object car(object o) {
         return o->this.pair.car;
     }
     else {
-        WARNING_MSG("CALLING THE CAR OF AN ATOM");
+        DEBUG_MSG("CALLING THE CAR OF AN ATOM");
         return nil;
     }
 
 }
 
-/*retourne le cdr de la pair object o, nil si object o n'est pas une pair aisni qu'un message d'erreur*/
+/*retourne le cdr de la pair object o, nil si object o n'est pas une pair */
 object cdr(object o) {
 
     if (ispair(o))
@@ -235,7 +235,7 @@ object cdr(object o) {
         return o->this.pair.cdr;
     }
     else {
-        WARNING_MSG("CALLING THE CDR OF AN ATOM");
+        DEBUG_MSG("CALLING THE CDR OF AN ATOM");
         return nil;
     }
 

@@ -147,6 +147,10 @@ object sfs_eval( object input ) {
 
     string str;
     object val;
+    if(input == NULL){
+	return NULL;
+    }
+
     DEBUG_MSG("Evaluation has started");
     if (isatom(input)) {
         if(issymbol(input)) {
