@@ -5,6 +5,9 @@
 (quote a )
 (quote (a))
 (quote (a b (a sdze 45)))
+(quote "ajzzkdjz")
+(quote #t)
+
 
 
 
