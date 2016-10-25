@@ -63,7 +63,7 @@ object make_integer(int i) {
 }
 
 object make_character(char c) {
-     DEBUG_MSG("Making a char");
+    DEBUG_MSG("Making %c as a char",c);
     object t = make_object(SFS_CHARACTER);
     t->this.character=c;
     return t;
@@ -89,6 +89,8 @@ object make_symbol(char* s) {
 
 object make_pair(object car , object cdr ) {
     DEBUG_MSG("Making a pair of %s and %s ...",whattype(car),whattype(cdr));
+    if(car == NULL || cdr == NULL)
+    {return NULL;}
     object t = make_object(SFS_PAIR);
     t->this.pair.car = car;
     t->this.pair.cdr = cdr;
@@ -97,18 +99,19 @@ object make_pair(object car , object cdr ) {
 
 
 /* fonction qui permet de creer un nouvel environnement sous cdr */
-object make_env(object cdr){
+object make_env(object cdr) {
     DEBUG_MSG("Making a new environnement");
-    return make_pair(nil,cdr);}
+    return make_pair(nil,cdr);
+}
 
 /* fonction qui permet de créer un nouveau binding en tete d'environnement de nom name et de valeur nil */
-object make_binding(char* name, object environment){
- DEBUG_MSG("Making a new binding...");
-  object binding = make_pair(nil,car(environment));
-  modify_car(binding,make_pair(make_symbol(name),nil));
-  modify_car(environment,binding);/*
-  
-  
+object make_binding(char* name, object environment) {
+    DEBUG_MSG("Making a new binding...");
+    object binding = make_pair(nil,car(environment));
+    modify_car(binding,make_pair(make_symbol(name),nil));
+    modify_car(environment,binding);/*
+
+
   object last_element_before_nil=car(environment);
   while (cdr(last_element_before_nil)!=nil)
     {
@@ -121,26 +124,28 @@ object make_binding(char* name, object environment){
 }
 
 object modify_binding(object binding, object value)
-{string string;
-modify_cdr(binding,value);
-DEBUG_MSG("Modifying value for %s ; type of existing value is %s and the new value is %s",get_symbol(car(binding),string),whattype(cdr(binding)),whattype(value));
-return cdr(binding); /* renvoie la valeur du binding*/
+{   string string;
+    modify_cdr(binding,value);
+    DEBUG_MSG("Modifying value for %s ; type of existing value is %s and the new value is %s",get_symbol(car(binding),string),whattype(cdr(binding)),whattype(value));
+    return cdr(binding); /* renvoie la valeur du binding*/
 }
 
 void make_and_modify_binding(object environment, char* name, object value) /* fonction qui cree directement un nouveau binding et assigne la valeur value */
-{modify_binding(make_binding(name,environment),value);}
+{
+    modify_binding(make_binding(name,environment),value);
+}
 
 /* fonction qui cherche une variable dans 1 environnement et renvoie binding si trouve, sinon renvoie nil*/
 object search_env(char* name, object env)
-{ DEBUG_MSG("Searching %s in environment...",name);
- object obj_temp=car(env);
- string string;
- if (obj_temp==nil)
+{   DEBUG_MSG("Searching %s in environment...",name);
+    object obj_temp=car(env);
+    string string;
+    if (obj_temp==nil)
     {
-    DEBUG_MSG("Environment is empty you stupid. Returning NIL");
-    return nil;
+        DEBUG_MSG("Environment is empty you stupid. Returning NIL");
+        return nil;
     }
-while (ispair(obj_temp))
+    while (ispair(obj_temp))
     {
         if(!strcmp(get_symbol(caar(obj_temp),string),name))
         {
@@ -148,37 +153,39 @@ while (ispair(obj_temp))
             DEBUG_MSG("%s has been found !",name);
             return car(obj_temp);
         }
-        else {DEBUG_MSG("Tried to compare %s with %s and found they were different",get_symbol(caar(obj_temp),string),name);}
+        else {
+            DEBUG_MSG("Tried to compare %s with %s and found they were different",get_symbol(caar(obj_temp),string),name);
+        }
         obj_temp=cdr(obj_temp); /* a la fin du while obj_temp vaudra nil et ne sera plus une paire*/
     }
-DEBUG_MSG("Not found");
-return nil;
+    DEBUG_MSG("Not found");
+    return nil;
 }
 
 /* fonction qui cherche une variable dans 1 environnement et renvoie sa valeur si trouve, sinon renvoie NULL*/
-object search_val_env(char* name, object env){
+object search_val_env(char* name, object env) {
 
-	object o = search_env(name,env);
-	if(isnil(o))
-		return NULL;
-	else return cdr(o);
+    object o = search_env(name,env);
+    if(isnil(o))
+        return NULL;
+    else return cdr(o);
 
 }
 
 
 /* fonction qui cherche une variable dans ts les environnement en dessous et renvoie binding si trouve, sinon renvoie nil*/
-object search_under(char* name,object env){
-object env_temp=env;
+object search_under(char* name,object env) {
+    object env_temp=env;
 
-while (env_temp!=nil)
+    while (env_temp!=nil)
     {
-    if (search_env(name,env_temp)!=nil)
+        if (search_env(name,env_temp)!=nil)
         {
-        return search_env(name,env_temp);
+            return search_env(name,env_temp);
         }
-     env_temp=cdr(env_temp);
+        env_temp=cdr(env_temp);
     }
-return nil;
+    return nil;
 
 }
 /* fonction qui cherche si une variable existe dans l'environnement courant et en dessous, si existe modifie sa valeur, si n'existe pas la cree dans l'env courant et modifie sa valeur. Renvoie tjr le binding tq car(binding) = nom et cdr (binding) = valeur
@@ -208,63 +215,96 @@ char* get_symbol (object symbol,char* string)
     return string;
 }
 
-/*retourne le car de la pair object o, nil si object o n'est pas une pair aisni qu'un message d'erreur*/
+/*retourne le car de la pair object o, nil si object o n'est pas une pair */
 object car(object o) {
 
     if (ispair(o))
-        {return o->this.pair.car;}
+    {
+        return o->this.pair.car;
+    }
     else {
-        WARNING_MSG("CALLING THE CAR OF AN ATOM");
+        DEBUG_MSG("CALLING THE CAR OF AN ATOM");
         return nil;
     }
 
 }
 
-/*retourne le cdr de la pair object o, nil si object o n'est pas une pair aisni qu'un message d'erreur*/
+/*retourne le cdr de la pair object o, nil si object o n'est pas une pair */
 object cdr(object o) {
 
     if (ispair(o))
-        {return o->this.pair.cdr;}
+    {
+        return o->this.pair.cdr;
+    }
     else {
-        WARNING_MSG("CALLING THE CDR OF AN ATOM");
+        DEBUG_MSG("CALLING THE CDR OF AN ATOM");
         return nil;
     }
 
 }
 
 object caar(object o)
-{return car(car(o));}
+{
+    return car(car(o));
+}
 object cadr(object o)
-{return car(cdr(o));}
+{
+    return car(cdr(o));
+}
 object cddr(object o)
-{return cdr(cdr(o));}
+{
+    return cdr(cdr(o));
+}
 object cdar(object o)
-{return cdr(car(o));}
+{
+    return cdr(car(o));
+}
 object cdddr(object o)
-{return cdr(cddr(o));}
+{
+    return cdr(cddr(o));
+}
 object caddr(object o)
-{return car(cddr(o));}
+{
+    return car(cddr(o));
+}
 object cadddr(object o)
-{return car(cdddr(o));}
+{
+    return car(cdddr(o));
+}
 
 
 object modify_car(object o, object car)
-{o->this.pair.car=car;
-return o;
+{   o->this.pair.car=car;
+    return o;
 }
 object modify_cdr(object o, object cdr)
-{o->this.pair.cdr=cdr;
-return o;}
+{   o->this.pair.cdr=cdr;
+    return o;
+}
 
 char* whattype(object o)
-{if (o->type==SFS_SYMBOL) {return "symbol";}
-if (o->type==SFS_PAIR) {return "pair";}
-if (o->type==SFS_BOOLEAN) {return "boleean";}
-if (o->type==SFS_CHARACTER) {return "character";}
-if (o->type==SFS_STRING){return "string";}
-if (o->type==SFS_NIL) {return "nil";}
-if (o->type==SFS_NUMBER) {return "number";}
-return "No type recognised";
+{   if (o->type==SFS_SYMBOL) {
+        return "symbol";
+    }
+    if (o->type==SFS_PAIR) {
+        return "pair";
+    }
+    if (o->type==SFS_BOOLEAN) {
+        return "boleean";
+    }
+    if (o->type==SFS_CHARACTER) {
+        return "character";
+    }
+    if (o->type==SFS_STRING) {
+        return "string";
+    }
+    if (o->type==SFS_NIL) {
+        return "nil";
+    }
+    if (o->type==SFS_NUMBER) {
+        return "number";
+    }
+    return "No type recognised";
 }
 
 /*fonction qui test si l'objet est une pair*/
@@ -277,7 +317,8 @@ int ispair(object o) {
 }
 
 /*fonction qui test si l'objet est un symbol*/
-int issymbol(object o){
+int issymbol(object o) {
+
 
     if (o->type ==  SFS_SYMBOL)
         return TRUE;
@@ -286,7 +327,7 @@ int issymbol(object o){
 }
 
 /*fonction qui test si l'objet est nil*/
-int isnil(object o){
+int isnil(object o) {
 
     if (o == nil)
         return TRUE;
@@ -363,12 +404,12 @@ int isor(object o) {
 /*fonction qui renvoie un booleen en fonction de si oui ou non o est une forme*/
 int isform(object o) {
 
-	return isdefine(o) || isset(o) || isif(o) || isand(o) || isor(o);
+    return isdefine(o) || isset(o) || isif(o) || isand(o) || isor(o);
 
 }
 
 /*fonction qui test si l'objet o est vrai ou faux au sens du Scheme et renvoie la valeur FASLE ou TRUE au sens du C*/
-int istrue(object o){
+int istrue(object o) {
 
 	if(o == false)
 		return FALSE;

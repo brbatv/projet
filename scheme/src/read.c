@@ -299,6 +299,8 @@ object sfs_read( char *input, uint *here ) {
 
     next_usefull_char(input, here);
 
+    if(input == NULL)
+        return NULL;
 
     if (input[*here]=='\'' )
     {   (*here)++;
@@ -348,6 +350,7 @@ object sfs_read_atom( char *input, uint *here ) {
     enum ETATS etat = INIT;
     object atom = NULL;
     char s[256];
+    int tmp=0;
     int i = 0;
 
 
@@ -364,7 +367,9 @@ object sfs_read_atom( char *input, uint *here ) {
         {
 
         case INIT:
-            if (input[*here]=='\0'){etat=ERROR;}
+            if (input[*here]=='\0') {
+                etat=ERROR;
+            }
             if (input[*here] == '#')
             {
                 etat = HASH_DETECTED;
@@ -384,9 +389,10 @@ object sfs_read_atom( char *input, uint *here ) {
                 etat=SYMBOL;
             }
             else
-                {DEBUG_MSG("No init");
+            {   DEBUG_MSG("No init");
 
-                etat=END;}
+                etat=ERROR;
+            }
             break;
 
 
@@ -436,10 +442,12 @@ object sfs_read_atom( char *input, uint *here ) {
                 if (is_not_separator(input[*here+1]))
                 {
                     WARNING_MSG("NOT A PROPER CHARACTER : TOO LONG OR NOT EXACTLY NEWLINE OR SPACE");
+                    (*here)++;
                     etat=ERROR;
                 }
                 else {
                     atom=make_character(' ');
+                    (*here)++;
                     etat=END;
                 }
             }
@@ -449,107 +457,112 @@ object sfs_read_atom( char *input, uint *here ) {
                 if (is_not_separator(input[*here+1]))
                 {
                     WARNING_MSG("NOT A PROPER CHARACTER : TOO LONG OR NOT EXACTLY NEWLINE OR SPACE");
+                    (*here)++;
                     etat=ERROR;
                 }
                 else {
                     atom=make_character('\n');
+                    (*here)++;
                     etat=END;
                 }
             }
 
-        else if (is_not_separator(input[*here+1]))
-        {
-            WARNING_MSG("NOT A PROPER CHARACTER : TOO LONG OR NOT EXACTLY NEWLINE OR SPACE");
-            etat=ERROR;
-        }
+            else if (is_not_separator(input[*here+1]))
+            {
+                WARNING_MSG("NOT A PROPER CHARACTER : TOO LONG OR NOT EXACTLY NEWLINE OR SPACE");
+                etat=ERROR;
+            }
 
 
 
-        else if (is_not_separator(input[*here]) || input[*here]=='(' || input[*here]==')')
-        {
-            atom=make_character(input[*here]);
-            (*here)++;
-            etat=END;
-        }
-        else {
-            WARNING_MSG("NOT A PROPER CHARACTER");
-            etat=ERROR;
-        }
-
-        break;
-
-    case SYMBOL :
-        while( is_not_separator(input[*here])) {
-            DEBUG_MSG("Ok c'est pas un separator");
-            s[i] = input[*here];
-            i++;
-            (*here)++;
-        }
-        s[i] = '\0';
-        atom=make_symbol(s);
-        etat=END;
-
-        break;
-
-    case STRING:
-
-        while(input[*here]!='"')
-        {
-            size_t tmp=strlen(s);
-            s[tmp]=input[*here];
-            s[tmp+1]='\0';
-            if (input[*here]=='\\' && input[*here+1]=='\"' && isprint(input[*here+2]))
-            {   s[tmp]='"';
-                *here=*here+2;
+            else if (is_not_separator(input[*here]) || input[*here]=='(' || input[*here]==')')
+            {
+                atom=make_character(input[*here]);
+                (*here)++;
+                etat=END;
             }
             else {
-                (*here)++;
+                WARNING_MSG("NOT A PROPER CHARACTER");
+                etat=ERROR;
             }
 
-        }
-        (*here)++;
+            break;
 
-        atom=make_string(s);
-        etat=END;
-        break;
+        case SYMBOL :
+            while( is_not_separator(input[*here])) {
+                s[i] = input[*here];
+                i++;
+                (*here)++;
+            }
+            s[i] = '\0';
+            atom=make_symbol(s);
+            etat=END;
+
+            break;
+
+        case STRING:
+
+            while(input[*here]!='"')
+            {
+
+                DEBUG_MSG("tmp = %d",tmp);
+                s[tmp]=input[*here];
+                s[tmp+1]='\0';
+                if (input[*here]=='\\' && input[*here+1]=='\"' && isprint(input[*here+2]))
+                {   s[tmp]='"';
+                    *here=*here+2;
+                }
+                else {
+                    (*here)++;
+
+                }
+                tmp=tmp+1;
+
+            }
+            (*here)++;
+
+
+            atom=make_string(s);
+            etat=END;
+            break;
 
         /*cas entier*/
-    case INT_IN_PROG :
-        integer = strtol(input + *here, &endptr , base);
-        /*gestion des erreurs avec endptr*/
-        if(endptr != NULL && isgraph(*endptr) && is_not_separator(*endptr))
-        {
-            WARNING_MSG("NUMBER ERROR : not a number");
-            etat = ERROR;
+        case INT_IN_PROG :
+            integer = strtol(input + *here, &endptr , base);
+            /*gestion des erreurs avec endptr*/
+            if(endptr != NULL && isgraph(*endptr) && is_not_separator(*endptr))
+            {
+                WARNING_MSG("NUMBER ERROR : not a number");
+                etat = ERROR;
+            }
+            else {
+                *here = endptr - input;
+                etat = INT;
+            }
+            break;
+
+        case INT:
+            atom = make_integer(integer);
+            etat = END;
+            break;
+
+        case END:
+            return atom;
+            etat = EXIT;
+            break;
+        case ERROR:
+            DEBUG_MSG("Error case");
+            return NULL;
+            break;
+
+        default:
+            etat = EXIT;
+            break;
+
         }
-        else {
-            *here = endptr - input;
-            etat = INT;
-        }
-        break;
-
-    case INT:
-        atom = make_integer(integer);
-        etat = END;
-        break;
-
-    case END:
-        return atom;
-        etat = EXIT;
-        break;
-    case ERROR:
-        DEBUG_MSG("Error case");
-        return NULL;
-        break;
-
-    default:
-        etat = EXIT;
-        break;
-
     }
-}
 
-return NULL; /* pour eviter attention : ‘return’ with no value, in function returning non-void [-Wreturn-type] */
+    return NULL; /* pour eviter attention : ‘return’ with no value, in function returning non-void [-Wreturn-type] */
 }
 
 
@@ -566,7 +579,9 @@ object sfs_read_pair( char *input, uint *here ) {
     }
 
     car = sfs_read (input,here);
+    if(car == NULL) return NULL;
     cdr = sfs_read_pair (input,here);
+    if(cdr == NULL) return NULL;
     pair = make_pair(car,cdr);
 
 

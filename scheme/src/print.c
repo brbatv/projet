@@ -76,20 +76,20 @@ void sfs_print( object o) {
 }
 
 void print_env(object env)
-{DEBUG_MSG("Printing env");
-object obj_temp=car(env);
-while(obj_temp!=nil)
-    {sfs_print_atom(caar(obj_temp));
-    printf("\t ");
-    obj_temp=cdr(obj_temp);
+{   DEBUG_MSG("Printing env");
+    object obj_temp=car(env);
+    while(obj_temp!=nil)
+    {   sfs_print_atom(caar(obj_temp));
+        printf("\t ");
+        obj_temp=cdr(obj_temp);
     }
-obj_temp=car(env);
-printf("\n");
-while(obj_temp!=nil)
+    obj_temp=car(env);
+    printf("\n");
+    while(obj_temp!=nil)
     {
-    sfs_print_atom(cdar(obj_temp));
-    printf("\t");
-    obj_temp=cdr(obj_temp);
+        sfs_print_atom(cdar(obj_temp));
+        printf("\t");
+        obj_temp=cdr(obj_temp);
     }
-printf("\n");
+    printf("\n");
 }
