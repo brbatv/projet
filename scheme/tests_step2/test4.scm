@@ -8,3 +8,5 @@ a
 (define b #\newline)
 (set! a b)
 a
+(define gggt a)
+gggt
