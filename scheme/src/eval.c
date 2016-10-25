@@ -180,7 +180,10 @@ object sfs_eval( object input ) {
             /* cas quote */
             if (isquote(car(input)))
             {   DEBUG_MSG("quote recognized");
-
+                if(isnil(cdr(input))){
+                    WARNING_MSG("Quote needs at least one parameter");
+                    return NULL;
+                }
                 return car(cdr(input));
             }
 

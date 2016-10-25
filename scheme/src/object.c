@@ -63,7 +63,7 @@ object make_integer(int i) {
 }
 
 object make_character(char c) {
-    DEBUG_MSG("Making a char");
+    DEBUG_MSG("Making %c as a char",c);
     object t = make_object(SFS_CHARACTER);
     t->this.character=c;
     return t;
@@ -89,6 +89,8 @@ object make_symbol(char* s) {
 
 object make_pair(object car , object cdr ) {
     DEBUG_MSG("Making a pair of %s and %s ...",whattype(car),whattype(cdr));
+    if(car == NULL || cdr == NULL)
+    {return NULL;}
     object t = make_object(SFS_PAIR);
     t->this.pair.car = car;
     t->this.pair.cdr = cdr;
@@ -317,7 +319,7 @@ int ispair(object o) {
 /*fonction qui test si l'objet est un symbol*/
 int issymbol(object o) {
 
-    DEBUG_MSG("TEST IS SYMBOL");
+
     if (o->type ==  SFS_SYMBOL)
         return TRUE;
     else return FALSE;

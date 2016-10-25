@@ -8,5 +8,3 @@ a
 (define b #\newline)
 (set! a b)
 a
-
-
