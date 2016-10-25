@@ -490,7 +490,6 @@ object sfs_read_atom( char *input, uint *here ) {
 
         case SYMBOL :
             while( is_not_separator(input[*here])) {
-                DEBUG_MSG("Ok c'est pas un separator");
                 s[i] = input[*here];
                 i++;
                 (*here)++;

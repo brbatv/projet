@@ -217,11 +217,12 @@ object sfs_eval( object input ) {
 
                 return set_eval(input);
             }
+            else {
+        DEBUG_MSG("Aucune forme détectée... pour l'instant. Input est de type %s ",whattype(input));
+    }
         }
     }
 
-    else {
-        DEBUG_MSG("Aucune forme détectée... pour l'instant. Input est de type %s ",whattype(input));
-    }
+
     return NULL;
 }
