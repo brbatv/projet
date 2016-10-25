@@ -55,7 +55,7 @@ object if_eval(object input) {
     object alternative = cadddr(input);
 
     if(isnil(predicate) || isnil(consequence)) {
-        WARNING_MSG("Define needs two parameters");
+        WARNING_MSG("if needs two parameters");
         return NULL;
     }
     if(istrue(sfs_eval(predicate))) {
