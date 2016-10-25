@@ -63,7 +63,7 @@ object make_integer(int i) {
 }
 
 object make_character(char c) {
-    DEBUG_MSG("Making a char");
+    DEBUG_MSG("Making %c as a char",c);
     object t = make_object(SFS_CHARACTER);
     t->this.character=c;
     return t;
@@ -89,6 +89,8 @@ object make_symbol(char* s) {
 
 object make_pair(object car , object cdr ) {
     DEBUG_MSG("Making a pair of %s and %s ...",whattype(car),whattype(cdr));
+    if(car == NULL || cdr == NULL)
+    {return NULL;}
     object t = make_object(SFS_PAIR);
     t->this.pair.car = car;
     t->this.pair.cdr = cdr;
@@ -213,7 +215,7 @@ char* get_symbol (object symbol,char* string)
     return string;
 }
 
-/*retourne le car de la pair object o, nil si object o n'est pas une pair aisni qu'un message d'erreur*/
+/*retourne le car de la pair object o, nil si object o n'est pas une pair */
 object car(object o) {
 
     if (ispair(o))
@@ -221,13 +223,13 @@ object car(object o) {
         return o->this.pair.car;
     }
     else {
-        WARNING_MSG("CALLING THE CAR OF AN ATOM");
+        DEBUG_MSG("CALLING THE CAR OF AN ATOM");
         return nil;
     }
 
 }
 
-/*retourne le cdr de la pair object o, nil si object o n'est pas une pair aisni qu'un message d'erreur*/
+/*retourne le cdr de la pair object o, nil si object o n'est pas une pair */
 object cdr(object o) {
 
     if (ispair(o))
@@ -235,7 +237,7 @@ object cdr(object o) {
         return o->this.pair.cdr;
     }
     else {
-        WARNING_MSG("CALLING THE CDR OF AN ATOM");
+        DEBUG_MSG("CALLING THE CDR OF AN ATOM");
         return nil;
     }
 
@@ -317,7 +319,7 @@ int ispair(object o) {
 /*fonction qui test si l'objet est un symbol*/
 int issymbol(object o) {
 
-    DEBUG_MSG("TEST IS SYMBOL");
+
     if (o->type ==  SFS_SYMBOL)
         return TRUE;
     else return FALSE;

@@ -1,4 +1,12 @@
 ; TEST_RETURN_CODE=PASS
-; TEST_COMMENT=define
+; TEST_COMMENT=set!
 
-(define f (quote "abc"))
+(define a 4)
+a
+(set! a '(1 2 3))
+a
+(define b #\newline)
+(set! a b)
+a
+(define gggt a)
+gggt

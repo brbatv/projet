@@ -147,6 +147,10 @@ object sfs_eval( object input ) {
 
     string str;
     object val;
+    if(input == NULL){
+	return NULL;
+    }
+
     DEBUG_MSG("Evaluation has started");
     if (isatom(input)) {
         if(issymbol(input)) {
@@ -176,7 +180,10 @@ object sfs_eval( object input ) {
             /* cas quote */
             if (isquote(car(input)))
             {   DEBUG_MSG("quote recognized");
-
+                if(isnil(cdr(input))){
+                    WARNING_MSG("Quote needs at least one parameter");
+                    return NULL;
+                }
                 return car(cdr(input));
             }
 
@@ -210,11 +217,12 @@ object sfs_eval( object input ) {
 
                 return set_eval(input);
             }
+            else {
+        DEBUG_MSG("Aucune forme détectée... pour l'instant. Input est de type %s ",whattype(input));
+    }
         }
     }
 
-    else {
-        DEBUG_MSG("Aucune forme détectée... pour l'instant. Input est de type %s ",whattype(input));
-    }
+
     return NULL;
 }

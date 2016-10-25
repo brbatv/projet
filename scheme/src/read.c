@@ -299,6 +299,8 @@ object sfs_read( char *input, uint *here ) {
 
     next_usefull_char(input, here);
 
+    if(input == NULL)
+        return NULL;
 
     if (input[*here]=='\'' )
     {   (*here)++;
@@ -348,6 +350,7 @@ object sfs_read_atom( char *input, uint *here ) {
     enum ETATS etat = INIT;
     object atom = NULL;
     char s[256];
+    int tmp=0;
     int i = 0;
 
 
@@ -388,7 +391,7 @@ object sfs_read_atom( char *input, uint *here ) {
             else
             {   DEBUG_MSG("No init");
 
-                etat=END;
+                etat=ERROR;
             }
             break;
 
@@ -439,10 +442,12 @@ object sfs_read_atom( char *input, uint *here ) {
                 if (is_not_separator(input[*here+1]))
                 {
                     WARNING_MSG("NOT A PROPER CHARACTER : TOO LONG OR NOT EXACTLY NEWLINE OR SPACE");
+                    (*here)++;
                     etat=ERROR;
                 }
                 else {
                     atom=make_character(' ');
+                    (*here)++;
                     etat=END;
                 }
             }
@@ -452,10 +457,12 @@ object sfs_read_atom( char *input, uint *here ) {
                 if (is_not_separator(input[*here+1]))
                 {
                     WARNING_MSG("NOT A PROPER CHARACTER : TOO LONG OR NOT EXACTLY NEWLINE OR SPACE");
+                    (*here)++;
                     etat=ERROR;
                 }
                 else {
                     atom=make_character('\n');
+                    (*here)++;
                     etat=END;
                 }
             }
@@ -483,7 +490,6 @@ object sfs_read_atom( char *input, uint *here ) {
 
         case SYMBOL :
             while( is_not_separator(input[*here])) {
-                DEBUG_MSG("Ok c'est pas un separator");
                 s[i] = input[*here];
                 i++;
                 (*here)++;
@@ -498,7 +504,8 @@ object sfs_read_atom( char *input, uint *here ) {
 
             while(input[*here]!='"')
             {
-                size_t tmp=strlen(s);
+
+                DEBUG_MSG("tmp = %d",tmp);
                 s[tmp]=input[*here];
                 s[tmp+1]='\0';
                 if (input[*here]=='\\' && input[*here+1]=='\"' && isprint(input[*here+2]))
@@ -507,7 +514,9 @@ object sfs_read_atom( char *input, uint *here ) {
                 }
                 else {
                     (*here)++;
+
                 }
+                tmp=tmp+1;
 
             }
             (*here)++;
@@ -570,7 +579,9 @@ object sfs_read_pair( char *input, uint *here ) {
     }
 
     car = sfs_read (input,here);
+    if(car == NULL) return NULL;
     cdr = sfs_read_pair (input,here);
+    if(cdr == NULL) return NULL;
     pair = make_pair(car,cdr);
 
 
