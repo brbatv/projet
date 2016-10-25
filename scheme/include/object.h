@@ -69,6 +69,7 @@ int isset(object);
 int isif(object);
 int isand(object);
 int isor(object);
+int isform(object);
 /*fin de gestion des formes*/
 int istrue(object);
 object make_env(object);
@@ -76,6 +77,7 @@ object make_binding(char*,object);
 object modify_binding(object, object);
 void make_and_modify_binding(object environment, char* name, object value);
 object search_env(char*,object);
+object search_val_env(char*, object);
 object search_under(char*,object);
 char* get_symbol (object symbol,char*);
 char* whattype(object o);

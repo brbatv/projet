@@ -20,7 +20,9 @@ extern "C" {
 
 object define_eval(object);
 object if_eval(object);
-object sfs_eval( object );
+object and_eval(object);
+object or_eval(object);
+object sfs_eval( object);
 
 #ifdef __cplusplus
 }

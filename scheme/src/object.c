@@ -154,6 +154,18 @@ while (ispair(obj_temp))
 DEBUG_MSG("Not found");
 return nil;
 }
+
+/* fonction qui cherche une variable dans 1 environnement et renvoie sa valeur si trouve, sinon renvoie NULL*/
+object search_val_env(char* name, object env){
+
+	object o = search_env(name,env);
+	if(isnil(o))
+		return NULL;
+	else return cdr(o);
+
+}
+
+
 /* fonction qui cherche une variable dans ts les environnement en dessous et renvoie binding si trouve, sinon renvoie nil*/
 object search_under(char* name,object env){
 object env_temp=env;
@@ -345,6 +357,13 @@ int isor(object o) {
         return TRUE;
     else
         return FALSE;
+
+}
+
+/*fonction qui renvoie un booleen en fonction de si oui ou non o est une forme*/
+int isform(object o) {
+
+	return isdefine(o) || isset(o) || isif(o) || isand(o) || isor(o);
 
 }
 

@@ -34,22 +34,23 @@ object nil=NULL;
 object false = NULL;
 object true = NULL;
 object quote = NULL;
-object top_level = NULL;
 object current_env=NULL;
 
 void init_interpreter ( void ) {
-    object i=make_symbol("nil");
+    /*object i=make_symbol("nil");*/
     nil = make_nil();
     false = make_boolean(FALSE);
     true = make_boolean(TRUE);
-    top_level=make_env(nil);
+    object top_level = make_env(nil);
     current_env=top_level;
-    modify_car(top_level,make_pair(make_pair(i,nil),nil));
+    /*modify_car(top_level,make_pair(make_pair(i,nil),nil));*/
 
     make_binding("quote",top_level);
+    make_binding("define",top_level);
     make_binding("set!",top_level);
-    modify_binding(make_binding(("yes"),top_level),make_string("YES CA MARCHE MON GARS"));
-    make_and_modify_binding(top_level,"bl",make_integer(45));
+    make_binding("if",top_level);
+    make_binding("and",top_level);
+    make_binding("or",top_level);
     print_env(top_level);
     /*quote = make_quote();*/
 

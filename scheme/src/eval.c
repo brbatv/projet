@@ -35,7 +35,7 @@ object define_eval(object input){
             {DEBUG_MSG("je passe par la 2");
                 if (issymbol(sfs_eval(car(cddr(input)))) && search_under(get_symbol(sfs_eval(car(cddr(input))),str),current_env)!=nil)/* si le 2eme parametre est un symbole connu */
                 {DEBUG_MSG("je passe par la 3");
-                    DEBUG_MSG("%s has been found in environment. Assigning its value to %s ..",get_symbol(car(cddr(input)),str),name_of_new_variable);
+                    DEBUG_MSG("%s has been found in environment. Assigning its value to %s ..",get_symbol(caddr(input),str),name_of_new_variable);
                     char* symbol_second_parameter=get_symbol(car(cddr(input)),str);
                     make_and_modify_binding(current_env,name_of_new_variable,cdr(search_under(symbol_second_parameter,current_env)));
                     DEBUG_MSG("...done");
@@ -69,7 +69,8 @@ object define_eval(object input){
             }
         else {WARNING_MSG("Define needs an atom as second parameter"); return NULL;}
 }	
-	
+
+/**/	
 object if_eval(object input){
 
 	object predicate = cadr(input);
@@ -80,37 +81,70 @@ object if_eval(object input){
 		WARNING_MSG("Define needs two parameters");
         	return NULL;
 		}
-	if(istrue(sfs_eval(predicate))){
-		DEBUG_MSG("JE PASSE PAR LA 1");
+	if(istrue(sfs_eval(predicate))){;
 		return sfs_eval(consequence);
 		}
 	else{
-		if(isnil(predicate)){
-			DEBUG_MSG("JE PASSE PAR LA 2");
+		if(isnil(predicate)){;
 			return false;
 			}
-		else{
-			DEBUG_MSG("JE PASSE PAR LA 3");
+		else{;
 			return sfs_eval(alternative);
 		}
 	}
 			
 }
 
+object and_eval(object input){
+
+	object o = cdr(input);
+	int i = TRUE;
+	while (!isnil(o)){
+		i = i && istrue(car(o));
+		o = cdr(o);		
+	}
+	if(i) return true;
+	else return false;	
+
+}
+
+object or_eval(object input){
+
+	object o = cdr(input);
+	int i = FALSE;
+	while (!isnil(o)){
+		i = i || istrue(car(o));
+		o = cdr(o);		
+	}
+	if(i) return true;
+	else return false;
+
+}
+
+/*fonction qui effectue et renvoie l'evaluation de input au sens du scheme*/
 object sfs_eval( object input ) {
 
+    string str;
+    object val;
     DEBUG_MSG("Evaluation has started");
     if (isatom(input)){
 	if(issymbol(input)){
-		return NULL;
+		if(isform(input)){
+			WARNING_MSG("A form has to be in a pair");
+			return NULL;
 		}
-	else{
-		if(istrue(input)){
-			return input;
-			}
-		else return false;
+		get_symbol(input,str);
+		val = search_val_env(str,current_env);
+		if(val) return val;
+		else{
+			WARNING_MSG("Unknown symbol");
+			return NULL;
 		}
+		
+	}	
+        else return input;
 	}
+	
     if (ispair(input)){
 	if (!issymbol(car(input))){
 		WARNING_MSG("A pair has to begin with a symbol");
@@ -135,9 +169,21 @@ object sfs_eval( object input ) {
     {   DEBUG_MSG("if recognized");
         return if_eval(input);
     }
+
+    /* cas and */
+    if (isand(car(input)))
+    {   DEBUG_MSG("and recognized");
+        return and_eval(input);
+    }
+
+    /* cas or */
+    if (isor(car(input)))
+    {   DEBUG_MSG("or recognized");
+        return or_eval(input);
+    }
 }
 }
 
     else {DEBUG_MSG("Aucune forme détectée... pour l'instant. Input est de type %s ",whattype(input));}
-    return input;
+    return NULL;
 }
