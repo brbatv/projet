@@ -2,7 +2,6 @@
 ; TEST_COMMENT=test apostrophe
 
 'a
-' 	  aa
 ''45
 ''''''''''''''45
 ''(aa)   	

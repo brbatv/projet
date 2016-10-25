@@ -51,7 +51,6 @@ void init_interpreter ( void ) {
     make_binding("if",top_level);
     make_binding("and",top_level);
     make_binding("or",top_level);
-    print_env(top_level);
     /*quote = make_quote();*/
 
     /*ajouter l'initialisation des formes scheme de base (quote, define, set!, if, and et or */

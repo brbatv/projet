@@ -40,7 +40,6 @@ object define_eval(object input){
                     make_and_modify_binding(current_env,name_of_new_variable,cdr(search_under(symbol_second_parameter,current_env)));
                     DEBUG_MSG("...done");
                     DEBUG_MSG("%s",name_of_new_variable);
-                    print_env(current_env);
                     return NULL;
                 }
 
@@ -51,8 +50,7 @@ object define_eval(object input){
                 else /* 2eme parametre est un atome qui n'est pas un symbole*/
                 {DEBUG_MSG("Assigning type %s to new variable %s",whattype(sfs_eval(car(cddr(input)))),name_of_new_variable);
                 make_and_modify_binding(current_env,name_of_new_variable,car(cddr(input)));
-                DEBUG_MSG("Done.");
-                print_env(current_env);		
+                DEBUG_MSG("Done.");	
 		DEBUG_MSG("je passe par la 10");
                 return NULL;
 
@@ -62,7 +60,6 @@ object define_eval(object input){
             else /* si la nouvelle variable existe déjà => sujet : on ne modifie pas, repl.it : on remplace sa valeur (ou alors on la cree dans un nouvel environnement ??)*/
             {
                 DEBUG_MSG("%s already exists in environment. NOT Replacing its value with %s",name_of_new_variable,whattype(sfs_eval(car(cddr(input)))));
-                print_env(current_env);
                 return NULL;
 
             }
