@@ -37,24 +37,22 @@ object quote = NULL;
 object current_env=NULL;
 
 void init_interpreter ( void ) {
-    /*object i=make_symbol("nil");*/
     nil = make_nil();
     false = make_boolean(FALSE);
     true = make_boolean(TRUE);
     object top_level = make_env(nil);
     current_env=top_level;
-    /*modify_car(top_level,make_pair(make_pair(i,nil),nil));*/
-
+    
+    /* forms initializaton */
     make_binding("quote",top_level);
     make_binding("define",top_level);
     make_binding("set!",top_level);
     make_binding("if",top_level);
     make_binding("and",top_level);
     make_binding("or",top_level);
-    /*quote = make_quote();*/
-
-    /*ajouter l'initialisation des formes scheme de base (quote, define, set!, if, and et or */
-
+    make_binding("let",top_level);
+    
+   
 }
 
 int main ( int argc, char *argv[] ) {
@@ -158,10 +156,10 @@ int main ( int argc, char *argv[] ) {
         if( NULL == output) {
             /* si fichier alors on sort*/
             if (mode == SCRIPT) {
-                fclose( fp );
-                /*macro ERROR_MSG : message d'erreur puis fin de programme ! */
+               /* fclose( fp );
+                /*macro ERROR_MSG : message d'erreur puis fin de programme ! *//*
                 ERROR_MSG("Error while evaluating input --- Aborts");
-            }
+            */}
             /*sinon on rend la main a l'utilisateur*/
             continue ;
         }

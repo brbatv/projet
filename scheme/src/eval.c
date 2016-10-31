@@ -120,7 +120,7 @@ object and_eval(object input) {
 
     object o = cdr(input);
     int i = TRUE;
-    while (!isnil(o)) {
+    while (istrue(o) && !isnil(o)) {
         i = i && istrue(car(o));
         o = cdr(o);
     }
@@ -133,7 +133,7 @@ object or_eval(object input) {
 
     object o = cdr(input);
     int i = FALSE;
-    while (!isnil(o)) {
+    while (!istrue(o) && !isnil(o)) {
         i = i || istrue(car(o));
         o = cdr(o);
     }
