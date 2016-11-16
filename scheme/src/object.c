@@ -97,6 +97,13 @@ object make_pair(object car , object cdr ) {
     return t;
 }
 
+object make_primitive(object(*function)(object)){
+	object prim = make_object(SFS_PRIMITIVE);
+	prim->this.primitive = function;
+	return prim;
+
+}
+
 
 /* fonction qui permet de creer un nouvel environnement sous cdr */
 object make_env(object cdr) {
@@ -188,24 +195,6 @@ object search_under(char* name,object env) {
     return nil;
 
 }
-/* fonction qui cherche si une variable existe dans l'environnement courant et en dessous, si existe modifie sa valeur, si n'existe pas la cree dans l'env courant et modifie sa valeur. Renvoie tjr le binding tq car(binding) = nom et cdr (binding) = valeur
-object search_and_modify(char* name, object env, object value)
-{if(search_under(name,env)!=nil)
-    {DEBUG_MSG("%s has been found in environment");
-    return modify_binding(search_under(name,env),value);
-
-
-    }
- else
- {make
-
- }
-
-
-}
-*/
-
-
 
 
 /*fonction qui récupère la chaine de caractère d'un objet de type symbole et la copie dans string passe en entree. On pourrait utiliser strcmp aussi surement*/

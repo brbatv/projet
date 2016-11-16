@@ -10,6 +10,10 @@
 
 #include <stdio.h>
 #include <ctype.h>
+
+#include <readline/readline.h>
+#include <readline/history.h>
+
 #include "read.h"
 
 

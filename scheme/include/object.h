@@ -33,8 +33,10 @@ typedef struct object_t {
             struct object_t *car;
             struct object_t *cdr;
         }                pair;
-
-        struct object_t *special;d
+	
+	struct object_t *(*primitive)(struct object_t *);
+			
+        struct object_t *special;
 
     } this;
 
@@ -49,6 +51,7 @@ object make_character(char);
 object make_pair(object,object);
 object make_string(char*);
 object make_symbol(char*);
+object make_primitive(object(*)(object));
 int ispair(object);
 int isatom (object);
 int issymbol(object);
@@ -91,6 +94,7 @@ object modify_cdr(object o, object cdr);
 #define SFS_NIL          0x04
 #define SFS_BOOLEAN      0x05
 #define SFS_SYMBOL       0x06
+#define SFS_PRIMITIVE    0x07
 
 
 extern object nil;

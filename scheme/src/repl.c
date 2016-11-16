@@ -19,6 +19,7 @@
 #include "read.h"
 #include "eval.h"
 #include "print.h"
+#include "primitive.h"
 
 /* mode d'interaction avec l'interpreteur (exemple)*/
 typedef enum {INTERACTIF,SCRIPT} inter_mode;
@@ -156,10 +157,10 @@ int main ( int argc, char *argv[] ) {
         if( NULL == output) {
             /* si fichier alors on sort*/
             if (mode == SCRIPT) {
-               /* fclose( fp );
-                /*macro ERROR_MSG : message d'erreur puis fin de programme ! *//*
+               fclose( fp );
+                /*macro ERROR_MSG : message d'erreur puis fin de programme ! */
                 ERROR_MSG("Error while evaluating input --- Aborts");
-            */}
+            }
             /*sinon on rend la main a l'utilisateur*/
             continue ;
         }
