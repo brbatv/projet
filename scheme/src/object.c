@@ -430,3 +430,5 @@ int istrue(object o) {
 		return TRUE;
 
 }
+
+/* fonction qui teste si l'objet de type symbole o designe une primitive en le cherchant dans l'environnement */

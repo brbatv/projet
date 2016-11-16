@@ -176,6 +176,8 @@ object sfs_eval( object input ) {
             return NULL;
         }
         else {
+	
+
 
             /* cas quote */
             if (isquote(car(input)))
