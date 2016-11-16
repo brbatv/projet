@@ -7,3 +7,4 @@ void init_primitive ( object );
 object plus(object);
 object minus(object);
 object multiply(object);
+object quotient(object);

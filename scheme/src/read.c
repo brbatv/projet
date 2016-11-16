@@ -120,8 +120,7 @@ uint  sfs_get_sexpr( char *input, FILE *fp ) {
 
     do {
         ret = NULL;
-        chunk=k;
-        memset( chunk, '\0', BIGSTRING );
+        chunk = NULL;
 
         /* si en mode interactif*/
         if ( stdin == fp ) {

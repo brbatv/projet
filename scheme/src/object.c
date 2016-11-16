@@ -204,6 +204,9 @@ char* get_symbol (object symbol,char* string)
     return string;
 }
 
+int get_number (object o)
+{   return o->this.number.this.integer;
+}
 /*retourne le car de la pair object o, nil si object o n'est pas une pair */
 object car(object o) {
 
@@ -261,6 +264,17 @@ object cadddr(object o)
     return car(cdddr(o));
 }
 
+int number_of_pair(object o) /* nombre de paires jusqu'au nil*/
+{
+    int n=0;
+    object obj_temp=o;
+    while (ispair(obj_temp))
+    {
+        n=n+1;
+        obj_temp=cdr(obj_temp);
+    }
+    return n;
+}
 
 object modify_car(object o, object car)
 {   o->this.pair.car=car;
@@ -312,6 +326,16 @@ int issymbol(object o) {
     if (o->type ==  SFS_SYMBOL)
         return TRUE;
     else return FALSE;
+
+}
+
+int isnumber(object o)
+{
+
+    if (o->type ==  SFS_NUMBER)
+        return TRUE;
+    else return FALSE;
+
 
 }
 
