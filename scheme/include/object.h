@@ -73,6 +73,7 @@ int isif(object);
 int isand(object);
 int isor(object);
 int isform(object);
+int isprimitive(object);
 /*fin de gestion des formes*/
 int istrue(object);
 object make_env(object);
