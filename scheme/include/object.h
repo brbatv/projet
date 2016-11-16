@@ -34,7 +34,7 @@ typedef struct object_t {
             struct object_t *cdr;
         }                pair;
 
-        struct object_t *special;d
+        struct object_t *special;
 
     } this;
 
@@ -53,6 +53,7 @@ int ispair(object);
 int isatom (object);
 int issymbol(object);
 int isnil(object);
+int isnumber(object );
 object car(object);
 object cdr(object);
 object caar(object);
@@ -81,6 +82,8 @@ object search_val_env(char*, object);
 object search_under(char*,object);
 char* get_symbol (object symbol,char*);
 char* whattype(object o);
+int get_number(object o);
+int number_of_pair(object o);
 object modify_car(object o, object car);
 object modify_cdr(object o, object cdr);
 
