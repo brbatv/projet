@@ -9,12 +9,12 @@
 #include "print.h"
 #include "primitive.h"
 
-void init_primitive ( object env ){
+void init_primitive ( object env ) {
 
-make_and_modify_binding(env,"+",make_primitive(plus));
-make_and_modify_binding(env,"-",make_primitive(minus));
-make_and_modify_binding(env,"*",make_primitive(multiply));
-make_and_modify_binding(env,"quotient",make_primitive(quotient));
+    make_and_modify_binding(env,"+",make_primitive(plus));
+    make_and_modify_binding(env,"-",make_primitive(minus));
+    make_and_modify_binding(env,"*",make_primitive(multiply));
+    make_and_modify_binding(env,"quotient",make_primitive(quotient));
 
 }
 
@@ -25,15 +25,22 @@ object plus(object o) /* besoin en parametre l'obj dont le car est le 1er nombre
     object obj_temp=o;
     if (number_of_pair(o)>=2)
     {
-    while (obj_temp!=nil)
-    {   if(isnumber(car(obj_temp)))
-        {s=s+get_number(car(obj_temp));
-        obj_temp=cdr(obj_temp);
+        while (obj_temp!=nil)
+        {   if(isnumber(car(obj_temp)))
+            {   s=s+get_number(car(obj_temp));
+                obj_temp=cdr(obj_temp);
+            }
+            else {
+                WARNING_MSG("needs only numbers as parameters");
+                return NULL;
+            }
         }
-        else {WARNING_MSG("needs only numbers as parameters"); return NULL;}
+        return make_integer(s);
     }
-    return make_integer(s);}
-    else {WARNING_MSG("needs at least 2 parameters"); return NULL;}
+    else {
+        WARNING_MSG("needs at least 2 parameters");
+        return NULL;
+    }
 }
 
 object minus(object o) /* renvoie x1 - ( x2 + x3 + ... xn) */
@@ -44,15 +51,21 @@ object minus(object o) /* renvoie x1 - ( x2 + x3 + ... xn) */
     {
 
 
-    if (isnumber(car(o)))
-    {
-        int s=get_number(car(o));
-         s=s-get_number(plus(obj_temp));
-    return make_integer(s);
+        if (isnumber(car(o)))
+        {
+            int s=get_number(car(o));
+            s=s-get_number(plus(obj_temp));
+            return make_integer(s);
+        }
+        else {
+            WARNING_MSG("needs only numbers as parameters");
+            return NULL;
+        }
     }
-    else {WARNING_MSG("needs only numbers as parameters"); return NULL;}
+    else {
+        WARNING_MSG("needs at least 2 parameters");
+        return NULL;
     }
-    else {WARNING_MSG("needs at least 2 parameters");  return NULL;}
 }
 
 object multiply(object o)
@@ -63,16 +76,22 @@ object multiply(object o)
     {
 
 
-    while (obj_temp!=nil)
-    {   if(isnumber(car(obj_temp)))
-        {m=m*get_number(car(obj_temp));
-        obj_temp=cdr(obj_temp);
+        while (obj_temp!=nil)
+        {   if(isnumber(car(obj_temp)))
+            {   m=m*get_number(car(obj_temp));
+                obj_temp=cdr(obj_temp);
+            }
+            else {
+                WARNING_MSG("needs only numbers as parameters");
+                return NULL;
+            }
         }
-        else {WARNING_MSG("needs only numbers as parameters"); return NULL;}
+        return make_integer(m);
     }
-    return make_integer(m);
+    else {
+        WARNING_MSG("neeed at least 1 parameters");
+        return NULL;
     }
-    else {WARNING_MSG("neeed at least 1 parameters"); return NULL;}
 }
 
 object quotient(object o)
@@ -82,7 +101,7 @@ object quotient(object o)
         object obj_temp=cdr(o);
         while(obj_temp!=nil)
         {
-        int q=q/car(obj_temp);
+            int q=q/get_number(car(obj_temp));
         }
         return make_integer(q);
     }
@@ -90,30 +109,223 @@ object quotient(object o)
     {   int q=get_number(car(o));
         return make_integer(1/q);
     }
-    else {DEBUG_MSG("needs at least 1 parameters"); return NULL;}
+    else {
+        DEBUG_MSG("needs at least 1 parameters");
+        return NULL;
+    }
 }
 
 
-/* object superior(object o)
+object superior(object o)
 {
     if (number_of_pair(o)>=2)
-    { object obj_temp=o;
-        for (i=0;i<5;i++)
-        { if (get_number(car(obj_temp)) >= get_number(cadr(obj_temp)))
+    {   object obj_temp=o;
+        int num_temp=0;
+        object resultat=true;
+        while (obj_temp !=nil && isnumber(obj_temp))
+        {
+            num_temp=get_number(car(obj_temp));
+            obj_temp=cdr(obj_temp);
+            if (obj_temp!=nil)
             {
-                obj_temp=cdr(obj)
+                if (num_temp<get_number(car(obj_temp)))
+                {
+                    obj_temp=nil;
+                    resultat=false;
+
+
+                }
             }
 
-
-
-
         }
-
-
-
-
-
+        return resultat;
+    }
+    else {
+        DEBUG_MSG("needs at least 2 parameters and only numbers");
+        return NULL;
     }
 
+
 }
-*/
+
+object inferior(object o)
+{
+    if (number_of_pair(o)>=2)
+    {   object obj_temp=o;
+        int num_temp=0;
+        object resultat=true;
+        while (obj_temp !=nil && isnumber(obj_temp))
+        {
+            num_temp=get_number(car(obj_temp));
+            obj_temp=cdr(obj_temp);
+            if (obj_temp!=nil)
+            {
+                if (num_temp>get_number(car(obj_temp)))
+                {
+                    obj_temp=nil;
+                    resultat=false;
+
+
+                }
+            }
+
+        }
+        return resultat;
+    }
+    else {
+        DEBUG_MSG("needs at least 2 parameters and only numbers");
+        return NULL;
+    }
+
+
+}
+
+
+
+/* object remainder(object o); */
+
+object boolean_p(object o)
+{
+    object resultat=true;
+    object obj_temp=o;
+    if (number_of_pair(o)>=1)
+    {
+    while (obj_temp!=nil)
+    {
+        if(!isboolean(car(obj_temp)))
+        {
+            resultat=false;
+            obj_temp=nil;
+        }
+        else {obj_temp=cdr(obj_temp);}
+    }
+    return resultat;
+    }
+    else{DEBUG_MSG("needs at least 1 parameter"); return NULL;}
+
+}
+
+
+object symbol_p(object o)
+{
+    object resultat=true;
+    object obj_temp=o;
+    if (number_of_pair(o)>=1)
+    {
+    while (obj_temp!=nil)
+    {
+        if(!issymbol(car(obj_temp)))
+        {
+            resultat=false;
+            obj_temp=nil;
+        }
+        else {obj_temp=cdr(obj_temp);}
+    }
+    return resultat;
+    }
+    else{DEBUG_MSG("needs at least 1 parameter"); return NULL;}
+
+}
+
+
+object integer_p(object o)
+{
+    object resultat=true;
+    object obj_temp=o;
+    if (number_of_pair(o)>=1)
+    {
+    while (obj_temp!=nil)
+    {
+        if(!isnumber(car(obj_temp)))
+        {
+            resultat=false;
+            obj_temp=nil;
+        }
+        else {obj_temp=cdr(obj_temp);}
+    }
+    return resultat;
+    }
+    else{DEBUG_MSG("needs at least 1 parameter"); return NULL;}
+
+}
+
+
+object char_p(object o)
+{
+    object resultat=true;
+    object obj_temp=o;
+    if (number_of_pair(o)>=1)
+    {
+    while (obj_temp!=nil)
+    {
+        if(!ischar(car(obj_temp)))
+        {
+            resultat=false;
+            obj_temp=nil;
+        }
+        else {obj_temp=cdr(obj_temp);}
+    }
+    return resultat;
+    }
+    else{DEBUG_MSG("needs at least 1 parameter"); return NULL;}
+
+}
+
+
+object string_p(object o)
+{
+    object resultat=true;
+    object obj_temp=o;
+    if (number_of_pair(o)>=1)
+    {
+    while (obj_temp!=nil)
+    {
+        if(!isstring(car(obj_temp)))
+        {
+            resultat=false;
+            obj_temp=nil;
+        }
+        else {obj_temp=cdr(obj_temp);}
+    }
+    return resultat;
+    }
+    else{DEBUG_MSG("needs at least 1 parameter"); return NULL;}
+
+}
+
+
+object pair_p(object o)
+{
+    object resultat=true;
+    object obj_temp=o;
+    if (number_of_pair(o)>=1)
+    {
+    while (obj_temp!=nil)
+    {
+        if(!ispair(car(obj_temp)))
+        {
+            resultat=false;
+            obj_temp=nil;
+        }
+        else {obj_temp=cdr(obj_temp);}
+    }
+    return resultat;
+    }
+    else{DEBUG_MSG("needs at least 1 parameter"); return NULL;}
+
+}
+
+object null_p(object o)
+{
+    object resultat=true;
+    if (number_of_pair(o)==1)
+    {
+        if (car(o)!=nil)
+        {
+            resultat=false;
+        }
+        return resultat;
+    }
+    else {DEBUG_MSG("needs only one parameter"); return NULL;}
+}
+

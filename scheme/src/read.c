@@ -167,7 +167,7 @@ uint  sfs_get_sexpr( char *input, FILE *fp ) {
             }
         }
 
-        /* si la ligne est inutile 
+        /* si la ligne est inutile
         	=> on va directement à la prochaine iteration */
         if (first_usefull_char(chunk) == NULL) {
             continue;
@@ -282,8 +282,8 @@ uint  sfs_get_sexpr( char *input, FILE *fp ) {
 
     /* Suppression des espaces restant a la fin de l'expression, notamment le dernier '\n' */
     while (isspace(input[strlen(input)-1])) input[strlen(input)-1] = '\0';
-	
-	if(stdin == fp) {
+
+    if(stdin == fp) {
         add_history( input );
     }
     return S_OK;

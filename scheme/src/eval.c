@@ -36,14 +36,14 @@ object define_eval(object input) {
     DEBUG_MSG("%s",name_of_new_variable);
 
     if(o == NULL) {
-    return NULL;
+        return NULL;
     }
     else {
 
-    make_and_modify_binding(current_env,name_of_new_variable,o);
-    DEBUG_MSG("...done");
-    return NULL;
-}
+        make_and_modify_binding(current_env,name_of_new_variable,o);
+        DEBUG_MSG("...done");
+        return NULL;
+    }
 }
 
 
@@ -100,20 +100,21 @@ object set_eval(object input)
     strcpy(name_of_first_parameter,get_symbol(cadr(input),str));
     object o=search_env(name_of_first_parameter,current_env);
     if (isnil(o))
-    { WARNING_MSG("set! needs a symbol already defined, %s is not defined",name_of_first_parameter);
-    return NULL;}
-    else {
-    if(second_parameter== NULL) {
-    return NULL;
+    {   WARNING_MSG("set! needs a symbol already defined, %s is not defined",name_of_first_parameter);
+        return NULL;
     }
     else {
+        if(second_parameter== NULL) {
+            return NULL;
+        }
+        else {
 
-    modify_binding(o,second_parameter);
+            modify_binding(o,second_parameter);
 
-    return NULL;
-}
+            return NULL;
+        }
 
-}
+    }
 }
 
 object and_eval(object input) {
@@ -147,8 +148,8 @@ object sfs_eval( object input ) {
 
     string str;
     object val;
-    if(input == NULL){
-	return NULL;
+    if(input == NULL) {
+        return NULL;
     }
 
     DEBUG_MSG("Evaluation has started");
@@ -176,13 +177,13 @@ object sfs_eval( object input ) {
             return NULL;
         }
         else {
-	
+
 
 
             /* cas quote */
             if (isquote(car(input)))
             {   DEBUG_MSG("quote recognized");
-                if(isnil(cdr(input))){
+                if(isnil(cdr(input))) {
                     WARNING_MSG("Quote needs at least one parameter");
                     return NULL;
                 }
@@ -220,8 +221,8 @@ object sfs_eval( object input ) {
                 return set_eval(input);
             }
             else {
-        DEBUG_MSG("Aucune forme détectée... pour l'instant. Input est de type %s ",whattype(input));
-    }
+                DEBUG_MSG("Aucune forme détectée... pour l'instant. Input est de type %s ",whattype(input));
+            }
         }
     }
 

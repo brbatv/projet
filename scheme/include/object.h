@@ -33,7 +33,7 @@ typedef struct object_t {
             struct object_t *car;
             struct object_t *cdr;
         }                pair;
-	
+
 	struct object_t *(*primitive)(struct object_t *);
         struct object_t *special;
 
@@ -56,6 +56,9 @@ int isatom (object);
 int issymbol(object);
 int isnil(object);
 int isnumber(object );
+int isstring(object);
+int ischar(object);
+int isboolean(object);
 object car(object);
 object cdr(object);
 object caar(object);

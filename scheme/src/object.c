@@ -90,17 +90,19 @@ object make_symbol(char* s) {
 object make_pair(object car , object cdr ) {
     DEBUG_MSG("Making a pair of %s and %s ...",whattype(car),whattype(cdr));
     if(car == NULL || cdr == NULL)
-    {return NULL;}
+    {
+        return NULL;
+    }
     object t = make_object(SFS_PAIR);
     t->this.pair.car = car;
     t->this.pair.cdr = cdr;
     return t;
 }
 
-object make_primitive(object(*function)(object)){
-	object prim = make_object(SFS_PRIMITIVE);
-	prim->this.primitive = function;
-	return prim;
+object make_primitive(object(*function)(object)) {
+    object prim = make_object(SFS_PRIMITIVE);
+    prim->this.primitive = function;
+    return prim;
 
 }
 
@@ -339,6 +341,36 @@ int isnumber(object o)
 
 }
 
+int ischar(object o)
+{
+
+    if (o->type ==  SFS_CHARACTER)
+        return TRUE;
+    else return FALSE;
+
+
+}
+
+int isstring(object o)
+{
+
+    if (o->type ==  SFS_STRING)
+        return TRUE;
+    else return FALSE;
+
+
+}
+
+int isboolean(object o)
+{
+
+    if (o->type ==  SFS_BOOLEAN)
+        return TRUE;
+    else return FALSE;
+
+
+}
+
 /*fonction qui test si l'objet est nil*/
 int isnil(object o) {
 
@@ -424,10 +456,10 @@ int isform(object o) {
 /*fonction qui test si l'objet o est vrai ou faux au sens du Scheme et renvoie la valeur FASLE ou TRUE au sens du C*/
 int istrue(object o) {
 
-	if(o == false)
-		return FALSE;
-	else
-		return TRUE;
+    if(o == false)
+        return FALSE;
+    else
+        return TRUE;
 
 }
 
