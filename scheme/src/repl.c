@@ -47,7 +47,7 @@ void init_interpreter ( void ) {
     /* primitives initialization */
     init_primitive ( top_level );
 
-    /* forms initialization */
+    /* forms initializaton */
     make_binding("quote",top_level);
     make_binding("define",top_level);
     make_binding("set!",top_level);
@@ -55,7 +55,6 @@ void init_interpreter ( void ) {
     make_binding("and",top_level);
     make_binding("or",top_level);
     make_binding("let",top_level);
-
 
 }
 

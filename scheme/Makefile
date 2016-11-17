@@ -17,7 +17,6 @@ INCLUDE=-I$(INCDIR)
 CFLAGS=-Wall -ansi $(INCLUDE)
 LFLAGS=-lm -lreadline
 
-
 CFLAGS_DBG=$(CFLAGS) -g -DDEBUG -Wall
 CFLAGS_RLS=$(CFLAGS)
 
