@@ -23,6 +23,7 @@ object if_eval(object);
 object and_eval(object);
 object or_eval(object);
 object sfs_eval(object);
+object arguments_eval (object);
 
 #ifdef __cplusplus
 }

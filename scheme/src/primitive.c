@@ -49,8 +49,6 @@ object minus(object o) /* renvoie x1 - ( x2 + x3 + ... xn) */
     object obj_temp=cdr(o);
     if (number_of_pair(o)>=2)
     {
-
-
         if (isnumber(car(o)))
         {
             int s=get_number(car(o));
@@ -74,8 +72,6 @@ object multiply(object o)
     object obj_temp=o;
     if (number_of_pair(o)>=1)
     {
-
-
         while (obj_temp!=nil)
         {   if(isnumber(car(obj_temp)))
             {   m=m*get_number(car(obj_temp));

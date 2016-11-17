@@ -44,6 +44,9 @@ void init_interpreter ( void ) {
     object top_level = make_env(nil);
     current_env=top_level;
 
+    /* primitives initialization */
+    init_primitive ( top_level );
+
     /* forms initializaton */
     make_binding("quote",top_level);
     make_binding("define",top_level);

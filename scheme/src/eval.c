@@ -10,6 +10,7 @@
 
 #include "eval.h"
 #include "print.h"
+#include "object.h"
 
 object define_eval(object input) {
 
@@ -161,7 +162,7 @@ object sfs_eval( object input ) {
             }
             get_symbol(input,str);
             val = search_val_env(str,current_env);
-            if(val!=NULL) return val; /*  le symbole est bien defini dans l'environnement courant */
+            if(val!=NULL) return val; /* le symbole est bien defini dans l'environnement courant */
             else {
                 WARNING_MSG("Unknown symbol %s",str);
                 return NULL;
@@ -172,50 +173,68 @@ object sfs_eval( object input ) {
     }
 
     if (ispair(input)) {
-        if (!issymbol(car(input))) {
+
+
+        object 	symb = car(input);
+        object 	parametres = cdr(input);
+        object	val = NULL;
+        char 	name[256];
+
+
+
+        if (!issymbol(symb)) {
             WARNING_MSG("A pair has to begin with a symbol");
             return NULL;
         }
         else {
 
+            val = search_val_under(get_symbol(symb,name),current_env);
 
+            /* cas des primitives */
+            if(isprimitive(val)) {
+
+                DEBUG_MSG("primitive recognized");
+                return (*val->this.primitive)(arguments_eval ( parametres ));
+
+            }
 
             /* cas quote */
-            if (isquote(car(input)))
+            if (isquote(symb))
             {   DEBUG_MSG("quote recognized");
-                if(isnil(cdr(input))) {
+                if(isnil(parametres)) {
+
                     WARNING_MSG("Quote needs at least one parameter");
                     return NULL;
                 }
-                return car(cdr(input));
+                return car(parametres);
             }
 
             /* cas define */
-            if(isdefine(car(input)))
+            if(isdefine(symb))
             {   DEBUG_MSG("define recognized");
                 return define_eval(input);
             }
 
             /* cas if */
-            if (isif(car(input)))
+            if (isif(symb))
             {   DEBUG_MSG("if recognized");
                 return if_eval(input);
             }
 
             /* cas and */
-            if (isand(car(input)))
+            if (isand(symb))
             {   DEBUG_MSG("and recognized");
                 return and_eval(input);
             }
 
             /* cas or */
-            if (isor(car(input)))
+            if (isor(symb))
             {   DEBUG_MSG("or recognized");
                 return or_eval(input);
             }
 
             /* cas set! */
-            if (isset(car(input)))
+            if (isset(symb))
             {   DEBUG_MSG("set! recognized");
 
                 return set_eval(input);
@@ -228,4 +247,18 @@ object sfs_eval( object input ) {
 
 
     return NULL;
+}
+
+
+/* fonction qui evalue tous les arguments d'une primitives */
+object arguments_eval ( object input ) {
+
+	object p = input;
+	DEBUG_MSG("evaluation arguments of a primitive");
+	while (!isnil(p)){
+		modify_car(p,sfs_eval(car(p)));
+		p = cdr(p);
+		}
+	return input;
+
 }

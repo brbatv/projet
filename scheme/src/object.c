@@ -165,13 +165,13 @@ object search_env(char* name, object env)
         else {
             DEBUG_MSG("Tried to compare %s with %s and found they were different",get_symbol(caar(obj_temp),string),name);
         }
-        obj_temp=cdr(obj_temp); /* a la fin du while obj_temp vaudra nil et ne sera plus une paire*/
+        obj_temp=cdr(obj_temp); /* a la fin du while obj_temp vaudra nil et ne sera plus une paire */
     }
     DEBUG_MSG("Not found");
     return nil;
 }
 
-/* fonction qui cherche une variable dans 1 environnement et renvoie sa valeur si trouve, sinon renvoie NULL*/
+/* fonction qui cherche une variable dans 1 environnement et renvoie sa valeur si trouve, sinon renvoie NULL */
 object search_val_env(char* name, object env) {
 
     object o = search_env(name,env);
@@ -182,7 +182,7 @@ object search_val_env(char* name, object env) {
 }
 
 
-/* fonction qui cherche une variable dans ts les environnement en dessous et renvoie binding si trouve, sinon renvoie nil*/
+/* fonction qui cherche une variable dans ts les environnement en dessous et renvoie binding si trouve, sinon renvoie nil */
 object search_under(char* name,object env) {
     object env_temp=env;
 
@@ -198,6 +198,15 @@ object search_under(char* name,object env) {
 
 }
 
+/* fonction qui cherche une variable dans ts les environnement en dessous et renvoie sa valeur si trouve, sinon renvoie NULL */
+object search_val_under(char* name,object env) {
+
+    object o = search_under(name,env);
+    if(isnil(o))
+        return NULL;
+    else return cdr(o);
+
+}
 
 /*fonction qui récupère la chaine de caractère d'un objet de type symbole et la copie dans string passe en entree. On pourrait utiliser strcmp aussi surement*/
 char* get_symbol (object symbol,char* string)
@@ -463,4 +472,12 @@ int istrue(object o) {
 
 }
 
-/* fonction qui teste si l'objet de type symbole o designe une primitive en le cherchant dans l'environnement */
+/* fonction qui teste si l'objet de type primitive */
+int isprimitive(object o) {
+
+    if (o->type ==  SFS_PRIMITIVE)
+        return TRUE;
+    else return FALSE;
+
+}
+
