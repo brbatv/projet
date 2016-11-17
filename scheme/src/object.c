@@ -158,12 +158,12 @@ object search_env(char* name, object env)
     {
         if(!strcmp(get_symbol(caar(obj_temp),string),name))
         {
-            DEBUG_MSG("Tried to compare %s with %s and found they were the same",get_symbol(caar(obj_temp),string),name);
+            /* DEBUG_MSG("Tried to compare %s with %s and found they were the same",get_symbol(caar(obj_temp),string),name); */
             DEBUG_MSG("%s has been found !",name);
             return car(obj_temp);
         }
         else {
-            DEBUG_MSG("Tried to compare %s with %s and found they were different",get_symbol(caar(obj_temp),string),name);
+            /*DEBUG_MSG("Tried to compare %s with %s and found they were different",get_symbol(caar(obj_temp),string),name);*/
         }
         obj_temp=cdr(obj_temp); /* a la fin du while obj_temp vaudra nil et ne sera plus une paire */
     }
