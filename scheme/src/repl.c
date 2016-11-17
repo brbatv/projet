@@ -43,8 +43,11 @@ void init_interpreter ( void ) {
     true = make_boolean(TRUE);
     object top_level = make_env(nil);
     current_env=top_level;
-    
-    /* forms initializaton */
+
+    /* primitives initialization */
+    init_primitive ( top_level );
+
+    /* forms initialization */
     make_binding("quote",top_level);
     make_binding("define",top_level);
     make_binding("set!",top_level);
@@ -52,8 +55,8 @@ void init_interpreter ( void ) {
     make_binding("and",top_level);
     make_binding("or",top_level);
     make_binding("let",top_level);
-    
-   
+
+
 }
 
 int main ( int argc, char *argv[] ) {
@@ -157,7 +160,7 @@ int main ( int argc, char *argv[] ) {
         if( NULL == output) {
             /* si fichier alors on sort*/
             if (mode == SCRIPT) {
-               fclose( fp );
+                fclose( fp );
                 /*macro ERROR_MSG : message d'erreur puis fin de programme ! */
                 ERROR_MSG("Error while evaluating input --- Aborts");
             }

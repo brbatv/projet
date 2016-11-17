@@ -90,17 +90,19 @@ object make_symbol(char* s) {
 object make_pair(object car , object cdr ) {
     DEBUG_MSG("Making a pair of %s and %s ...",whattype(car),whattype(cdr));
     if(car == NULL || cdr == NULL)
-    {return NULL;}
+    {
+        return NULL;
+    }
     object t = make_object(SFS_PAIR);
     t->this.pair.car = car;
     t->this.pair.cdr = cdr;
     return t;
 }
 
-object make_primitive(object(*function)(object)){
-	object prim = make_object(SFS_PRIMITIVE);
-	prim->this.primitive = function;
-	return prim;
+object make_primitive(object(*function)(object)) {
+    object prim = make_object(SFS_PRIMITIVE);
+    prim->this.primitive = function;
+    return prim;
 
 }
 
@@ -163,13 +165,13 @@ object search_env(char* name, object env)
         else {
             DEBUG_MSG("Tried to compare %s with %s and found they were different",get_symbol(caar(obj_temp),string),name);
         }
-        obj_temp=cdr(obj_temp); /* a la fin du while obj_temp vaudra nil et ne sera plus une paire*/
+        obj_temp=cdr(obj_temp); /* a la fin du while obj_temp vaudra nil et ne sera plus une paire */
     }
     DEBUG_MSG("Not found");
     return nil;
 }
 
-/* fonction qui cherche une variable dans 1 environnement et renvoie sa valeur si trouve, sinon renvoie NULL*/
+/* fonction qui cherche une variable dans 1 environnement et renvoie sa valeur si trouve, sinon renvoie NULL */
 object search_val_env(char* name, object env) {
 
     object o = search_env(name,env);
@@ -180,7 +182,7 @@ object search_val_env(char* name, object env) {
 }
 
 
-/* fonction qui cherche une variable dans ts les environnement en dessous et renvoie binding si trouve, sinon renvoie nil*/
+/* fonction qui cherche une variable dans ts les environnement en dessous et renvoie binding si trouve, sinon renvoie nil */
 object search_under(char* name,object env) {
     object env_temp=env;
 
@@ -196,6 +198,15 @@ object search_under(char* name,object env) {
 
 }
 
+/* fonction qui cherche une variable dans ts les environnement en dessous et renvoie sa valeur si trouve, sinon renvoie NULL */
+object search_val_under(char* name,object env) {
+
+    object o = search_under(name,env);
+    if(isnil(o))
+        return NULL;
+    else return cdr(o);
+
+}
 
 /*fonction qui récupère la chaine de caractère d'un objet de type symbole et la copie dans string passe en entree. On pourrait utiliser strcmp aussi surement*/
 char* get_symbol (object symbol,char* string)
@@ -424,11 +435,19 @@ int isform(object o) {
 /*fonction qui test si l'objet o est vrai ou faux au sens du Scheme et renvoie la valeur FASLE ou TRUE au sens du C*/
 int istrue(object o) {
 
-	if(o == false)
-		return FALSE;
-	else
-		return TRUE;
+    if(o == false)
+        return FALSE;
+    else
+        return TRUE;
 
 }
 
-/* fonction qui teste si l'objet de type symbole o designe une primitive en le cherchant dans l'environnement */
+/* fonction qui teste si l'objet de type primitive */
+int isprimitive(object o) {
+
+    if (o->type ==  SFS_PRIMITIVE)
+        return TRUE;
+    else return FALSE;
+
+}
+
