@@ -38,6 +38,10 @@ void init_primitive ( object env ) {
     make_and_modify_binding(env,"symbol->string",make_primitive(symtostr));
     make_and_modify_binding(env,"string->symbol",make_primitive(strtosym));
 
+    /* manipulation de listes */
+    make_and_modify_binding(env,"car",make_primitive(car_p));
+    make_and_modify_binding(env,"cdr",make_primitive(cdr_p));
+
 }
 
 /* arithmetique */
@@ -387,7 +391,7 @@ object cons(object o) /* cree une liste avec deux objets passe en parametre */
     if (number_of_pair(o)==2)
     {
         object result=NULL;
-        result=make_pair(car(o),make_pair(cadr(o),nil));
+        result=make_pair(car(o),cadr(o));
         return result;
 
     }
@@ -396,6 +400,25 @@ object cons(object o) /* cree une liste avec deux objets passe en parametre */
 }
 
 
+object car_p(object o)
+{
+    if (number_of_pair(o)==1)
+    {
+        return (caar(o));
+    }
+    else {WARNING_MSG("needs exactly one parameter"); return NULL;}
+
+}
+
+object cdr_p(object o)
+{
+    if (number_of_pair(o)==1)
+    {
+        return (cdar(o));
+    }
+    else {WARNING_MSG("needs exactly one parameter"); return NULL;}
+
+}
 object chtoint (object o){
 
 	return make_character((char)get_number(o));

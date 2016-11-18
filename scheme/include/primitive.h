@@ -26,6 +26,8 @@ object null_p(object);
 /* manip de listes */
 
 object cons(object);
+object car_p(object);
+object cdr_p(object);
 
 /* convertion de type */
 object chtoint (object);

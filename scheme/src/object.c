@@ -168,7 +168,7 @@ object search_env(char* name, object env)
         obj_temp=cdr(obj_temp); /* a la fin du while obj_temp vaudra nil et ne sera plus une paire */
     }
     DEBUG_MSG("Not found");
-    
+
     return NULL ;
 }
 
@@ -300,7 +300,12 @@ object modify_cdr(object o, object cdr)
 }
 
 char* whattype(object o)
-{   if (o->type==SFS_SYMBOL) {
+{
+    if (o==NULL)
+    {
+        return NULL;
+    }
+    if (o->type==SFS_SYMBOL) {
         return "symbol";
     }
     if (o->type==SFS_PAIR) {

@@ -213,8 +213,7 @@ uint  sfs_get_sexpr( char *input, FILE *fp ) {
                         }
                     }
                     break;
-                case '\'':
-                    break;
+
                 case '"':
                     if ( i<2 || chunk[i-1] != '\\' ) {
                         if ( in_string == FALSE ) {
