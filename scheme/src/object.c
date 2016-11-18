@@ -319,6 +319,7 @@ char* whattype(object o)
         return "number";
     }
     return "No type recognised";
+
 }
 
 /*fonction qui test si l'objet est une pair*/
