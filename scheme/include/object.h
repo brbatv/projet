@@ -84,13 +84,14 @@ int istrue(object);
 object make_env(object);
 object make_binding(char*,object);
 object modify_binding(object, object);
-void make_and_modify_binding(object environment, char* name, object value);
+object make_and_modify_binding(object environment, char* name, object value);
 object search_env(char*,object);
 object search_val_env(char*, object);
 object search_under(char*,object);
 object search_val_under(char*, object);
 /* fin de gestion des environnements */
 char* get_symbol (object symbol,char*);
+char get_character(object);
 char* whattype(object o);
 int get_number(object o);
 int number_of_pair(object o);

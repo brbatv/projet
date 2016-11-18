@@ -118,15 +118,7 @@ object make_binding(char* name, object environment) {
     DEBUG_MSG("Making a new binding...");
     object binding = make_pair(nil,car(environment));
     modify_car(binding,make_pair(make_symbol(name),nil));
-    modify_car(environment,binding);/*
-
-
-  object last_element_before_nil=car(environment);
-  while (cdr(last_element_before_nil)!=nil)
-    {
-    last_element_before_nil=cdr(last_element_before_nil);
-    }
-    modify_cdr(last_element_before_nil,binding);*/
+    modify_car(environment,binding);
 
     DEBUG_MSG("New binding created successfully : name of variable is %s.",name);
     return car(binding); /* la nouvelle paire du binding tq car(pair) = nom et cdr(pair)=valeur*/
@@ -139,9 +131,11 @@ object modify_binding(object binding, object value)
     return cdr(binding); /* renvoie la valeur du binding*/
 }
 
-void make_and_modify_binding(object environment, char* name, object value) /* fonction qui cree directement un nouveau binding et assigne la valeur value */
-{
-    modify_binding(make_binding(name,environment),value);
+object make_and_modify_binding(object environment, char* name, object value) /* fonction qui cree directement un nouveau binding et assigne la valeur value et renvoie l'object symbole */
+{   
+    object o = make_binding(name,environment);
+    modify_binding(o,value);
+    return car(o);
 }
 
 /* fonction qui cherche une variable dans 1 environnement et renvoie binding si trouve, sinon renvoie nil*/
@@ -218,6 +212,10 @@ char* get_symbol (object symbol,char* string)
 
 int get_number (object o)
 {   return o->this.number.this.integer;
+}
+
+char get_character (object o)
+{   return o->this.character;
 }
 
 

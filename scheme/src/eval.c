@@ -41,9 +41,7 @@ object define_eval(object input) {
     }
     else {
 
-        make_and_modify_binding(current_env,name_of_new_variable,o);
-        DEBUG_MSG("...done");
-        return NULL;
+        return make_and_modify_binding(current_env,name_of_new_variable,o);
     }
 }
 
@@ -112,7 +110,7 @@ object set_eval(object input)
 
             modify_binding(o,second_parameter);
 
-            return NULL;
+            return car(o);
         }
 
     }
@@ -262,7 +260,6 @@ object arguments_eval ( object input ) {
 		modify_car(p,sfs_eval(car(p)));
 		p = cdr(p);
 		}
-    sfs_print(input);
 	return input;
 
 }

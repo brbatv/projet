@@ -421,13 +421,31 @@ object cdr_p(object o)
 }
 object chtoint (object o){
 
-	return make_character((char)get_number(o));
+	if(!ischar(car(o))){
+		WARNING_MSG("char->integer need an integer as argument");
+		return NULL;
+		}
+	if(cdr(o)!=nil){
+		WARNING_MSG("too many arguments in char->integer");
+		return NULL;	
+		}
+		
+	return make_integer((int)get_character(car(o)));
 
 	}
 
 object inttoch (object o){
-
-	return make_character((char)get_number(o));
+	
+	if(!ischar(car(o))){
+		WARNING_MSG("integer->char need a character as argument");
+		return NULL;
+		}
+	if(cdr(o)!=nil){
+		WARNING_MSG("too many arguments in integer->char");
+		return NULL;	
+		}
+		
+	return make_character((char)get_number(car(o)));
 
 	}
 
