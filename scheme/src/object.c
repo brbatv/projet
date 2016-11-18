@@ -168,14 +168,15 @@ object search_env(char* name, object env)
         obj_temp=cdr(obj_temp); /* a la fin du while obj_temp vaudra nil et ne sera plus une paire */
     }
     DEBUG_MSG("Not found");
-    return nil;
+    
+    return NULL ;
 }
 
 /* fonction qui cherche une variable dans 1 environnement et renvoie sa valeur si trouve, sinon renvoie NULL */
 object search_val_env(char* name, object env) {
 
     object o = search_env(name,env);
-    if(isnil(o))
+    if(o == NULL)
         return NULL;
     else return cdr(o);
 
@@ -184,7 +185,7 @@ object search_val_env(char* name, object env) {
 
 /* fonction qui cherche une variable dans ts les environnement en dessous et renvoie binding si trouve, sinon renvoie nil */
 object search_under(char* name,object env) {
-    object env_temp=env;
+    object env_temp = env;
 
     while (env_temp!=nil)
     {
@@ -218,6 +219,8 @@ char* get_symbol (object symbol,char* string)
 int get_number (object o)
 {   return o->this.number.this.integer;
 }
+
+
 /*retourne le car de la pair object o, nil si object o n'est pas une pair */
 object car(object o) {
 
@@ -325,6 +328,8 @@ char* whattype(object o)
 /*fonction qui test si l'objet est une pair*/
 int ispair(object o) {
 
+    if (o == NULL)
+	return FALSE;
     if (o->type == 	SFS_PAIR)
         return TRUE;
     else return FALSE;
@@ -334,6 +339,8 @@ int ispair(object o) {
 /*fonction qui test si l'objet est un symbol*/
 int issymbol(object o) {
 
+     if (o == NULL)
+	return FALSE;
 
     if (o->type ==  SFS_SYMBOL)
         return TRUE;
@@ -344,6 +351,8 @@ int issymbol(object o) {
 int isnumber(object o)
 {
 
+    if (o == NULL)
+	return FALSE;
     if (o->type ==  SFS_NUMBER)
         return TRUE;
     else return FALSE;
@@ -353,7 +362,8 @@ int isnumber(object o)
 
 int ischar(object o)
 {
-
+    if (o == NULL)
+	return FALSE;
     if (o->type ==  SFS_CHARACTER)
         return TRUE;
     else return FALSE;
@@ -364,6 +374,8 @@ int ischar(object o)
 int isstring(object o)
 {
 
+    if (o == NULL)
+	return FALSE;
     if (o->type ==  SFS_STRING)
         return TRUE;
     else return FALSE;
@@ -374,6 +386,8 @@ int isstring(object o)
 int isboolean(object o)
 {
 
+    if (o == NULL)
+	return FALSE;
     if (o->type ==  SFS_BOOLEAN)
         return TRUE;
     else return FALSE;
@@ -384,6 +398,8 @@ int isboolean(object o)
 /*fonction qui test si l'objet est nil*/
 int isnil(object o) {
 
+    if (o == NULL)
+	return FALSE;
     if (o == nil)
         return TRUE;
     else return FALSE;
@@ -393,6 +409,9 @@ int isnil(object o) {
 /*fonction qui test si l'objet est un atom*/
 int isatom(object o) {
 
+
+    if (o == NULL)
+	return FALSE;
     return !ispair(o);
 }
 
@@ -476,6 +495,8 @@ int istrue(object o) {
 /* fonction qui teste si l'objet de type primitive */
 int isprimitive(object o) {
 
+    if (o == NULL)
+	return FALSE;
     if (o->type ==  SFS_PRIMITIVE)
         return TRUE;
     else return FALSE;
