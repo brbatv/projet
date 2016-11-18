@@ -21,3 +21,7 @@ object char_p(object);
 object string_p(object);
 object pair_p(object);
 object null_p(object);
+
+/* manip de listes */
+
+object cons(object);
