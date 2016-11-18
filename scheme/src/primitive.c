@@ -11,6 +11,7 @@
 
 void init_primitive ( object env ) {
 
+    /* arithmetique */
     make_and_modify_binding(env,"+",make_primitive(plus));
     make_and_modify_binding(env,"-",make_primitive(minus));
     make_and_modify_binding(env,"*",make_primitive(multiply));
@@ -18,6 +19,8 @@ void init_primitive ( object env ) {
     make_and_modify_binding(env,">",make_primitive(superior));
     make_and_modify_binding(env,"<",make_primitive(inferior));
     make_and_modify_binding(env,"=",make_primitive(equal));
+
+    /* type test */
     make_and_modify_binding(env,"boolean?",make_primitive(boolean_p));
     make_and_modify_binding(env,"symbol?",make_primitive(symbol_p));
     make_and_modify_binding(env,"integer?",make_primitive(integer_p));
@@ -26,6 +29,15 @@ void init_primitive ( object env ) {
     make_and_modify_binding(env,"pair?",make_primitive(pair_p));
     make_and_modify_binding(env,"null?",make_primitive(null_p));
     make_and_modify_binding(env,"cons",make_primitive(cons));
+
+    /* convertion de type */
+    make_and_modify_binding(env,"char->integer",make_primitive(chtoint));
+    make_and_modify_binding(env,"integer->char",make_primitive(inttoch));
+    make_and_modify_binding(env,"number->string",make_primitive(numbtostr));
+    make_and_modify_binding(env,"string->number",make_primitive(strtonumb));
+    make_and_modify_binding(env,"symbol->string",make_primitive(symtostr));
+    make_and_modify_binding(env,"string->symbol",make_primitive(strtosym));
+
 }
 
 /* arithmetique */
@@ -383,4 +395,40 @@ object cons(object o) /* cree une liste avec deux objets passe en parametre */
 
 }
 
+
+object chtoint (object o){
+
+	return make_character((char)get_number(o));
+
+	}
+
+object inttoch (object o){
+
+	return make_character((char)get_number(o));
+
+	}
+
+object numbtostr (object o){
+
+	return o;
+
+	}
+
+object strtonumb (object o){
+
+	return o;
+
+	}
+
+object symtostr (object o){
+
+	return o;
+
+	}
+
+object strtosym (object o){
+
+return o;
+
+}
 

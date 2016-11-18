@@ -22,6 +22,16 @@ object string_p(object);
 object pair_p(object);
 object null_p(object);
 
+
 /* manip de listes */
 
 object cons(object);
+
+/* convertion de type */
+object chtoint (object);
+object inttoch (object);
+object numbtostr (object);
+object strtonumb (object);
+object symtostr (object);
+object strtosym (object);
+

@@ -169,8 +169,9 @@ object sfs_eval( object input ) {
             }
 
         }
-        else return input;
-    }
+	DEBUG_MSG("Evaluating an auto-evaluating object");
+        return input;
+	}
 
     if (ispair(input)) {
 
@@ -240,7 +241,9 @@ object sfs_eval( object input ) {
                 return set_eval(input);
             }
             else {
-                DEBUG_MSG("Aucune forme détectée... pour l'instant. Input est de type %s ",whattype(input));
+                DEBUG_MSG("Aucune forme détectée... pour l'instant. Input est de type %s",whattype(input));
+                WARNING_MSG("undefined symbol %s",get_symbol(symb,name));
+	    return NULL;
             }
         }
     }
