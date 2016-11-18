@@ -213,6 +213,8 @@ uint  sfs_get_sexpr( char *input, FILE *fp ) {
                         }
                     }
                     break;
+                case '\'':
+                    break;
                 case '"':
                     if ( i<2 || chunk[i-1] != '\\' ) {
                         if ( in_string == FALSE ) {
@@ -309,7 +311,7 @@ object sfs_read( char *input, uint *here ) {
     {   (*here)++;
         next_usefull_char(input,here);
 
-        return make_pair(make_symbol("quote"),sfs_read_pair(input,here));
+        return make_pair(make_symbol("quote"),make_pair(sfs_read(input,here),nil));
 
 
     }

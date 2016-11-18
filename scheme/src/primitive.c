@@ -19,7 +19,7 @@ void init_primitive ( object env ) {
     make_and_modify_binding(env,">",make_primitive(superior));
     make_and_modify_binding(env,"<",make_primitive(inferior));
     make_and_modify_binding(env,"=",make_primitive(equal));
-	
+
     /* type test */
     make_and_modify_binding(env,"boolean?",make_primitive(boolean_p));
     make_and_modify_binding(env,"symbol?",make_primitive(symbol_p));
@@ -28,6 +28,7 @@ void init_primitive ( object env ) {
     make_and_modify_binding(env,"string?",make_primitive(string_p));
     make_and_modify_binding(env,"pair?",make_primitive(pair_p));
     make_and_modify_binding(env,"null?",make_primitive(null_p));
+    make_and_modify_binding(env,"cons",make_primitive(cons));
 
     /* convertion de type */
     make_and_modify_binding(env,"char->integer",make_primitive(chtoint));
@@ -87,7 +88,7 @@ object minus(object o) /* renvoie x1 - ( x2 + x3 + ... xn) */
     }
 }
 
-object multiply(object o)
+object multiply(object o) /* multiplie lles parametres */
 {
     int m=1;
     object obj_temp=o;
@@ -111,7 +112,7 @@ object multiply(object o)
     }
 }
 
-object quotient(object o)
+object quotient(object o) /* divise successivement les parametres... si un seul retourne 1/parametre */
 {
     if (number_of_pair(o)>=2)
     {   int q=get_number(car(o));
@@ -127,13 +128,13 @@ object quotient(object o)
         return make_integer(1/q);
     }
     else {
-        DEBUG_MSG("needs at least 1 parameters");
+        WARNING_MSG("needs at least 1 parameters");
         return NULL;
     }
 }
 
 
-object superior(object o)
+object superior(object o) /* teste si la liste est decroissante */
 {
     if (number_of_pair(o)>=2)
     {   object obj_temp=o;
@@ -158,7 +159,7 @@ object superior(object o)
         return resultat;
     }
     else {
-        DEBUG_MSG("needs at least 2 parameters and only numbers");
+        WARNING_MSG("needs at least 2 parameters and only numbers");
         return NULL;
     }
 
@@ -167,7 +168,7 @@ object superior(object o)
 
 
 
-object equal(object o)
+object equal(object o) /* teste si les nombres de la liste sont egaux */
 {
     if (number_of_pair(o)>=2)
     {   object obj_temp=o;
@@ -192,14 +193,14 @@ object equal(object o)
         return resultat;
     }
     else {
-        DEBUG_MSG("needs at least 2 parameters and only numbers");
+        WARNING_MSG("needs at least 2 parameters and only numbers");
         return NULL;
     }
 
 
 }
 
-object inferior(object o)
+object inferior(object o) /* teste si la liste est croissante */
 {
     if (number_of_pair(o)>=2)
     {   object obj_temp=o;
@@ -224,7 +225,7 @@ object inferior(object o)
         return resultat;
     }
     else {
-        DEBUG_MSG("needs at least 2 parameters and only numbers");
+        WARNING_MSG("needs at least 2 parameters and only numbers");
         return NULL;
     }
 
@@ -235,7 +236,7 @@ object inferior(object o)
 
 /* object remainder(object o); */
 
-object boolean_p(object o)
+object boolean_p(object o) /* teste si les elements de la liste sont des boolean*/
 {
     object resultat=true;
     object obj_temp=o;
@@ -252,12 +253,12 @@ object boolean_p(object o)
     }
     return resultat;
     }
-    else{DEBUG_MSG("needs at least 1 parameter"); return NULL;}
+    else{WARNING_MSG("needs at least 1 parameter"); return NULL;}
 
 }
 
 
-object symbol_p(object o)
+object symbol_p(object o) /* teste si les elements de la liste sont des symboles */
 {
     object resultat=true;
     object obj_temp=o;
@@ -274,12 +275,12 @@ object symbol_p(object o)
     }
     return resultat;
     }
-    else{DEBUG_MSG("needs at least 1 parameter"); return NULL;}
+    else{WARNING_MSG("needs at least 1 parameter"); return NULL;}
 
 }
 
 
-object integer_p(object o)
+object integer_p(object o) /* teste si les elements de la liste sont des int */
 {
     object resultat=true;
     object obj_temp=o;
@@ -296,21 +297,21 @@ object integer_p(object o)
     }
     return resultat;
     }
-    else{DEBUG_MSG("needs at least 1 parameter"); return NULL;}
+    else{WARNING_MSG("needs at least 1 parameter"); return NULL;}
 
 }
 
 
-object char_p(object o)
-{
+object char_p(object o) /* teste si les elements de la liste sont des caracteres */
+{   printf("wesh gros");
     object resultat=true;
     object obj_temp=o;
     if (number_of_pair(o)>=1)
     {
     while (obj_temp!=nil)
-    {
+    {   DEBUG_MSG("type is %s",whattype(obj_temp));
         if(!ischar(car(obj_temp)))
-        {
+        {   DEBUG_MSG("this is not char");
             resultat=false;
             obj_temp=nil;
         }
@@ -318,19 +319,19 @@ object char_p(object o)
     }
     return resultat;
     }
-    else{DEBUG_MSG("needs at least 1 parameter"); return NULL;}
+    else{WARNING_MSG("needs at least 1 parameter"); return NULL;}
 
 }
 
 
-object string_p(object o)
+object string_p(object o) /* teste si les elements de la liste sont des string */
 {
     object resultat=true;
     object obj_temp=o;
     if (number_of_pair(o)>=1)
     {
     while (obj_temp!=nil)
-    {
+    {   DEBUG_MSG("type is %s",whattype(obj_temp));
         if(!isstring(car(obj_temp)))
         {
             resultat=false;
@@ -340,12 +341,12 @@ object string_p(object o)
     }
     return resultat;
     }
-    else{DEBUG_MSG("needs at least 1 parameter"); return NULL;}
+    else{WARNING_MSG("needs at least 1 parameter"); return NULL;}
 
 }
 
 
-object pair_p(object o)
+object pair_p(object o) /* teste si les elements de la liste sont des paires */
 {
     object resultat=true;
     object obj_temp=o;
@@ -362,11 +363,11 @@ object pair_p(object o)
     }
     return resultat;
     }
-    else{DEBUG_MSG("needs at least 1 parameter"); return NULL;}
+    else{WARNING_MSG("needs at least 1 parameter"); return NULL;}
 
 }
 
-object null_p(object o)
+object null_p(object o) /* teste si les elements de la liste sont nil */
 {
     object resultat=true;
     if (number_of_pair(o)==1)
@@ -378,6 +379,20 @@ object null_p(object o)
         return resultat;
     }
     else {DEBUG_MSG("needs only one parameter"); return NULL;}
+}
+
+
+object cons(object o) /* cree une liste avec deux objets passe en parametre */
+{
+    if (number_of_pair(o)==2)
+    {
+        object result=NULL;
+        result=make_pair(car(o),make_pair(cadr(o),nil));
+        return result;
+
+    }
+    else {WARNING_MSG("needs exactly two parameters bitch"); return NULL;}
+
 }
 
 
@@ -434,3 +449,4 @@ object strtosym (object o){
 return o;
 
 }
+

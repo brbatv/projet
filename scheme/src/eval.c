@@ -260,6 +260,7 @@ object arguments_eval ( object input ) {
 		modify_car(p,sfs_eval(car(p)));
 		p = cdr(p);
 		}
+    sfs_print(input);
 	return input;
 
 }
