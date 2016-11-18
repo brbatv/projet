@@ -10,6 +10,7 @@ object multiply(object);
 object quotient(object);
 object superior(object);
 object inferior(object);
+object equal(object);
 
 
 /* predicats */

@@ -15,7 +15,16 @@ void init_primitive ( object env ) {
     make_and_modify_binding(env,"-",make_primitive(minus));
     make_and_modify_binding(env,"*",make_primitive(multiply));
     make_and_modify_binding(env,"quotient",make_primitive(quotient));
-
+    make_and_modify_binding(env,">",make_primitive(superior));
+    make_and_modify_binding(env,"<",make_primitive(inferior));
+    make_and_modify_binding(env,"=",make_primitive(equal));
+    make_and_modify_binding(env,"boolean?",make_primitive(boolean_p));
+    make_and_modify_binding(env,"symbol?",make_primitive(symbol_p));
+    make_and_modify_binding(env,"integer?",make_primitive(integer_p));
+    make_and_modify_binding(env,"char?",make_primitive(integer_p));
+    make_and_modify_binding(env,"string?",make_primitive(string_p));
+    make_and_modify_binding(env,"pair?",make_primitive(pair_p));
+    make_and_modify_binding(env,"null?",make_primitive(null_p));
 }
 
 /* arithmetique */
@@ -118,13 +127,47 @@ object superior(object o)
     {   object obj_temp=o;
         int num_temp=0;
         object resultat=true;
-        while (obj_temp !=nil && isnumber(obj_temp))
-        {
+        while (obj_temp !=nil && isnumber(car(obj_temp)))
+        {   DEBUG_MSG("Entering while");
             num_temp=get_number(car(obj_temp));
             obj_temp=cdr(obj_temp);
             if (obj_temp!=nil)
             {
                 if (num_temp<get_number(car(obj_temp)))
+                {
+                    obj_temp=nil;
+                    resultat=false;
+
+
+                }
+            }
+
+        }
+        return resultat;
+    }
+    else {
+        DEBUG_MSG("needs at least 2 parameters and only numbers");
+        return NULL;
+    }
+
+
+}
+
+
+
+object equal(object o)
+{
+    if (number_of_pair(o)>=2)
+    {   object obj_temp=o;
+        int num_temp=0;
+        object resultat=true;
+        while (obj_temp !=nil && isnumber(car(obj_temp)))
+        {
+            num_temp=get_number(car(obj_temp));
+            obj_temp=cdr(obj_temp);
+            if (obj_temp!=nil)
+            {
+                if (num_temp!=get_number(car(obj_temp)))
                 {
                     obj_temp=nil;
                     resultat=false;
@@ -150,7 +193,7 @@ object inferior(object o)
     {   object obj_temp=o;
         int num_temp=0;
         object resultat=true;
-        while (obj_temp !=nil && isnumber(obj_temp))
+        while (obj_temp !=nil && isnumber(car(obj_temp)))
         {
             num_temp=get_number(car(obj_temp));
             obj_temp=cdr(obj_temp);
