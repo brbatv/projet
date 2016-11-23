@@ -92,7 +92,7 @@ object minus(object o) /* renvoie x1 - ( x2 + x3 + ... xn) */
     }
 }
 
-object multiply(object o) /* multiplie lles parametres */
+object multiply(object o) /* multiplie les parametres */
 {
     int m=1;
     object obj_temp=o;
@@ -419,13 +419,15 @@ object cdr_p(object o)
     else {WARNING_MSG("needs exactly one parameter"); return NULL;}
 
 }
+
+
 object chtoint (object o){
 
 	if(!ischar(car(o))){
-		WARNING_MSG("char->integer need an integer as argument");
+		WARNING_MSG("char->integer need an character as argument");
 		return NULL;
 		}
-	if(cdr(o)!=nil){
+	if(number_of_pair(o) != 1){
 		WARNING_MSG("too many arguments in char->integer");
 		return NULL;	
 		}
@@ -436,11 +438,11 @@ object chtoint (object o){
 
 object inttoch (object o){
 	
-	if(!ischar(car(o))){
-		WARNING_MSG("integer->char need a character as argument");
+	if(!isnumber(car(o))){
+		WARNING_MSG("integer->char need an integer as argument");
 		return NULL;
 		}
-	if(cdr(o)!=nil){
+	if(number_of_pair(o) != 1){
 		WARNING_MSG("too many arguments in integer->char");
 		return NULL;	
 		}
@@ -450,26 +452,77 @@ object inttoch (object o){
 	}
 
 object numbtostr (object o){
+	
+	string str;
+	
+	if(!isnumber(car(o))){
+		WARNING_MSG("number->string need a number as argument");
+		return NULL;
+		}
 
-	return o;
+	if(number_of_pair(o) != 1){
+		WARNING_MSG("too many arguments in number->string");
+		return NULL;
+		}
+	sprintf(str,"%d",get_number(car(o)));
+
+	return make_string(str);
 
 	}
 
 object strtonumb (object o){
 
-	return o;
+	uint here = 0;
+	string str;
+	
+	if(!isstring(car(o))){
+		WARNING_MSG("string->number need a number as argument");
+		return NULL;
+		}
+
+	if(number_of_pair(o) != 1){
+		WARNING_MSG("too many arguments in string->number");
+		return NULL;	
+		}
+	get_string(car(o),str);
+	object result = sfs_read_atom(str,&here);
+	if(!isnumber(result)){
+		WARNING_MSG("the string is not readable as a number");
+		return NULL;			
+		}
+	return make_integer(get_number(result));
+		
 
 	}
 
 object symtostr (object o){
+	
+	string str;
+	if(!issymbol(car(o))){
+		WARNING_MSG("symbol->string need a symbol as argument");
+		return NULL;
+		}
 
-	return o;
-
+	if(number_of_pair(o) != 1){
+		WARNING_MSG("too many arguments in symbol->string");
+		return NULL;
+		}
+	get_symbol(car(o),str);	
+	return make_string(str);
 	}
 
 object strtosym (object o){
 
-return o;
+	string str;
+	if(!isstring(car(o))){
+		WARNING_MSG("string->symbol need a string as argument");
+		return NULL;
+		}
 
-}
-
+	if(number_of_pair(o) != 1){
+		WARNING_MSG("too many arguments in string->symbol");
+		return NULL;
+		}
+	get_string(car(o),str);	
+	return make_symbol(str);
+	}

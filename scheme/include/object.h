@@ -92,6 +92,7 @@ object search_val_under(char*, object);
 /* fin de gestion des environnements */
 char* get_symbol (object symbol,char*);
 char get_character(object);
+char* get_string (object string,char* str);
 char* whattype(object o);
 int get_number(object o);
 int number_of_pair(object o);
