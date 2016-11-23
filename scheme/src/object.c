@@ -203,11 +203,18 @@ object search_val_under(char* name,object env) {
 
 }
 
-/*fonction qui récupère la chaine de caractère d'un objet de type symbole et la copie dans string passe en entree. On pourrait utiliser strcmp aussi surement*/
+/*fonction qui récupère la chaine de caractère d'un objet de type symbole et la copie dans string passe en entree. */
 char* get_symbol (object symbol,char* string)
 {
     strcpy(string,symbol->this.symbol);
     return string;
+}
+
+/*fonction qui récupère la chaine de caractère d'un objet de type string et la copie dans string passe en entree. */
+char* get_string (object o,char* str)
+{
+    strcpy(str,o->this.string);
+    return str;
 }
 
 int get_number (object o)
