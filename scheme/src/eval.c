@@ -191,9 +191,14 @@ object sfs_eval( object input ) {
 
             /* cas des primitives */
             if(isprimitive(val)) {
+                object arg_eval=arguments_eval(parametres);
+                if(arg_eval==NULL)
+                {
+                    return NULL;
+                }
 
                 DEBUG_MSG("primitive recognized");
-                return (*val->this.primitive)(arguments_eval ( parametres ));
+                return (*val->this.primitive)(arg_eval);
 
             }
 
@@ -258,6 +263,10 @@ object arguments_eval ( object input ) {
 	DEBUG_MSG("evaluation arguments of a primitive");
 	while (!isnil(p)){
 		modify_car(p,sfs_eval(car(p)));
+		if (car(p)==NULL)
+        {
+            return NULL; /* pour gerer si un symbole est inconnu par exemple */
+        }
 		p = cdr(p);
 		}
 	return input;

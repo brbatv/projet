@@ -28,6 +28,9 @@ object null_p(object);
 object cons(object);
 object car_p(object);
 object cdr_p(object);
+object list_p(object);
+object set_car(object);
+object set_cdr(object);
 
 /* convertion de type */
 object chtoint (object);

@@ -28,7 +28,7 @@ void init_primitive ( object env ) {
     make_and_modify_binding(env,"string?",make_primitive(string_p));
     make_and_modify_binding(env,"pair?",make_primitive(pair_p));
     make_and_modify_binding(env,"null?",make_primitive(null_p));
-    make_and_modify_binding(env,"cons",make_primitive(cons));
+
 
     /* convertion de type */
     make_and_modify_binding(env,"char->integer",make_primitive(chtoint));
@@ -41,6 +41,10 @@ void init_primitive ( object env ) {
     /* manipulation de listes */
     make_and_modify_binding(env,"car",make_primitive(car_p));
     make_and_modify_binding(env,"cdr",make_primitive(cdr_p));
+    make_and_modify_binding(env,"list",make_primitive(list_p));
+    make_and_modify_binding(env,"cons",make_primitive(cons));
+    make_and_modify_binding(env,"set-car!",make_primitive(set_car));
+    make_and_modify_binding(env,"set-cdr!",make_primitive(set_cdr));
 
 }
 
@@ -386,7 +390,7 @@ object null_p(object o) /* teste si les elements de la liste sont nil */
 }
 
 
-object cons(object o) /* cree une liste avec deux objets passe en parametre */
+object cons(object o) /* cree une liste, sans nil a la fin, avec deux objets passe en parametre */
 {
     if (number_of_pair(o)==2)
     {
@@ -419,6 +423,52 @@ object cdr_p(object o)
     else {WARNING_MSG("needs exactly one parameter"); return NULL;}
 
 }
+
+object list_p(object o) /* cree une liste scheme, cad forme une S-expression avec les parametres */
+{
+    if(number_of_pair(o)==0)
+    {
+        return nil;
+    }
+    else
+    {object liste=make_pair(car(o),nil);
+    object obj_temp=cdr(o);
+    object last_element_of_list=liste;
+        while (!isnil(obj_temp))
+        {
+            modify_cdr(last_element_of_list,make_pair(car(obj_temp),nil));
+            obj_temp=cdr(obj_temp);
+            last_element_of_list=cdr(last_element_of_list);
+
+
+        }
+        return liste;
+    }
+}
+
+object set_car(object o)
+{
+    if(number_of_pair(o)==2 && ispair(car(o)))
+    {
+        modify_car(car(o),cadr(o));
+        return car(o);
+    }
+    else{WARNING_MSG("set-car! : Wrong number of argument (must be 2) or 1st argument is not a pair"); return NULL;}
+
+}
+
+object set_cdr(object o)
+{
+    if(number_of_pair(o)==2 && ispair(car(o)))
+    {
+        modify_cdr(car(o),cadr(o));
+        return car(o);
+    }
+    else{WARNING_MSG("set-cdr! : Wrong number of argument (must be 2) or 1st argument is not a pair"); return NULL;}
+
+}
+
+
 object chtoint (object o){
 
 	if(!ischar(car(o))){
@@ -427,24 +477,24 @@ object chtoint (object o){
 		}
 	if(cdr(o)!=nil){
 		WARNING_MSG("too many arguments in char->integer");
-		return NULL;	
+		return NULL;
 		}
-		
+
 	return make_integer((int)get_character(car(o)));
 
 	}
 
 object inttoch (object o){
-	
+
 	if(!ischar(car(o))){
 		WARNING_MSG("integer->char need a character as argument");
 		return NULL;
 		}
 	if(cdr(o)!=nil){
 		WARNING_MSG("too many arguments in integer->char");
-		return NULL;	
+		return NULL;
 		}
-		
+
 	return make_character((char)get_number(car(o)));
 
 	}
