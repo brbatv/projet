@@ -97,7 +97,7 @@ object set_eval(object input)
         return NULL;
     }
     strcpy(name_of_first_parameter,get_symbol(cadr(input),str));
-    object o=search_env(name_of_first_parameter,current_envwebmail phelma);
+    object o=search_env(name_of_first_parameter,current_env);
     if (isnil(o))
     {   WARNING_MSG("set! needs a symbol already defined, %s is not defined",name_of_first_parameter);
         return NULL;
