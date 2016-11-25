@@ -13,8 +13,9 @@
 #include <stdio.h>
 
 void sfs_print_atom( object o ) {
-    DEBUG_MSG("Printing some %s",whattype(o));
 
+    DEBUG_MSG("Printing some %s",whattype(o));
+    if (o==NULL) {return;}
     switch(o->type)
 
     {
@@ -56,6 +57,14 @@ void sfs_print_pair( object o) {
     DEBUG_MSG("Printing a pair...");
     printf("(");
     while (o != nil) {
+        if (isatom(cdr(o)) && !isnil(cdr(o)))
+        {   DEBUG_MSG("is it a cons ?");
+            sfs_print(car(o));
+            printf(".");
+            sfs_print(cdr(o));
+            printf(")");
+            return;
+        }
         sfs_print( car( o ) ) ;
         o = cdr( o );
         if(o != nil)

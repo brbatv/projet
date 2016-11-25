@@ -90,11 +90,20 @@ object make_symbol(char* s) {
 object make_pair(object car , object cdr ) {
     DEBUG_MSG("Making a pair of %s and %s ...",whattype(car),whattype(cdr));
     if(car == NULL || cdr == NULL)
-    {return NULL;}
+    {
+        return NULL;
+    }
     object t = make_object(SFS_PAIR);
     t->this.pair.car = car;
     t->this.pair.cdr = cdr;
     return t;
+}
+
+object make_primitive(object(*function)(object)) {
+    object prim = make_object(SFS_PRIMITIVE);
+    prim->this.primitive = function;
+    return prim;
+
 }
 
 
@@ -109,15 +118,7 @@ object make_binding(char* name, object environment) {
     DEBUG_MSG("Making a new binding...");
     object binding = make_pair(nil,car(environment));
     modify_car(binding,make_pair(make_symbol(name),nil));
-    modify_car(environment,binding);/*
-
-
-  object last_element_before_nil=car(environment);
-  while (cdr(last_element_before_nil)!=nil)
-    {
-    last_element_before_nil=cdr(last_element_before_nil);
-    }
-    modify_cdr(last_element_before_nil,binding);*/
+    modify_car(environment,binding);
 
     DEBUG_MSG("New binding created successfully : name of variable is %s.",name);
     return car(binding); /* la nouvelle paire du binding tq car(pair) = nom et cdr(pair)=valeur*/
@@ -130,9 +131,11 @@ object modify_binding(object binding, object value)
     return cdr(binding); /* renvoie la valeur du binding*/
 }
 
-void make_and_modify_binding(object environment, char* name, object value) /* fonction qui cree directement un nouveau binding et assigne la valeur value */
-{
-    modify_binding(make_binding(name,environment),value);
+object make_and_modify_binding(object environment, char* name, object value) /* fonction qui cree directement un nouveau binding et assigne la valeur value et renvoie l'object symbole */
+{   
+    object o = make_binding(name,environment);
+    modify_binding(o,value);
+    return car(o);
 }
 
 /* fonction qui cherche une variable dans 1 environnement et renvoie binding si trouve, sinon renvoie nil*/
@@ -149,33 +152,34 @@ object search_env(char* name, object env)
     {
         if(!strcmp(get_symbol(caar(obj_temp),string),name))
         {
-            DEBUG_MSG("Tried to compare %s with %s and found they were the same",get_symbol(caar(obj_temp),string),name);
+            /* DEBUG_MSG("Tried to compare %s with %s and found they were the same",get_symbol(caar(obj_temp),string),name); */
             DEBUG_MSG("%s has been found !",name);
             return car(obj_temp);
         }
         else {
-            DEBUG_MSG("Tried to compare %s with %s and found they were different",get_symbol(caar(obj_temp),string),name);
+            /*DEBUG_MSG("Tried to compare %s with %s and found they were different",get_symbol(caar(obj_temp),string),name);*/
         }
-        obj_temp=cdr(obj_temp); /* a la fin du while obj_temp vaudra nil et ne sera plus une paire*/
+        obj_temp=cdr(obj_temp); /* a la fin du while obj_temp vaudra nil et ne sera plus une paire */
     }
     DEBUG_MSG("Not found");
-    return nil;
+
+    return NULL ;
 }
 
-/* fonction qui cherche une variable dans 1 environnement et renvoie sa valeur si trouve, sinon renvoie NULL*/
+/* fonction qui cherche une variable dans 1 environnement et renvoie sa valeur si trouve, sinon renvoie NULL */
 object search_val_env(char* name, object env) {
 
     object o = search_env(name,env);
-    if(isnil(o))
+    if(o == NULL)
         return NULL;
     else return cdr(o);
 
 }
 
 
-/* fonction qui cherche une variable dans ts les environnement en dessous et renvoie binding si trouve, sinon renvoie nil*/
+/* fonction qui cherche une variable dans ts les environnement en dessous et renvoie binding si trouve, sinon renvoie nil */
 object search_under(char* name,object env) {
-    object env_temp=env;
+    object env_temp = env;
 
     while (env_temp!=nil)
     {
@@ -188,32 +192,39 @@ object search_under(char* name,object env) {
     return nil;
 
 }
-/* fonction qui cherche si une variable existe dans l'environnement courant et en dessous, si existe modifie sa valeur, si n'existe pas la cree dans l'env courant et modifie sa valeur. Renvoie tjr le binding tq car(binding) = nom et cdr (binding) = valeur
-object search_and_modify(char* name, object env, object value)
-{if(search_under(name,env)!=nil)
-    {DEBUG_MSG("%s has been found in environment");
-    return modify_binding(search_under(name,env),value);
 
+/* fonction qui cherche une variable dans ts les environnement en dessous et renvoie sa valeur si trouve, sinon renvoie NULL */
+object search_val_under(char* name,object env) {
 
-    }
- else
- {make
-
- }
-
+    object o = search_under(name,env);
+    if(isnil(o))
+        return NULL;
+    else return cdr(o);
 
 }
-*/
 
-
-
-
-/*fonction qui récupère la chaine de caractère d'un objet de type symbole et la copie dans string passe en entree. On pourrait utiliser strcmp aussi surement*/
+/*fonction qui récupère la chaine de caractère d'un objet de type symbole et la copie dans string passe en entree. */
 char* get_symbol (object symbol,char* string)
 {
     strcpy(string,symbol->this.symbol);
     return string;
 }
+
+/*fonction qui récupère la chaine de caractère d'un objet de type string et la copie dans string passe en entree. */
+char* get_string (object o,char* str)
+{
+    strcpy(str,o->this.string);
+    return str;
+}
+
+int get_number (object o)
+{   return o->this.number.this.integer;
+}
+
+char get_character (object o)
+{   return o->this.character;
+}
+
 
 /*retourne le car de la pair object o, nil si object o n'est pas une pair */
 object car(object o) {
@@ -272,6 +283,17 @@ object cadddr(object o)
     return car(cdddr(o));
 }
 
+int number_of_pair(object o) /* nombre de paires jusqu'au nil*/
+{
+    int n=0;
+    object obj_temp=o;
+    while (ispair(obj_temp))
+    {
+        n=n+1;
+        obj_temp=cdr(obj_temp);
+    }
+    return n;
+}
 
 object modify_car(object o, object car)
 {   o->this.pair.car=car;
@@ -283,7 +305,12 @@ object modify_cdr(object o, object cdr)
 }
 
 char* whattype(object o)
-{   if (o->type==SFS_SYMBOL) {
+{
+    if (o==NULL)
+    {
+        return NULL;
+    }
+    if (o->type==SFS_SYMBOL) {
         return "symbol";
     }
     if (o->type==SFS_PAIR) {
@@ -305,11 +332,14 @@ char* whattype(object o)
         return "number";
     }
     return "No type recognised";
+
 }
 
 /*fonction qui test si l'objet est une pair*/
 int ispair(object o) {
 
+    if (o == NULL)
+	return FALSE;
     if (o->type == 	SFS_PAIR)
         return TRUE;
     else return FALSE;
@@ -319,6 +349,8 @@ int ispair(object o) {
 /*fonction qui test si l'objet est un symbol*/
 int issymbol(object o) {
 
+     if (o == NULL)
+	return FALSE;
 
     if (o->type ==  SFS_SYMBOL)
         return TRUE;
@@ -326,9 +358,58 @@ int issymbol(object o) {
 
 }
 
+int isnumber(object o)
+{
+
+    if (o == NULL)
+	return FALSE;
+    if (o->type ==  SFS_NUMBER)
+        return TRUE;
+    else return FALSE;
+
+
+}
+
+int ischar(object o)
+{
+    if (o == NULL)
+	return FALSE;
+    if (o->type ==  SFS_CHARACTER)
+        return TRUE;
+    else return FALSE;
+
+
+}
+
+int isstring(object o)
+{
+
+    if (o == NULL)
+	return FALSE;
+    if (o->type ==  SFS_STRING)
+        return TRUE;
+    else return FALSE;
+
+
+}
+
+int isboolean(object o)
+{
+
+    if (o == NULL)
+	return FALSE;
+    if (o->type ==  SFS_BOOLEAN)
+        return TRUE;
+    else return FALSE;
+
+
+}
+
 /*fonction qui test si l'objet est nil*/
 int isnil(object o) {
 
+    if (o == NULL)
+	return FALSE;
     if (o == nil)
         return TRUE;
     else return FALSE;
@@ -338,6 +419,9 @@ int isnil(object o) {
 /*fonction qui test si l'objet est un atom*/
 int isatom(object o) {
 
+
+    if (o == NULL)
+	return FALSE;
     return !ispair(o);
 }
 
@@ -411,9 +495,21 @@ int isform(object o) {
 /*fonction qui test si l'objet o est vrai ou faux au sens du Scheme et renvoie la valeur FASLE ou TRUE au sens du C*/
 int istrue(object o) {
 
-    if(o==false)
+    if(o == false)
         return FALSE;
     else
         return TRUE;
 
 }
+
+/* fonction qui teste si l'objet de type primitive */
+int isprimitive(object o) {
+
+    if (o == NULL)
+	return FALSE;
+    if (o->type ==  SFS_PRIMITIVE)
+        return TRUE;
+    else return FALSE;
+
+}
+

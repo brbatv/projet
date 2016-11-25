@@ -10,6 +10,10 @@
 
 #include <stdio.h>
 #include <ctype.h>
+
+#include <readline/readline.h>
+#include <readline/history.h>
+
 #include "read.h"
 
 
@@ -116,8 +120,7 @@ uint  sfs_get_sexpr( char *input, FILE *fp ) {
 
     do {
         ret = NULL;
-        chunk=k;
-        memset( chunk, '\0', BIGSTRING );
+        chunk = NULL;
 
         /* si en mode interactif*/
         if ( stdin == fp ) {
@@ -141,10 +144,7 @@ uint  sfs_get_sexpr( char *input, FILE *fp ) {
             }
 
             /*saisie de la prochaine ligne à ajouter dans l'input*/
-            printf("%s",sfs_prompt);
-            ret = fgets( chunk, BIGSTRING, fp );
-            if (ret && chunk[strlen(chunk)-1] == '\n') chunk[strlen(chunk)-1] = '\0';
-
+            chunk = readline( sfs_prompt );
         }
         /*si en mode fichier*/
         else {
@@ -213,6 +213,7 @@ uint  sfs_get_sexpr( char *input, FILE *fp ) {
                         }
                     }
                     break;
+
                 case '"':
                     if ( i<2 || chunk[i-1] != '\\' ) {
                         if ( in_string == FALSE ) {
@@ -283,6 +284,9 @@ uint  sfs_get_sexpr( char *input, FILE *fp ) {
     /* Suppression des espaces restant a la fin de l'expression, notamment le dernier '\n' */
     while (isspace(input[strlen(input)-1])) input[strlen(input)-1] = '\0';
 
+    if(stdin == fp) {
+        add_history( input );
+    }
     return S_OK;
 }
 
@@ -306,7 +310,7 @@ object sfs_read( char *input, uint *here ) {
     {   (*here)++;
         next_usefull_char(input,here);
 
-        return make_pair(make_symbol("quote"),sfs_read_pair(input,here));
+        return make_pair(make_symbol("quote"),make_pair(sfs_read(input,here),nil));
 
 
     }

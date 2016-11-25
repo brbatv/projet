@@ -19,6 +19,7 @@
 #include "read.h"
 #include "eval.h"
 #include "print.h"
+#include "primitive.h"
 
 /* mode d'interaction avec l'interpreteur (exemple)*/
 typedef enum {INTERACTIF,SCRIPT} inter_mode;
@@ -37,23 +38,23 @@ object quote = NULL;
 object current_env=NULL;
 
 void init_interpreter ( void ) {
-    /*object i=make_symbol("nil");*/
     nil = make_nil();
     false = make_boolean(FALSE);
     true = make_boolean(TRUE);
     object top_level = make_env(nil);
     current_env=top_level;
-    /*modify_car(top_level,make_pair(make_pair(i,nil),nil));*/
 
+    /* primitives initialization */
+    init_primitive ( top_level );
+
+    /* forms initializaton */
     make_binding("quote",top_level);
     make_binding("define",top_level);
     make_binding("set!",top_level);
     make_binding("if",top_level);
     make_binding("and",top_level);
     make_binding("or",top_level);
-    /*quote = make_quote();*/
-
-    /*ajouter l'initialisation des formes scheme de base (quote, define, set!, if, and et or */
+    make_binding("let",top_level);
 
 }
 
@@ -132,14 +133,6 @@ int main ( int argc, char *argv[] ) {
         if ( 0 == strlen( input ) ) {
             continue;
         }
-
-        /* Pour le step 0 on se contente d'afficher */
-        /* la S-Expression lue */
-        /* puis d'en lire une autre */
-        /* METTRE EN COMMENTAIRE LES DEUX LIGNES SUIVANTES */
-        /* POUR PASSER A L'INCREMENT 1 */
-        /*printf("%s\n", input );
-        continue;*/
 
         here  = 0;
         sexpr = sfs_read( input, &here );
