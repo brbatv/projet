@@ -139,6 +139,10 @@ char* whattype(object o)
     if (o->type==SFS_NUMBER) {
         return "number";
     }
+    if (o->type==SFS_COMPOUND)
+    {
+        return "compound";
+    }
     return "No type recognised";
 
 }
