@@ -225,7 +225,7 @@ object sfs_eval( object input, object env) {
                 return NULL;
             }
             get_symbol(input,str);
-            val = search_val_env(str,env);
+            val = search_val_under(str,env);
             if(val!=NULL) return val; /* le symbole est bien defini dans l'environnement courant */
             else {
                 WARNING_MSG("Unknown symbol %s",str);
@@ -243,7 +243,6 @@ object sfs_eval( object input, object env) {
         object 	symb = car(input);
         object 	parametres = cdr(input);
         object	val = NULL;
-        char 	name[256];
 
 	    /* cas quote */
             if (isquote(symb))
@@ -308,33 +307,28 @@ object sfs_eval( object input, object env) {
             return let_eval(parametres,env);
 
             }
-
-            val = search_val_under(get_symbol(symb,name),env);
+	    
+            val = sfs_eval(symb,env);
       
             /* cas des primitives */
             if(isprimitive(val)) {
+		DEBUG_MSG("primitive recognized");
                 object arg_eval=arguments_eval(parametres,env);
                 if(arg_eval==NULL)
                 {
                     return NULL;
                 }
-
-                DEBUG_MSG("primitive recognized");
+                
                 return (*val->this.primitive)(arg_eval);
 
             }
-
+	    
             /* cas des agregats */
 	    if(iscompound(val)) {
-
+		
+		object local_env = make_env(env);
 	    	return input;
 	    
-            }
-
-            else {
-                DEBUG_MSG("Aucune forme détectée... pour l'instant. Input est de type %s",whattype(input));
-                WARNING_MSG("undefined symbol %s",get_symbol(symb,name));
-                return NULL;
             }
     }
 
