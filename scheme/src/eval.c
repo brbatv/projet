@@ -162,9 +162,31 @@ return  car(o);
 /* fonction qui evalue la forme lambda */
 object lambda_eval(object input, object env){
 	
+	int n = number_of_pair(input);
+		if (n != 2){
+			WARNING_MSG("lambda needs 2 arguments");
+			return NULL;
+			}
+		if (!ispair(car(input))){
+			WARNING_MSG("problem in lambda's arguments");
+			return NULL;
+			}
+		else{
+		object o = car(input);
+		while (!isnil(o)){
+			if(!issymbol(o)){
+				WARNING_MSG("lambda's parameters must be symbols");
+				return NULL;
+				}
+			o = cdr(o);
+			}
 	
-	return input;
-
+	object parameters = car(input);
+	object body = cadr(input);
+	object environnement = env;
+	
+	return make_compound(parameters,body,environnement);
+	}
 }
 
 /* fonction qui evalue la forme let */
