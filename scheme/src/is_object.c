@@ -149,10 +149,30 @@ int isor(object o) {
 
 }
 
+/*fonction qui renvoie un booleen en fonction de si oui ou non o est le symbole let*/
+int islet(object o) {
+
+    if(o->type == SFS_SYMBOL && strcmp(o->this.symbol,"let") == 0)
+        return TRUE;
+    else
+        return FALSE;
+
+}
+
+/*fonction qui renvoie un booleen en fonction de si oui ou non o est le symbole lambda*/
+int islambda(object o) {
+
+    if(o->type == SFS_SYMBOL && strcmp(o->this.symbol,"lambda") == 0)
+        return TRUE;
+    else
+        return FALSE;
+
+}
+
 /*fonction qui renvoie un booleen en fonction de si oui ou non o est une forme*/
 int isform(object o) {
 
-    return isdefine(o) || isset(o) || isif(o) || isand(o) || isor(o) || isbegin(o);
+    return isdefine(o) || isset(o) || isif(o) || isand(o) || isor(o) || isbegin(o) || islet(o) || islambda(o);
 
 }
 
@@ -167,7 +187,6 @@ int istrue(object o) {
 }
 
 /*fonction qui test si la forme est begin*/
-
 int isbegin(object o)
 {    if(o->type == SFS_SYMBOL && strcmp(o->this.symbol,"begin") == 0)
         return TRUE;

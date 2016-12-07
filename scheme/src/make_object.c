@@ -97,8 +97,8 @@ object make_primitive(object(*function)(object)) {
 }
 
 
-/* fonction qui permet de creer un nouvel environnement sous cdr */
-object make_env(object cdr) {
+/* fonction qui permet de creer un nouvel environnement sous l'environnement env */
+object make_env(object env) {
     DEBUG_MSG("Making a new environnement");
-    return make_pair(nil,cdr);
+    return make_pair(nil,env);
 }

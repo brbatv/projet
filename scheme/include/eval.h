@@ -23,6 +23,8 @@ object if_eval(object input,object env);
 object and_eval(object input,object env);
 object or_eval(object input,object env);
 object begin_eval(object input,object env);
+object lambda_eval(object input,object env);
+object let_eval(object input,object env);
 object sfs_eval(object input,object env);
 object arguments_eval (object input,object env);
 

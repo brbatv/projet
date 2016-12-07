@@ -55,6 +55,7 @@ object init_interpreter ( void ) {
     make_binding("or",top_level);
     make_binding("let",top_level);
     make_binding("begin",top_level);
+    make_binding("lambda",top_level);
     return top_level;
 }
 

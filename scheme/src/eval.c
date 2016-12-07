@@ -97,7 +97,7 @@ object set_eval(object input,object env)
         return NULL;
     }
     strcpy(name_of_first_parameter,get_symbol(car(input),str));
-    object o=search_env(name_of_first_parameter,env);
+    object o = search_under(name_of_first_parameter,env);
     if (isnil(o))
     {   WARNING_MSG("set! needs a symbol already defined, %s is not defined",name_of_first_parameter);
         return NULL;
@@ -152,6 +152,21 @@ for (i=1; i<=n-1;i++)
 o=cdr(o);
 }
 return  car(o);
+}
+
+/* fonction qui evalue la forme lambda */
+object lambda_eval(object input, object env){
+	
+	
+	return input;
+
+}
+
+/* fonction qui evalue la forme let */
+object let_eval(object input, object env){
+
+	return input;
+
 }
 
 /* fonction qui effectue et renvoie l'evaluation de input au sens du scheme*/
@@ -260,6 +275,21 @@ object sfs_eval( object input, object env) {
             { DEBUG_MSG("begin recognized");
 
             return begin_eval(parametres,env);
+
+            }
+	    /* cas lambda */
+            if (islambda(symb))
+            { DEBUG_MSG("begin recognized");
+
+            return lambda_eval(parametres,env);
+
+            }
+	    
+	    /* cas let */
+            if (islet(symb))
+            { DEBUG_MSG("begin recognized");
+
+            return let_eval(parametres,env);
 
             }
 

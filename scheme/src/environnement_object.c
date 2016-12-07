@@ -26,7 +26,7 @@ object make_and_modify_binding(object environment, char* name, object value) /* 
     return car(o);
 }
 
-/* fonction qui cherche une variable dans 1 environnement et renvoie binding si trouve, sinon renvoie nil*/
+/* fonction qui cherche une variable dans 1'environnement et renvoie binding si trouve, sinon renvoie nil */
 object search_env(char* name, object env)
 {   DEBUG_MSG("Searching %s in environment...",name);
     object obj_temp=car(env);
@@ -54,7 +54,7 @@ object search_env(char* name, object env)
     return NULL ;
 }
 
-/* fonction qui cherche une variable dans 1 environnement et renvoie sa valeur si trouve, sinon renvoie NULL */
+/* fonction qui cherche une variable dans 1'environnement et renvoie sa valeur si trouve, sinon renvoie NULL */
 object search_val_env(char* name, object env) {
 
     object o = search_env(name,env);
