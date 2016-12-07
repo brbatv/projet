@@ -113,6 +113,12 @@ object make_env(object cdr) {
     return make_pair(nil,cdr);
 }
 
+
+object make_compound(object parameters, object body, objecr environnement)
+{
+
+
+}
 /* fonction qui permet de créer un nouveau binding en tete d'environnement de nom name et de valeur nil */
 object make_binding(char* name, object environment) {
     DEBUG_MSG("Making a new binding...");
@@ -132,7 +138,7 @@ object modify_binding(object binding, object value)
 }
 
 object make_and_modify_binding(object environment, char* name, object value) /* fonction qui cree directement un nouveau binding et assigne la valeur value et renvoie l'object symbole */
-{   
+{
     object o = make_binding(name,environment);
     modify_binding(o,value);
     return car(o);
@@ -479,6 +485,14 @@ int isand(object o) {
 int isor(object o) {
 
     if(o->type == SFS_SYMBOL && strcmp(o->this.symbol,"or") == 0)
+        return TRUE;
+    else
+        return FALSE;
+
+}
+
+int isbegin(object o)
+{    if(o->type == SFS_SYMBOL && strcmp(o->this.symbol,"begin") == 0)
         return TRUE;
     else
         return FALSE;

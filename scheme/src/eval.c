@@ -144,9 +144,14 @@ object or_eval(object input,object env) {
 
 /* fonction qui evalue la forme begin */
 object begin_eval(object input, object env){
-
-
-
+object o=arguments_eval(input,env);
+int i;
+int  n=number_of_pair(o);
+for (i=1; i<=n-1;i++)
+{
+o=cdr(o);
+}
+return  car(o);
 }
 
 /* fonction qui effectue et renvoie l'evaluation de input au sens du scheme*/
@@ -194,7 +199,7 @@ object sfs_eval( object input, object env) {
         }
         else {
 
-            val = search_val_under(get_symbol(symb,name),current_env);
+            val = search_val_under(get_symbol(symb,name),env);
 
             /* cas des primitives */
             if(isprimitive(val)) {
@@ -251,6 +256,14 @@ object sfs_eval( object input, object env) {
                 return set_eval(input,env);
             }
 	    /* cas begin */
+            if (isbegin(symb))
+            { DEBUG_MSG("begin recognized");
+
+            return begin_eval(input,env);
+
+            }
+
+
             else {
                 DEBUG_MSG("Aucune forme détectée... pour l'instant. Input est de type %s",whattype(input));
                 WARNING_MSG("undefined symbol %s",get_symbol(symb,name));
