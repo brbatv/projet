@@ -39,18 +39,19 @@ object define_eval(object input,object env) { /* input = parametres! */
 
 
     if (ispair(car(input)))
-    {
+    {   DEBUG_MSG("Cas espere dun compound dans define");
         if (issymbol(caar(input)))
         {
-            strcpy(name_of_new_variable,get_symbol(car(input),str));
+            strcpy(name_of_new_variable,get_symbol(caar(input),str));
         }
         else {
             WARNING_MSG("Wrong parameters");
             return NULL;
         }
         object parametres=cdar(input);
-        object lambda_eval=make_pair(parametres,cdr(input));
-        return define_eval(lambda_eval,env);
+        object lambda=make_pair(parametres,cdr(input));
+        o=lambda_eval(lambda,env);
+        return make_and_modify_binding(env,name_of_new_variable,o);
 
 
     }
@@ -172,7 +173,7 @@ object begin_eval(object input, object env) {
 
 /* fonction qui evalue la forme lambda */
 object lambda_eval(object input, object env){
-	
+
 	int n = number_of_pair(input);
 		if (n != 2){
 			WARNING_MSG("lambda needs 2 arguments");
@@ -183,7 +184,7 @@ object lambda_eval(object input, object env){
 			return NULL;
 			}
 		else{
-		object o = car(input);
+		object o = caar(input);
 		while (!isnil(o)){
 			if(!issymbol(o)){
 				WARNING_MSG("lambda's parameters must be symbols");
@@ -191,11 +192,11 @@ object lambda_eval(object input, object env){
 				}
 			o = cdr(o);
 			}
-	
+
 	object parameters = car(input);
 	object body = cadr(input);
 	object environnement = env;
-	
+
 	return make_compound(parameters,body,environnement);
 	}
 }
@@ -322,7 +323,7 @@ object sfs_eval( object input, object env) {
             return lambda_eval(parametres,env);
 
             }
-	    
+
 	    /* cas let */
             if (islet(symb))
             { DEBUG_MSG("begin recognized");
