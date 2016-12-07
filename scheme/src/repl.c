@@ -35,14 +35,13 @@ object nil=NULL;
 object false = NULL;
 object true = NULL;
 object quote = NULL;
-object current_env=NULL;
 
-void init_interpreter ( void ) {
+object init_interpreter ( void ) {
     nil = make_nil();
     false = make_boolean(FALSE);
     true = make_boolean(TRUE);
     object top_level = make_env(nil);
-    current_env=top_level;
+
 
     /* primitives initialization */
     init_primitive ( top_level );
@@ -55,7 +54,8 @@ void init_interpreter ( void ) {
     make_binding("and",top_level);
     make_binding("or",top_level);
     make_binding("let",top_level);
-
+    make_binding("begin",top_level);
+    return top_level;
 }
 
 int main ( int argc, char *argv[] ) {
@@ -90,7 +90,7 @@ int main ( int argc, char *argv[] ) {
         exit( EXIT_SUCCESS );
     }
 
-    init_interpreter();
+    object current_env=init_interpreter();
 
     /*par defaut : mode shell interactif */
     fp = stdin;
@@ -147,7 +147,7 @@ int main ( int argc, char *argv[] ) {
             continue ;
         }
 
-        output = sfs_eval( sexpr );
+        output = sfs_eval( sexpr , current_env );
         if( NULL == output) {
             /* si fichier alors on sort*/
             if (mode == SCRIPT) {

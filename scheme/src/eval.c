@@ -54,7 +54,7 @@ object if_eval(object input,object env) {
     object alternative = cadddr(input);
 
     if(isnil(predicate) || isnil(consequence)) {
-        WARNING_MSG("Define needs two parameters");
+        WARNING_MSG("if needs two parameters");
         return NULL;
     }
     if(istrue(sfs_eval(predicate,env))) {
@@ -79,24 +79,24 @@ object set_eval(object input,object env)
 
     string  name_of_first_parameter;
     string  str;
-    object  second_parameter = sfs_eval(caddr(input),env);
+    object  second_parameter = sfs_eval(cadr(input),env);
     if (!ispair(cdr(input))) /*expression du type (set!  ) */
     {   WARNING_MSG("set! needs two parameters");
         return NULL;
     }
-    if (!ispair(cddr(input))) /* expression du type (set! x) */
+    if (!ispair(cdr(input))) /* expression du type (set! x) */
     {   WARNING_MSG("set! needs two parameters and not only one ");
         return NULL;
     }
-    if (ispair(cdddr(input))) /* note : si un cdr est !ispair <=> isnil si arbre syntaxique bien construit */
+    if (ispair(cddr(input))) /* note : si un cdr est !ispair <=> isnil si arbre syntaxique bien construit */
     {   WARNING_MSG("set! needs no more than two parameters");
         return NULL;
     }
-    if (!issymbol(car(cdr(input))))
+    if (!issymbol(car(input)))
     {   WARNING_MSG("set! needs a symbol as first parameter");
         return NULL;
     }
-    strcpy(name_of_first_parameter,get_symbol(cadr(input),str));
+    strcpy(name_of_first_parameter,get_symbol(car(input),str));
     object o=search_env(name_of_first_parameter,env);
     if (isnil(o))
     {   WARNING_MSG("set! needs a symbol already defined, %s is not defined",name_of_first_parameter);
@@ -144,9 +144,14 @@ object or_eval(object input,object env) {
 
 /* fonction qui evalue la forme begin */
 object begin_eval(object input, object env){
-
-
-
+object o=arguments_eval(input,env);
+int i;
+int  n=number_of_pair(o);
+for (i=1; i<=n-1;i++)
+{
+o=cdr(o);
+}
+return  car(o);
 }
 
 /* fonction qui effectue et renvoie l'evaluation de input au sens du scheme*/
@@ -194,7 +199,7 @@ object sfs_eval( object input, object env) {
         }
         else {
 
-            val = search_val_under(get_symbol(symb,name),current_env);
+            val = search_val_under(get_symbol(symb,name),env);
 
             /* cas des primitives */
             if(isprimitive(val)) {
@@ -248,9 +253,17 @@ object sfs_eval( object input, object env) {
             if (isset(symb))
             {   DEBUG_MSG("set! recognized");
 
-                return set_eval(input,env);
+                return set_eval(parametres,env);
             }
 	    /* cas begin */
+            if (isbegin(symb))
+            { DEBUG_MSG("begin recognized");
+
+            return begin_eval(parametres,env);
+
+            }
+
+
             else {
                 DEBUG_MSG("Aucune forme détectée... pour l'instant. Input est de type %s",whattype(input));
                 WARNING_MSG("undefined symbol %s",get_symbol(symb,name));

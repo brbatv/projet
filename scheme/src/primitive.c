@@ -25,7 +25,7 @@ void init_primitive ( object env ) {
     make_and_modify_binding(env,"boolean?",make_primitive(boolean_p));
     make_and_modify_binding(env,"symbol?",make_primitive(symbol_p));
     make_and_modify_binding(env,"integer?",make_primitive(integer_p));
-    make_and_modify_binding(env,"char?",make_primitive(integer_p));
+    make_and_modify_binding(env,"char?",make_primitive(char_p));
     make_and_modify_binding(env,"string?",make_primitive(string_p));
     make_and_modify_binding(env,"pair?",make_primitive(pair_p));
     make_and_modify_binding(env,"null?",make_primitive(null_p));
@@ -312,7 +312,7 @@ object integer_p(object o) /* teste si les elements de la liste sont des int */
 
 
 object char_p(object o) /* teste si les elements de la liste sont des caracteres */
-{   printf("wesh gros");
+{
     object resultat=true;
     object obj_temp=o;
     if (number_of_pair(o)>=1)

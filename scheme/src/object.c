@@ -142,3 +142,4 @@ char* whattype(object o)
     return "No type recognised";
 
 }
+

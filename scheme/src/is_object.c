@@ -1,6 +1,8 @@
 #include "object.h"
 #include "mem.h"
 
+
+
 /*fonction qui test si l'objet est une pair*/
 int ispair(object o) {
 
@@ -150,7 +152,7 @@ int isor(object o) {
 /*fonction qui renvoie un booleen en fonction de si oui ou non o est une forme*/
 int isform(object o) {
 
-    return isdefine(o) || isset(o) || isif(o) || isand(o) || isor(o);
+    return isdefine(o) || isset(o) || isif(o) || isand(o) || isor(o) || isbegin(o);
 
 }
 
@@ -163,6 +165,17 @@ int istrue(object o) {
         return TRUE;
 
 }
+
+/*fonction qui test si la forme est begin*/
+
+int isbegin(object o)
+{    if(o->type == SFS_SYMBOL && strcmp(o->this.symbol,"begin") == 0)
+        return TRUE;
+    else
+        return FALSE;
+
+}
+
 
 /* fonction qui teste si l'objet de type primitive */
 int isprimitive(object o) {

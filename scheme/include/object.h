@@ -37,6 +37,10 @@ typedef struct object_t {
 	struct object_t *(*primitive)(struct object_t *);
         struct object_t *special;
 
+    struct{ struct object_t *parms;
+                struct object_t *body;
+                struct object_t *envt;} compound;
+
     } this;
 
 } *object;
@@ -51,6 +55,7 @@ object make_pair(object,object);
 object make_string(char*);
 object make_symbol(char*);
 object make_primitive(object(*)(object));
+object make_compound(object parameters, object body, object environnement);
 int ispair(object);
 int isatom (object);
 int issymbol(object);
@@ -77,6 +82,7 @@ int isif(object);
 int isand(object);
 int isor(object);
 int isform(object);
+int isbegin(object);
 /*fin de gestion des formes*/
 int isprimitive(object);
 int istrue(object);
@@ -107,6 +113,7 @@ object modify_cdr(object o, object cdr);
 #define SFS_BOOLEAN      0x05
 #define SFS_SYMBOL       0x06
 #define SFS_PRIMITIVE    0x07
+#define SFS_COMPOUND 0x08
 
 
 extern object nil;
