@@ -12,12 +12,12 @@
 #include "print.h"
 #include "object.h"
 
-object define_eval(object input) {
+object define_eval(object input,object env) {
 
     string  name_of_new_variable;
     string  str;
-    object  o = sfs_eval(caddr(input));
-    if (!ispair(cdr(input))) /*expression du type (define  ) */
+    object  o = sfs_eval(caddr(input),env);
+    if (!ispair(cdr(input))) /* expression du type (define  ) */
     {   WARNING_MSG("Define needs two parameters");
         return NULL;
     }
@@ -41,13 +41,13 @@ object define_eval(object input) {
     }
     else {
 
-        return make_and_modify_binding(current_env,name_of_new_variable,o);
+        return make_and_modify_binding(env,name_of_new_variable,o);
     }
 }
 
 
 /**/
-object if_eval(object input) {
+object if_eval(object input,object env) {
 
     object predicate = cadr(input);
     object consequence = caddr(input);
@@ -57,9 +57,9 @@ object if_eval(object input) {
         WARNING_MSG("if needs two parameters");
         return NULL;
     }
-    if(istrue(sfs_eval(predicate))) {
+    if(istrue(sfs_eval(predicate,env))) {
         ;
-        return sfs_eval(consequence);
+        return sfs_eval(consequence,env);
     }
     else {
         if(isnil(predicate)) {
@@ -68,18 +68,18 @@ object if_eval(object input) {
         }
         else {
             ;
-            return sfs_eval(alternative);
+            return sfs_eval(alternative,env);
         }
     }
 
 }
 
-object set_eval(object input)
+object set_eval(object input,object env)
 {
 
     string  name_of_first_parameter;
     string  str;
-    object  second_parameter = sfs_eval(caddr(input));
+    object  second_parameter = sfs_eval(caddr(input),env);
     if (!ispair(cdr(input))) /*expression du type (set!  ) */
     {   WARNING_MSG("set! needs two parameters");
         return NULL;
@@ -97,7 +97,7 @@ object set_eval(object input)
         return NULL;
     }
     strcpy(name_of_first_parameter,get_symbol(cadr(input),str));
-    object o=search_env(name_of_first_parameter,current_env);
+    object o=search_env(name_of_first_parameter,env);
     if (isnil(o))
     {   WARNING_MSG("set! needs a symbol already defined, %s is not defined",name_of_first_parameter);
         return NULL;
@@ -116,12 +116,12 @@ object set_eval(object input)
     }
 }
 
-object and_eval(object input) {
+object and_eval(object input,object env) {
 
     object o = cdr(input);
     int i = TRUE;
     while (istrue(o) && !isnil(o)) {
-        i = i && istrue(car(o));
+        i = i && istrue(sfs_eval(car(o),env));
         o = cdr(o);
     }
     if(i) return true;
@@ -129,12 +129,12 @@ object and_eval(object input) {
 
 }
 
-object or_eval(object input) {
+object or_eval(object input,object env) {
 
     object o = cdr(input);
     int i = FALSE;
     while (!istrue(o) && !isnil(o)) {
-        i = i || istrue(car(o));
+        i = i || istrue(sfs_eval(car(o),env));
         o = cdr(o);
     }
     if(i) return true;
@@ -142,8 +142,15 @@ object or_eval(object input) {
 
 }
 
-/*fonction qui effectue et renvoie l'evaluation de input au sens du scheme*/
-object sfs_eval( object input ) {
+/* fonction qui evalue la forme begin */
+object begin_eval(object input, object env){
+
+
+
+}
+
+/* fonction qui effectue et renvoie l'evaluation de input au sens du scheme*/
+object sfs_eval( object input, object env) {
 
     string str;
     object val;
@@ -159,7 +166,7 @@ object sfs_eval( object input ) {
                 return NULL;
             }
             get_symbol(input,str);
-            val = search_val_env(str,current_env);
+            val = search_val_env(str,env);
             if(val!=NULL) return val; /* le symbole est bien defini dans l'environnement courant */
             else {
                 WARNING_MSG("Unknown symbol %s",str);
@@ -191,7 +198,7 @@ object sfs_eval( object input ) {
 
             /* cas des primitives */
             if(isprimitive(val)) {
-                object arg_eval=arguments_eval(parametres);
+                object arg_eval=arguments_eval(parametres,env);
                 if(arg_eval==NULL)
                 {
                     return NULL;
@@ -216,33 +223,34 @@ object sfs_eval( object input ) {
             /* cas define */
             if(isdefine(symb))
             {   DEBUG_MSG("define recognized");
-                return define_eval(input);
+                return define_eval(input,env);
             }
 
             /* cas if */
             if (isif(symb))
             {   DEBUG_MSG("if recognized");
-                return if_eval(input);
+                return if_eval(input,env);
             }
 
             /* cas and */
             if (isand(symb))
             {   DEBUG_MSG("and recognized");
-                return and_eval(input);
+                return and_eval(input,env);
             }
 
             /* cas or */
             if (isor(symb))
             {   DEBUG_MSG("or recognized");
-                return or_eval(input);
+                return or_eval(input,env);
             }
 
             /* cas set! */
             if (isset(symb))
             {   DEBUG_MSG("set! recognized");
 
-                return set_eval(input);
+                return set_eval(input,env);
             }
+	    /* cas begin */
             else {
                 DEBUG_MSG("Aucune forme détectée... pour l'instant. Input est de type %s",whattype(input));
                 WARNING_MSG("undefined symbol %s",get_symbol(symb,name));
@@ -257,12 +265,12 @@ object sfs_eval( object input ) {
 
 
 /* fonction qui evalue tous les arguments d'une primitives */
-object arguments_eval ( object input ) {
+object arguments_eval ( object input ,object env) {
 
 	object p = input;
 	DEBUG_MSG("evaluation arguments of a primitive");
 	while (!isnil(p)){
-		modify_car(p,sfs_eval(car(p)));
+		modify_car(p,sfs_eval(car(p),env));
 		if (car(p)==NULL)
         {
             return NULL; /* pour gerer si un symbole est inconnu par exemple */

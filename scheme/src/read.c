@@ -148,6 +148,8 @@ uint  sfs_get_sexpr( char *input, FILE *fp ) {
         }
         /*si en mode fichier*/
         else {
+            chunk=k;
+            memset( chunk, '\0', BIGSTRING );
             ret = fgets( chunk, BIGSTRING, fp );
 
             if ( NULL == ret ) {
