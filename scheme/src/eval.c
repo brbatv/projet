@@ -79,24 +79,24 @@ object set_eval(object input,object env)
 
     string  name_of_first_parameter;
     string  str;
-    object  second_parameter = sfs_eval(caddr(input),env);
+    object  second_parameter = sfs_eval(cadr(input),env);
     if (!ispair(cdr(input))) /*expression du type (set!  ) */
     {   WARNING_MSG("set! needs two parameters");
         return NULL;
     }
-    if (!ispair(cddr(input))) /* expression du type (set! x) */
+    if (!ispair(cdr(input))) /* expression du type (set! x) */
     {   WARNING_MSG("set! needs two parameters and not only one ");
         return NULL;
     }
-    if (ispair(cdddr(input))) /* note : si un cdr est !ispair <=> isnil si arbre syntaxique bien construit */
+    if (ispair(cddr(input))) /* note : si un cdr est !ispair <=> isnil si arbre syntaxique bien construit */
     {   WARNING_MSG("set! needs no more than two parameters");
         return NULL;
     }
-    if (!issymbol(car(cdr(input))))
+    if (!issymbol(car(input)))
     {   WARNING_MSG("set! needs a symbol as first parameter");
         return NULL;
     }
-    strcpy(name_of_first_parameter,get_symbol(cadr(input),str));
+    strcpy(name_of_first_parameter,get_symbol(car(input),str));
     object o=search_env(name_of_first_parameter,env);
     if (isnil(o))
     {   WARNING_MSG("set! needs a symbol already defined, %s is not defined",name_of_first_parameter);
@@ -253,13 +253,13 @@ object sfs_eval( object input, object env) {
             if (isset(symb))
             {   DEBUG_MSG("set! recognized");
 
-                return set_eval(input,env);
+                return set_eval(parametres,env);
             }
 	    /* cas begin */
             if (isbegin(symb))
             { DEBUG_MSG("begin recognized");
 
-            return begin_eval(input,env);
+            return begin_eval(parametres,env);
 
             }
 
