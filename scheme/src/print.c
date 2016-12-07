@@ -50,6 +50,12 @@ void sfs_print_atom( object o ) {
     case SFS_SYMBOL:
         printf("%s",o->this.symbol);
         break;
+    case SFS_COMPOUND:
+	printf("#<procedure>");
+	break;
+    case SFS_PRIMITIVE:
+	printf("#<Function>");
+	break;
     }
 
     return;

@@ -183,7 +183,7 @@ object lambda_eval(object input, object env){
 			return NULL;
 			}
 		else{
-		object o = car(input);
+		object o = caar(input);
 		while (!isnil(o)){
 			if(!issymbol(o)){
 				WARNING_MSG("lambda's parameters must be symbols");
@@ -317,7 +317,7 @@ object sfs_eval( object input, object env) {
             }
 	    /* cas lambda */
             if (islambda(symb))
-            { DEBUG_MSG("begin recognized");
+            { DEBUG_MSG("lambda recognized");
 
             return lambda_eval(parametres,env);
 
@@ -325,7 +325,7 @@ object sfs_eval( object input, object env) {
 	    
 	    /* cas let */
             if (islet(symb))
-            { DEBUG_MSG("begin recognized");
+            { DEBUG_MSG("let recognized");
 
             return let_eval(parametres,env);
 
