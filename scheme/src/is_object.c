@@ -33,7 +33,6 @@ int isnumber(object o)
         return TRUE;
     else return FALSE;
 
-
 }
 
 int ischar(object o)
@@ -43,7 +42,6 @@ int ischar(object o)
     if (o->type ==  SFS_CHARACTER)
         return TRUE;
     else return FALSE;
-
 
 }
 
@@ -56,7 +54,6 @@ int isstring(object o)
         return TRUE;
     else return FALSE;
 
-
 }
 
 int isboolean(object o)
@@ -67,7 +64,6 @@ int isboolean(object o)
     if (o->type ==  SFS_BOOLEAN)
         return TRUE;
     else return FALSE;
-
 
 }
 
