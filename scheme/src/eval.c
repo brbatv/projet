@@ -16,24 +16,24 @@ object define_eval(object input,object env) {
 
     string  name_of_new_variable;
     string  str;
-    object  o = sfs_eval(caddr(input),env);
-    if (!ispair(cdr(input))) /* expression du type (define  ) */
+    object  o = sfs_eval(cadr(input),env);
+    if (!ispair(input)) /* expression du type (define  ) */
     {   WARNING_MSG("Define needs two parameters");
         return NULL;
     }
-    if (!ispair(cddr(input))) /* expression du type (define x) */
+    if (!ispair(cdr(input))) /* expression du type (define x) */
     {   WARNING_MSG("Define needs two parameters and not only one ");
         return NULL;
     }
-    if (ispair(cdddr(input))) /* note : si un cdr est !ispair <=> isnil si arbre syntaxique bien construit */
+    if (ispair(cddr(input))) /* note : si un cdr est !ispair <=> isnil si arbre syntaxique bien construit */
     {   WARNING_MSG("Define needs no more than two parameters");
         return NULL;
     }
-    if (!issymbol(car(cdr(input))))
+    if (!issymbol(car(input)))
     {   WARNING_MSG("Define needs a symbol as first parameter");
         return NULL;
     }
-    strcpy(name_of_new_variable,get_symbol(cadr(input),str));
+    strcpy(name_of_new_variable,get_symbol(car(input),str));
     DEBUG_MSG("%s",name_of_new_variable);
 
     if(o == NULL) {
@@ -49,9 +49,9 @@ object define_eval(object input,object env) {
 /**/
 object if_eval(object input,object env) {
 
-    object predicate = cadr(input);
-    object consequence = caddr(input);
-    object alternative = cadddr(input);
+    object predicate = car(input);
+    object consequence = cadr(input);
+    object alternative = caddr(input);
 
     if(isnil(predicate) || isnil(consequence)) {
         WARNING_MSG("if needs two parameters");
@@ -116,12 +116,12 @@ object set_eval(object input,object env)
     }
 }
 
-object and_eval(object input,object env) {
+/* fonction qui evalue la forme and */
+object and_eval(object o,object env) {
 
-    object o = cdr(input);
     int i = TRUE;
-    while (istrue(o) && !isnil(o)) {
-        i = i && istrue(sfs_eval(car(o),env));
+    while (i && !isnil(o)) {
+        i = istrue(sfs_eval(car(o),env));
         o = cdr(o);
     }
     if(i) return true;
@@ -129,12 +129,12 @@ object and_eval(object input,object env) {
 
 }
 
-object or_eval(object input,object env) {
+/* fonction qui evalue la forme or */
+object or_eval(object o,object env) {
 
-    object o = cdr(input);
     int i = FALSE;
-    while (!istrue(o) && !isnil(o)) {
-        i = i || istrue(sfs_eval(car(o),env));
+    while (!i && !isnil(o)) {
+        i = istrue(sfs_eval(car(o),env));
         o = cdr(o);
     }
     if(i) return true;
@@ -228,25 +228,25 @@ object sfs_eval( object input, object env) {
             /* cas define */
             if(isdefine(symb))
             {   DEBUG_MSG("define recognized");
-                return define_eval(input,env);
+                return define_eval(parametres,env);
             }
 
             /* cas if */
             if (isif(symb))
             {   DEBUG_MSG("if recognized");
-                return if_eval(input,env);
+                return if_eval(parametres,env);
             }
 
             /* cas and */
             if (isand(symb))
             {   DEBUG_MSG("and recognized");
-                return and_eval(input,env);
+                return and_eval(parametres,env);
             }
 
             /* cas or */
             if (isor(symb))
             {   DEBUG_MSG("or recognized");
-                return or_eval(input,env);
+                return or_eval(parametres,env);
             }
 
             /* cas set! */
