@@ -15,7 +15,9 @@
 void sfs_print_atom( object o ) {
 
     DEBUG_MSG("Printing some %s",whattype(o));
-    if (o==NULL) {return;}
+    if (o==NULL) {
+        return;
+    }
     switch(o->type)
 
     {
