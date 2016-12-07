@@ -251,18 +251,23 @@ object boolean_p(object o) /* teste si les elements de la liste sont des boolean
     object obj_temp=o;
     if (number_of_pair(o)>=1)
     {
-    while (obj_temp!=nil)
-    {
-        if(!isboolean(car(obj_temp)))
+        while (obj_temp!=nil)
         {
-            resultat=false;
-            obj_temp=nil;
+            if(!isboolean(car(obj_temp)))
+            {
+                resultat=false;
+                obj_temp=nil;
+            }
+            else {
+                obj_temp=cdr(obj_temp);
+            }
         }
-        else {obj_temp=cdr(obj_temp);}
+        return resultat;
     }
-    return resultat;
+    else {
+        WARNING_MSG("needs at least 1 parameter");
+        return NULL;
     }
-    else{WARNING_MSG("needs at least 1 parameter"); return NULL;}
 
 }
 
@@ -273,18 +278,23 @@ object symbol_p(object o) /* teste si les elements de la liste sont des symboles
     object obj_temp=o;
     if (number_of_pair(o)>=1)
     {
-    while (obj_temp!=nil)
-    {
-        if(!issymbol(car(obj_temp)))
+        while (obj_temp!=nil)
         {
-            resultat=false;
-            obj_temp=nil;
+            if(!issymbol(car(obj_temp)))
+            {
+                resultat=false;
+                obj_temp=nil;
+            }
+            else {
+                obj_temp=cdr(obj_temp);
+            }
         }
-        else {obj_temp=cdr(obj_temp);}
+        return resultat;
     }
-    return resultat;
+    else {
+        WARNING_MSG("needs at least 1 parameter");
+        return NULL;
     }
-    else{WARNING_MSG("needs at least 1 parameter"); return NULL;}
 
 }
 
@@ -295,18 +305,23 @@ object integer_p(object o) /* teste si les elements de la liste sont des int */
     object obj_temp=o;
     if (number_of_pair(o)>=1)
     {
-    while (obj_temp!=nil)
-    {
-        if(!isnumber(car(obj_temp)))
+        while (obj_temp!=nil)
         {
-            resultat=false;
-            obj_temp=nil;
+            if(!isnumber(car(obj_temp)))
+            {
+                resultat=false;
+                obj_temp=nil;
+            }
+            else {
+                obj_temp=cdr(obj_temp);
+            }
         }
-        else {obj_temp=cdr(obj_temp);}
+        return resultat;
     }
-    return resultat;
+    else {
+        WARNING_MSG("needs at least 1 parameter");
+        return NULL;
     }
-    else{WARNING_MSG("needs at least 1 parameter"); return NULL;}
 
 }
 
@@ -317,18 +332,23 @@ object char_p(object o) /* teste si les elements de la liste sont des caracteres
     object obj_temp=o;
     if (number_of_pair(o)>=1)
     {
-    while (obj_temp!=nil)
-    {   DEBUG_MSG("type is %s",whattype(obj_temp));
-        if(!ischar(car(obj_temp)))
-        {   DEBUG_MSG("this is not char");
-            resultat=false;
-            obj_temp=nil;
+        while (obj_temp!=nil)
+        {   DEBUG_MSG("type is %s",whattype(obj_temp));
+            if(!ischar(car(obj_temp)))
+            {   DEBUG_MSG("this is not char");
+                resultat=false;
+                obj_temp=nil;
+            }
+            else {
+                obj_temp=cdr(obj_temp);
+            }
         }
-        else {obj_temp=cdr(obj_temp);}
+        return resultat;
     }
-    return resultat;
+    else {
+        WARNING_MSG("needs at least 1 parameter");
+        return NULL;
     }
-    else{WARNING_MSG("needs at least 1 parameter"); return NULL;}
 
 }
 
@@ -339,18 +359,23 @@ object string_p(object o) /* teste si les elements de la liste sont des string *
     object obj_temp=o;
     if (number_of_pair(o)>=1)
     {
-    while (obj_temp!=nil)
-    {   DEBUG_MSG("type is %s",whattype(obj_temp));
-        if(!isstring(car(obj_temp)))
-        {
-            resultat=false;
-            obj_temp=nil;
+        while (obj_temp!=nil)
+        {   DEBUG_MSG("type is %s",whattype(obj_temp));
+            if(!isstring(car(obj_temp)))
+            {
+                resultat=false;
+                obj_temp=nil;
+            }
+            else {
+                obj_temp=cdr(obj_temp);
+            }
         }
-        else {obj_temp=cdr(obj_temp);}
+        return resultat;
     }
-    return resultat;
+    else {
+        WARNING_MSG("needs at least 1 parameter");
+        return NULL;
     }
-    else{WARNING_MSG("needs at least 1 parameter"); return NULL;}
 
 }
 
@@ -361,18 +386,23 @@ object pair_p(object o) /* teste si les elements de la liste sont des paires */
     object obj_temp=o;
     if (number_of_pair(o)>=1)
     {
-    while (obj_temp!=nil)
-    {
-        if(!ispair(car(obj_temp)))
+        while (obj_temp!=nil)
         {
-            resultat=false;
-            obj_temp=nil;
+            if(!ispair(car(obj_temp)))
+            {
+                resultat=false;
+                obj_temp=nil;
+            }
+            else {
+                obj_temp=cdr(obj_temp);
+            }
         }
-        else {obj_temp=cdr(obj_temp);}
+        return resultat;
     }
-    return resultat;
+    else {
+        WARNING_MSG("needs at least 1 parameter");
+        return NULL;
     }
-    else{WARNING_MSG("needs at least 1 parameter"); return NULL;}
 
 }
 
@@ -387,7 +417,10 @@ object null_p(object o) /* teste si les elements de la liste sont nil */
         }
         return resultat;
     }
-    else {DEBUG_MSG("needs only one parameter"); return NULL;}
+    else {
+        DEBUG_MSG("needs only one parameter");
+        return NULL;
+    }
 }
 
 
@@ -400,7 +433,10 @@ object cons(object o) /* cree une liste, sans nil a la fin, avec deux objets pas
         return result;
 
     }
-    else {WARNING_MSG("needs exactly two parameters bitch"); return NULL;}
+    else {
+        WARNING_MSG("needs exactly two parameters bitch");
+        return NULL;
+    }
 
 }
 
@@ -411,7 +447,10 @@ object car_p(object o)
     {
         return (caar(o));
     }
-    else {WARNING_MSG("needs exactly one parameter"); return NULL;}
+    else {
+        WARNING_MSG("needs exactly one parameter");
+        return NULL;
+    }
 
 }
 
@@ -421,7 +460,10 @@ object cdr_p(object o)
     {
         return (cdar(o));
     }
-    else {WARNING_MSG("needs exactly one parameter"); return NULL;}
+    else {
+        WARNING_MSG("needs exactly one parameter");
+        return NULL;
+    }
 
 }
 
@@ -432,9 +474,9 @@ object list_p(object o) /* cree une liste scheme, cad forme une S-expression ave
         return nil;
     }
     else
-    {object liste=make_pair(car(o),nil);
-    object obj_temp=cdr(o);
-    object last_element_of_list=liste;
+    {   object liste=make_pair(car(o),nil);
+        object obj_temp=cdr(o);
+        object last_element_of_list=liste;
         while (!isnil(obj_temp))
         {
             modify_cdr(last_element_of_list,make_pair(car(obj_temp),nil));
@@ -454,7 +496,10 @@ object set_car(object o)
         modify_car(car(o),cadr(o));
         return car(o);
     }
-    else{WARNING_MSG("set-car! : Wrong number of argument (must be 2) or 1st argument is not a pair"); return NULL;}
+    else {
+        WARNING_MSG("set-car! : Wrong number of argument (must be 2) or 1st argument is not a pair");
+        return NULL;
+    }
 
 }
 
@@ -465,114 +510,117 @@ object set_cdr(object o)
         modify_cdr(car(o),cadr(o));
         return car(o);
     }
-    else{WARNING_MSG("set-cdr! : Wrong number of argument (must be 2) or 1st argument is not a pair"); return NULL;}
+    else {
+        WARNING_MSG("set-cdr! : Wrong number of argument (must be 2) or 1st argument is not a pair");
+        return NULL;
+    }
 
 }
 
 
-object chtoint (object o){
+object chtoint (object o) {
 
-	if(!ischar(car(o))){
-		WARNING_MSG("char->integer need an character as argument");
-		return NULL;
-		}
-	if(number_of_pair(o) != 1){
-		WARNING_MSG("too many arguments in char->integer");
-		return NULL;
-		}
+    if(!ischar(car(o))) {
+        WARNING_MSG("char->integer need an character as argument");
+        return NULL;
+    }
+    if(number_of_pair(o) != 1) {
+        WARNING_MSG("too many arguments in char->integer");
+        return NULL;
+    }
 
-	return make_integer((int)get_character(car(o)));
+    return make_integer((int)get_character(car(o)));
 
-	}
+}
 
-object inttoch (object o){
-
-
-	if(!isnumber(car(o))){
-		WARNING_MSG("integer->char need an integer as argument");
-		return NULL;
-		}
-	if(number_of_pair(o) != 1){
-		WARNING_MSG("too many arguments in integer->char");
-		return NULL;
-		}
-
-	return make_character((char)get_number(car(o)));
-
-	}
-
-object numbtostr (object o){
-
-	string str;
-
-	if(!isnumber(car(o))){
-		WARNING_MSG("number->string need a number as argument");
-		return NULL;
-		}
-
-	if(number_of_pair(o) != 1){
-		WARNING_MSG("too many arguments in number->string");
-		return NULL;
-		}
-	sprintf(str,"%d",get_number(car(o)));
-
-	return make_string(str);
-
-	}
-
-object strtonumb (object o){
-
-	uint here = 0;
-	string str;
-
-	if(!isstring(car(o))){
-		WARNING_MSG("string->number need a number as argument");
-		return NULL;
-		}
-
-	if(number_of_pair(o) != 1){
-		WARNING_MSG("too many arguments in string->number");
-		return NULL;
-		}
-	get_string(car(o),str);
-	object result = sfs_read_atom(str,&here);
-	if(!isnumber(result)){
-		WARNING_MSG("the string is not readable as a number");
-		return NULL;
-		}
-	return make_integer(get_number(result));
+object inttoch (object o) {
 
 
-	}
+    if(!isnumber(car(o))) {
+        WARNING_MSG("integer->char need an integer as argument");
+        return NULL;
+    }
+    if(number_of_pair(o) != 1) {
+        WARNING_MSG("too many arguments in integer->char");
+        return NULL;
+    }
 
-object symtostr (object o){
+    return make_character((char)get_number(car(o)));
 
-	string str;
-	if(!issymbol(car(o))){
-		WARNING_MSG("symbol->string need a symbol as argument");
-		return NULL;
-		}
+}
 
-	if(number_of_pair(o) != 1){
-		WARNING_MSG("too many arguments in symbol->string");
-		return NULL;
-		}
-	get_symbol(car(o),str);
-	return make_string(str);
-	}
+object numbtostr (object o) {
 
-object strtosym (object o){
+    string str;
 
-	string str;
-	if(!isstring(car(o))){
-		WARNING_MSG("string->symbol need a string as argument");
-		return NULL;
-		}
+    if(!isnumber(car(o))) {
+        WARNING_MSG("number->string need a number as argument");
+        return NULL;
+    }
 
-	if(number_of_pair(o) != 1){
-		WARNING_MSG("too many arguments in string->symbol");
-		return NULL;
-		}
-	get_string(car(o),str);
-	return make_symbol(str);
-	}
+    if(number_of_pair(o) != 1) {
+        WARNING_MSG("too many arguments in number->string");
+        return NULL;
+    }
+    sprintf(str,"%d",get_number(car(o)));
+
+    return make_string(str);
+
+}
+
+object strtonumb (object o) {
+
+    uint here = 0;
+    string str;
+
+    if(!isstring(car(o))) {
+        WARNING_MSG("string->number need a number as argument");
+        return NULL;
+    }
+
+    if(number_of_pair(o) != 1) {
+        WARNING_MSG("too many arguments in string->number");
+        return NULL;
+    }
+    get_string(car(o),str);
+    object result = sfs_read_atom(str,&here);
+    if(!isnumber(result)) {
+        WARNING_MSG("the string is not readable as a number");
+        return NULL;
+    }
+    return make_integer(get_number(result));
+
+
+}
+
+object symtostr (object o) {
+
+    string str;
+    if(!issymbol(car(o))) {
+        WARNING_MSG("symbol->string need a symbol as argument");
+        return NULL;
+    }
+
+    if(number_of_pair(o) != 1) {
+        WARNING_MSG("too many arguments in symbol->string");
+        return NULL;
+    }
+    get_symbol(car(o),str);
+    return make_string(str);
+}
+
+object strtosym (object o) {
+
+    string str;
+    if(!isstring(car(o))) {
+        WARNING_MSG("string->symbol need a string as argument");
+        return NULL;
+    }
+
+    if(number_of_pair(o) != 1) {
+        WARNING_MSG("too many arguments in string->symbol");
+        return NULL;
+    }
+    get_string(car(o),str);
+    return make_symbol(str);
+}

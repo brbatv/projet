@@ -20,7 +20,7 @@ object modify_binding(object binding, object value)
 }
 
 object make_and_modify_binding(object environment, char* name, object value) /* fonction qui cree directement un nouveau binding et assigne la valeur value et renvoie l'object symbole */
-{   
+{
     object o = make_binding(name,environment);
     modify_binding(o,value);
     return car(o);

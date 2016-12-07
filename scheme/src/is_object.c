@@ -7,7 +7,7 @@
 int ispair(object o) {
 
     if (o == NULL)
-	return FALSE;
+        return FALSE;
     if (o->type == 	SFS_PAIR)
         return TRUE;
     else return FALSE;
@@ -17,8 +17,8 @@ int ispair(object o) {
 /*fonction qui test si l'objet est un symbol*/
 int issymbol(object o) {
 
-     if (o == NULL)
-	return FALSE;
+    if (o == NULL)
+        return FALSE;
 
     if (o->type ==  SFS_SYMBOL)
         return TRUE;
@@ -30,7 +30,7 @@ int isnumber(object o)
 {
 
     if (o == NULL)
-	return FALSE;
+        return FALSE;
     if (o->type ==  SFS_NUMBER)
         return TRUE;
     else return FALSE;
@@ -40,7 +40,7 @@ int isnumber(object o)
 int ischar(object o)
 {
     if (o == NULL)
-	return FALSE;
+        return FALSE;
     if (o->type ==  SFS_CHARACTER)
         return TRUE;
     else return FALSE;
@@ -51,7 +51,7 @@ int isstring(object o)
 {
 
     if (o == NULL)
-	return FALSE;
+        return FALSE;
     if (o->type ==  SFS_STRING)
         return TRUE;
     else return FALSE;
@@ -62,7 +62,7 @@ int isboolean(object o)
 {
 
     if (o == NULL)
-	return FALSE;
+        return FALSE;
     if (o->type ==  SFS_BOOLEAN)
         return TRUE;
     else return FALSE;
@@ -73,7 +73,7 @@ int isboolean(object o)
 int isnil(object o) {
 
     if (o == NULL)
-	return FALSE;
+        return FALSE;
     if (o == nil)
         return TRUE;
     else return FALSE;
@@ -85,7 +85,7 @@ int isatom(object o) {
 
 
     if (o == NULL)
-	return FALSE;
+        return FALSE;
     return !ispair(o);
 }
 
@@ -169,7 +169,7 @@ int istrue(object o) {
 /*fonction qui test si la forme est begin*/
 
 int isbegin(object o)
-{    if(o->type == SFS_SYMBOL && strcmp(o->this.symbol,"begin") == 0)
+{   if(o->type == SFS_SYMBOL && strcmp(o->this.symbol,"begin") == 0)
         return TRUE;
     else
         return FALSE;
@@ -181,7 +181,7 @@ int isbegin(object o)
 int isprimitive(object o) {
 
     if (o == NULL)
-	return FALSE;
+        return FALSE;
     if (o->type ==  SFS_PRIMITIVE)
         return TRUE;
     else return FALSE;

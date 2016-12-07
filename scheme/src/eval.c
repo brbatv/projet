@@ -12,11 +12,12 @@
 #include "print.h"
 #include "object.h"
 
-object define_eval(object input,object env) /* input = parametres! */ {
+object define_eval(object input,object env) { /* input = parametres! */
 
     string  name_of_new_variable;
     string  str;
     object  o = sfs_eval(cadr(input),env);
+    sfs_print(o);
     if (number_of_pair(input)!=2)
     {
         WARNING_MSG("Wrong number of parameters for define : expected : 2");
@@ -24,23 +25,33 @@ object define_eval(object input,object env) /* input = parametres! */ {
     }
     if (issymbol(car(input)))
     {
-    strcpy(name_of_new_variable,get_symbol(car(input),str));
-    DEBUG_MSG("%s",name_of_new_variable);
+        strcpy(name_of_new_variable,get_symbol(car(input),str));
+        DEBUG_MSG("%s",name_of_new_variable);
 
-    if(o == NULL) {
-        return NULL;
-    }
-    else {
+        if(o == NULL) {
+            return NULL;
+        }
+        else {
 
-        return make_and_modify_binding(env,name_of_new_variable,o);
-            }
+            return make_and_modify_binding(env,name_of_new_variable,o);
+        }
     }
 
 
     if (ispair(car(input)))
     {
         if (issymbol(caar(input)))
+        {
+            strcpy(name_of_new_variable,get_symbol(car(input),str));
+        }
+        else {
+            WARNING_MSG("Wrong parameters");
             return NULL;
+        }
+        object parametres=cdar(input);
+        object lambda_eval=make_pair(parametres,cdr(input));
+        return define_eval(lambda_eval,env);
+
 
     }
     else return NULL;
@@ -51,7 +62,7 @@ object define_eval(object input,object env) /* input = parametres! */ {
     {   WARNING_MSG("Define needs a symbol as first parameter");
         return NULL;
     } */
-/**/
+
 object if_eval(object input,object env) {
 
     object predicate = car(input);
@@ -148,15 +159,15 @@ object or_eval(object o,object env) {
 }
 
 /* fonction qui evalue la forme begin */
-object begin_eval(object input, object env){
-object o=arguments_eval(input,env);
-int i;
-int  n=number_of_pair(o);
-for (i=1; i<=n-1;i++)
-{
-o=cdr(o);
-}
-return  car(o);
+object begin_eval(object input, object env) {
+    object o=arguments_eval(input,env);
+    int i;
+    int  n=number_of_pair(o);
+    for (i=1; i<=n-1; i++)
+    {
+        o=cdr(o);
+    }
+    return  car(o);
 }
 
 /* fonction qui effectue et renvoie l'evaluation de input au sens du scheme*/
@@ -184,9 +195,9 @@ object sfs_eval( object input, object env) {
             }
 
         }
-	DEBUG_MSG("Evaluating an auto-evaluating object");
+        DEBUG_MSG("Evaluating an auto-evaluating object");
         return input;
-	}
+    }
 
     if (ispair(input)) {
 
@@ -260,11 +271,11 @@ object sfs_eval( object input, object env) {
 
                 return set_eval(parametres,env);
             }
-	    /* cas begin */
+            /* cas begin */
             if (isbegin(symb))
-            { DEBUG_MSG("begin recognized");
+            {   DEBUG_MSG("begin recognized");
 
-            return begin_eval(parametres,env);
+                return begin_eval(parametres,env);
 
             }
 
@@ -272,7 +283,7 @@ object sfs_eval( object input, object env) {
             else {
                 DEBUG_MSG("Aucune forme détectée... pour l'instant. Input est de type %s",whattype(input));
                 WARNING_MSG("undefined symbol %s",get_symbol(symb,name));
-	    return NULL;
+                return NULL;
             }
         }
     }
@@ -285,16 +296,16 @@ object sfs_eval( object input, object env) {
 /* fonction qui evalue tous les arguments d'une primitives */
 object arguments_eval ( object input ,object env) {
 
-	object p = input;
-	DEBUG_MSG("evaluation arguments of a primitive");
-	while (!isnil(p)){
-		modify_car(p,sfs_eval(car(p),env));
-		if (car(p)==NULL)
+    object p = input;
+    DEBUG_MSG("evaluation arguments of a primitive");
+    while (!isnil(p)) {
+        modify_car(p,sfs_eval(car(p),env));
+        if (car(p)==NULL)
         {
             return NULL; /* pour gerer si un symbole est inconnu par exemple */
         }
-		p = cdr(p);
-		}
-	return input;
+        p = cdr(p);
+    }
+    return input;
 
 }
