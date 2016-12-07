@@ -206,3 +206,14 @@ int isprimitive(object o) {
     else return FALSE;
 
 }
+
+/* fonction qui teste si l'objet de type compound */
+int iscompound(object o) {
+
+    if (o == NULL)
+        return FALSE;
+    if (o->type ==  SFS_COMPOUND)
+        return TRUE;
+    else return FALSE;
+
+}

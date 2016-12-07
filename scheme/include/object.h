@@ -87,6 +87,7 @@ int islambda(object);
 int islet(object);
 /*fin de gestion des formes*/
 int isprimitive(object);
+int iscompound(object);
 int istrue(object);
 /* gestion des environnements */
 object make_env(object);

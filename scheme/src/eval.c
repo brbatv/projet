@@ -244,30 +244,7 @@ object sfs_eval( object input, object env) {
         object	val = NULL;
         char 	name[256];
 
-
-
-        if (!issymbol(symb)) {
-            WARNING_MSG("A pair has to begin with a symbol");
-            return NULL;
-        }
-        else {
-
-            val = search_val_under(get_symbol(symb,name),env);
-
-            /* cas des primitives */
-            if(isprimitive(val)) {
-                object arg_eval=arguments_eval(parametres,env);
-                if(arg_eval==NULL)
-                {
-                    return NULL;
-                }
-
-                DEBUG_MSG("primitive recognized");
-                return (*val->this.primitive)(arg_eval);
-
-            }
-
-            /* cas quote */
+	    /* cas quote */
             if (isquote(symb))
             {   DEBUG_MSG("quote recognized");
                 if(isnil(parametres)) {
@@ -331,15 +308,34 @@ object sfs_eval( object input, object env) {
 
             }
 
+            val = search_val_under(get_symbol(symb,name),env);
+      
+            /* cas des primitives */
+            if(isprimitive(val)) {
+                object arg_eval=arguments_eval(parametres,env);
+                if(arg_eval==NULL)
+                {
+                    return NULL;
+                }
+
+                DEBUG_MSG("primitive recognized");
+                return (*val->this.primitive)(arg_eval);
+
+            }
+
+            /* cas des agregats */
+	    if(iscompound(val)) {
+
+	    	return input;
+	    
+            }
 
             else {
                 DEBUG_MSG("Aucune forme détectée... pour l'instant. Input est de type %s",whattype(input));
                 WARNING_MSG("undefined symbol %s",get_symbol(symb,name));
                 return NULL;
             }
-        }
     }
-
 
     return NULL;
 }
