@@ -12,27 +12,18 @@
 #include "print.h"
 #include "object.h"
 
-object define_eval(object input,object env) {
+object define_eval(object input,object env) /* input = parametres! */ {
 
     string  name_of_new_variable;
     string  str;
     object  o = sfs_eval(cadr(input),env);
-    if (!ispair(input)) /* expression du type (define  ) */
-    {   WARNING_MSG("Define needs two parameters");
+    if (number_of_pair(input)!=2)
+    {
+        WARNING_MSG("Wrong number of parameters for define : expected : 2");
         return NULL;
     }
-    if (!ispair(cdr(input))) /* expression du type (define x) */
-    {   WARNING_MSG("Define needs two parameters and not only one ");
-        return NULL;
-    }
-    if (ispair(cddr(input))) /* note : si un cdr est !ispair <=> isnil si arbre syntaxique bien construit */
-    {   WARNING_MSG("Define needs no more than two parameters");
-        return NULL;
-    }
-    if (!issymbol(car(input)))
-    {   WARNING_MSG("Define needs a symbol as first parameter");
-        return NULL;
-    }
+    if (issymbol(car(input)))
+    {
     strcpy(name_of_new_variable,get_symbol(car(input),str));
     DEBUG_MSG("%s",name_of_new_variable);
 
@@ -42,10 +33,24 @@ object define_eval(object input,object env) {
     else {
 
         return make_and_modify_binding(env,name_of_new_variable,o);
+            }
     }
+
+
+    if (ispair(car(input)))
+    {
+        if (issymbol(caar(input)))
+            return NULL;
+
+    }
+    else return NULL;
+
 }
 
-
+/* if (!issymbol(car(input)))
+    {   WARNING_MSG("Define needs a symbol as first parameter");
+        return NULL;
+    } */
 /**/
 object if_eval(object input,object env) {
 

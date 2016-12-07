@@ -102,3 +102,12 @@ object make_env(object env) {
     DEBUG_MSG("Making a new environnement");
     return make_pair(nil,env);
 }
+
+object make_compound(object parameters, object body, object environnement)
+{
+    object o=make_object(SFS_COMPOUND);
+    o->this.compound.parms=parameters;
+    o->this.compound.body=body;
+    o->this.compound.envt=environnement;
+    return o;
+}
