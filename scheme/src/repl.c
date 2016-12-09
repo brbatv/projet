@@ -159,9 +159,11 @@ int main ( int argc, char *argv[] ) {
             continue ;
         }
 
+	if(output->type != SFS_NO_TYPE){
         printf( "==> " );
         sfs_print( output );
         printf( "\n" );
+	}
     }
 
     if (mode == SCRIPT) {

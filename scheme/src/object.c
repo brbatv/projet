@@ -143,6 +143,14 @@ char* whattype(object o)
     {
         return "compound";
     }
+    if (o->type==SFS_PRIMITIVE)
+    {
+        return "primitive";
+    }
+    if (o->type==SFS_NO_TYPE)
+    {
+        return "no_type";
+    }
     return "No type recognised";
 
 }

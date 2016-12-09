@@ -34,7 +34,8 @@ object define_eval(object input,object env) { /* input = parametres! */
         }
         else {
 
-            return make_and_modify_binding(env,name_of_new_variable,o);
+            make_and_modify_binding(env,name_of_new_variable,o);
+	    return make_no_type();
         }
     }
 
@@ -52,9 +53,8 @@ object define_eval(object input,object env) { /* input = parametres! */
         object parametres = cdar(input);
         object lambda = make_pair(parametres,cdr(input));
         o= lambda_eval (lambda,env);
-        return make_and_modify_binding(env,name_of_new_variable,o);
-
-
+        make_and_modify_binding(env,name_of_new_variable,o);
+	return make_no_type();
     }
     else return NULL;
 
@@ -123,7 +123,7 @@ object set_eval(object input,object env)
 
             modify_binding(o,second_parameter);
 
-            return car(o);
+            return make_no_type();
         }
 
     }
@@ -189,7 +189,7 @@ object lambda_eval(object input, object env) {
             o = cdr(o);
         }
 
-        return make_compound(car(input),cadr(input),env);
+        return make_compound(car(input),cdr(input),env);
     }
 }
 
@@ -310,9 +310,7 @@ object sfs_eval( object input, object env) {
             {
                 return NULL;
             }
-
             return (*val->this.primitive)(arg_eval);
-
         }
 
         /* cas des agregats */
@@ -358,7 +356,6 @@ object compound_eval(object comp , object par_val , object env){
 		par = cdr(par);
 		par_val = cdr(par_val);
 	}
-	print_env(env);
 	return begin_eval(comp->this.compound.body,env);
 
 }

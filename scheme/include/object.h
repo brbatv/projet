@@ -56,6 +56,7 @@ object make_string(char*);
 object make_symbol(char*);
 object make_primitive(object(*)(object));
 object make_compound(object parameters, object body, object environnement);
+object make_no_type(void);
 int ispair(object);
 int isatom (object);
 int issymbol(object);
@@ -116,7 +117,8 @@ object modify_cdr(object o, object cdr);
 #define SFS_BOOLEAN      0x05
 #define SFS_SYMBOL       0x06
 #define SFS_PRIMITIVE    0x07
-#define SFS_COMPOUND 0x08
+#define SFS_COMPOUND     0x08
+#define SFS_NO_TYPE      0x09
 
 
 extern object nil;

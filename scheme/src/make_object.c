@@ -111,3 +111,10 @@ object make_compound(object parameters, object body, object environnement)
     o->this.compound.envt=environnement;
     return o;
 }
+
+/* fonction qui permet de crer un objet sans type */
+object make_no_type(void){
+	DEBUG_MSG("Making a no type object");
+	return make_object(SFS_NO_TYPE);
+}
+	
