@@ -14,10 +14,11 @@
 
 object define_eval(object input,object env) { /* input = parametres! */
 
+    
     string  name_of_new_variable;
     string  str;
     object  o = sfs_eval(cadr(input),env);
-    sfs_print(o);
+
     if (number_of_pair(input)!=2)
     {
         WARNING_MSG("Wrong number of parameters for define : expected : 2");
@@ -48,9 +49,9 @@ object define_eval(object input,object env) { /* input = parametres! */
             WARNING_MSG("Wrong parameters");
             return NULL;
         }
-        object parametres=cdar(input);
-        object lambda=make_pair(parametres,cdr(input));
-        o=lambda_eval(lambda,env);
+        object parametres = cdar(input);
+        object lambda = make_pair(parametres,cdr(input));
+        o= lambda_eval (lambda,env);
         return make_and_modify_binding(env,name_of_new_variable,o);
 
 
@@ -58,11 +59,6 @@ object define_eval(object input,object env) { /* input = parametres! */
     else return NULL;
 
 }
-
-/* if (!issymbol(car(input)))
-    {   WARNING_MSG("Define needs a symbol as first parameter");
-        return NULL;
-    } */
 
 object if_eval(object input,object env) {
 
@@ -161,7 +157,7 @@ object or_eval(object o,object env) {
 
 /* fonction qui evalue la forme begin */
 object begin_eval(object input, object env) {
-    object o=arguments_eval(input,env);
+    object o= arguments_eval_primitives(input,env);
     int i;
     int  n=number_of_pair(o);
     for (i=1; i<=n-1; i++)
@@ -172,43 +168,39 @@ object begin_eval(object input, object env) {
 }
 
 /* fonction qui evalue la forme lambda */
-object lambda_eval(object input, object env){
+object lambda_eval(object input, object env) {
 
-	int n = number_of_pair(input);
-		if (n != 2){
-			WARNING_MSG("lambda needs 2 arguments");
-			return NULL;
-			}
-		if (!ispair(car(input))){
-			WARNING_MSG("problem in lambda's arguments");
-			return NULL;
-			}
-		else{
-		object o = caar(input);
-		while (!isnil(o)){
-			if(!issymbol(o)){
-				WARNING_MSG("lambda's parameters must be symbols");
-				return NULL;
-				}
-			o = cdr(o);
-			}
+    int n = number_of_pair(input);
+    if (n > 2) {
+        WARNING_MSG("lambda needs at least 2 arguments");
+        return NULL;
+    }
+    if (!ispair(car(input))) {
+        WARNING_MSG("problem in lambda's arguments");
+        return NULL;
+    }
+    else {
+        object o = caar(input);
+        while (!isnil(o)) {
+            if(!issymbol(o)) {
+                WARNING_MSG("lambda's parameters must be symbols");
+                return NULL;
+            }
+            o = cdr(o);
+        }
 
-	object parameters = car(input);
-	object body = cadr(input);
-	object environnement = env;
-
-	return make_compound(parameters,body,environnement);
-	}
+        return make_compound(car(input),cadr(input),env);
+    }
 }
 
 /* fonction qui evalue la forme let */
-object let_eval(object input, object env){
+object let_eval(object input, object env) {
 
-	return input;
+    return input;
 
 }
 
-/* fonction qui effectue et renvoie l'evaluation de input au sens du scheme*/
+/* fonction qui effectue et renvoie l'evaluation de input au sens du scheme */
 object sfs_eval( object input, object env) {
 
     string str;
@@ -244,92 +236,92 @@ object sfs_eval( object input, object env) {
         object 	parametres = cdr(input);
         object	val = NULL;
 
-	    /* cas quote */
-            if (isquote(symb))
-            {   DEBUG_MSG("quote recognized");
-                if(isnil(parametres)) {
+        /* cas quote */
+        if (isquote(symb))
+        {   DEBUG_MSG("quote recognized");
+            if(isnil(parametres)) {
 
-                    WARNING_MSG("Quote needs at least one parameter");
-                    return NULL;
-                }
-                return car(parametres);
+                WARNING_MSG("Quote needs at least one parameter");
+                return NULL;
             }
+            return car(parametres);
+        }
 
-            /* cas define */
-            if(isdefine(symb))
-            {   DEBUG_MSG("define recognized");
-                return define_eval(parametres,env);
-            }
+        /* cas define */
+        if(isdefine(symb))
+        {   DEBUG_MSG("define recognized");
+            return define_eval(parametres,env);
+        }
 
-            /* cas if */
-            if (isif(symb))
-            {   DEBUG_MSG("if recognized");
-                return if_eval(parametres,env);
-            }
+        /* cas if */
+        if (isif(symb))
+        {   DEBUG_MSG("if recognized");
+            return if_eval(parametres,env);
+        }
 
-            /* cas and */
-            if (isand(symb))
-            {   DEBUG_MSG("and recognized");
-                return and_eval(parametres,env);
-            }
+        /* cas and */
+        if (isand(symb))
+        {   DEBUG_MSG("and recognized");
+            return and_eval(parametres,env);
+        }
 
-            /* cas or */
-            if (isor(symb))
-            {   DEBUG_MSG("or recognized");
-                return or_eval(parametres,env);
-            }
+        /* cas or */
+        if (isor(symb))
+        {   DEBUG_MSG("or recognized");
+            return or_eval(parametres,env);
+        }
 
-            /* cas set! */
-            if (isset(symb))
-            {   DEBUG_MSG("set! recognized");
+        /* cas set! */
+        if (isset(symb))
+        {   DEBUG_MSG("set! recognized");
 
-                return set_eval(parametres,env);
-            }
-            /* cas begin */
-            if (isbegin(symb))
-            {   DEBUG_MSG("begin recognized");
+            return set_eval(parametres,env);
+        }
+        /* cas begin */
+        if (isbegin(symb))
+        {   DEBUG_MSG("begin recognized");
 
-                return begin_eval(parametres,env);
+            return begin_eval(parametres,env);
 
-            }
-	    /* cas lambda */
-            if (islambda(symb))
-            { DEBUG_MSG("lambda recognized");
+        }
+        /* cas lambda */
+        if (islambda(symb))
+        {   DEBUG_MSG("lambda recognized");
 
             return lambda_eval(parametres,env);
 
-            }
+        }
 
-	    /* cas let */
-            if (islet(symb))
-            { DEBUG_MSG("let recognized");
+        /* cas let */
+        if (islet(symb))
+        {   DEBUG_MSG("let recognized");
 
             return let_eval(parametres,env);
 
-            }
-	    
-            val = sfs_eval(symb,env);
-      
-            /* cas des primitives */
-            if(isprimitive(val)) {
-		DEBUG_MSG("primitive recognized");
-                object arg_eval=arguments_eval(parametres,env);
-                if(arg_eval==NULL)
-                {
-                    return NULL;
-                }
-                
-                return (*val->this.primitive)(arg_eval);
+        }
 
+        val = sfs_eval(symb,env);
+
+        /* cas des primitives */
+        if(isprimitive(val)) {
+            DEBUG_MSG("primitive recognized");
+            object arg_eval=arguments_eval_primitives(parametres,env);
+            if(arg_eval==NULL)
+            {
+                return NULL;
             }
-	    
-            /* cas des agregats */
-	    if(iscompound(val)) {
-		
-		object local_env = make_env(env);
-	    	return input;
-	    
-            }
+
+            return (*val->this.primitive)(arg_eval);
+
+        }
+
+        /* cas des agregats */
+        if(iscompound(val)) {
+            DEBUG_MSG("compound recognized");
+            object local_env = make_env(val->this.compound.envt);
+            return compound_eval(val,parametres,local_env);
+
+        }
     }
 
     return NULL;
@@ -337,18 +329,36 @@ object sfs_eval( object input, object env) {
 
 
 /* fonction qui evalue tous les arguments d'une primitives */
-object arguments_eval ( object input ,object env) {
+object arguments_eval_primitives ( object input ,object env) {
 
     object p = input;
-    DEBUG_MSG("evaluation arguments of a primitive");
+    DEBUG_MSG("evaluating arguments of a primitive");
     while (!isnil(p)) {
         modify_car(p,sfs_eval(car(p),env));
-        if (car(p)==NULL)
+        if (car(p) == NULL)
         {
             return NULL; /* pour gerer si un symbole est inconnu par exemple */
         }
         p = cdr(p);
     }
     return input;
+
+}
+
+/* fonction qui evalue un appel a l'agregat comp pour les valeurs de parametres par dans l'environnement env */
+object compound_eval(object comp , object par_val , object env){
+	DEBUG_MSG("evaluation d'un agregat");
+	string str;
+	string str2;
+	
+	object par = comp->this.compound.parms;
+	while(!isnil(par) && !isnil(par_val)){
+		strcpy(str,get_symbol(car(par),str2));
+		make_and_modify_binding(env,str,car(par_val));
+		par = cdr(par);
+		par_val = cdr(par_val);
+	}
+	print_env(env);
+	return begin_eval(comp->this.compound.body,env);
 
 }

@@ -51,7 +51,7 @@ void sfs_print_atom( object o ) {
         printf("%s",o->this.symbol);
         break;
     case SFS_COMPOUND:
-	printf("#<procedure>");
+	printf("#<Procedure>");
 	break;
     case SFS_PRIMITIVE:
 	printf("#<Function>");
