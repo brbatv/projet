@@ -27,6 +27,7 @@ object lambda_eval(object input,object env);
 object let_eval(object input,object env);
 object sfs_eval(object input,object env);
 object arguments_eval_primitives (object input,object env);
+object arguments_eval_begin ( object input ,object env);
 /*object instructions_eval ( object input ,object env);*/
 object compound_eval(object comp , object par , object env);
 

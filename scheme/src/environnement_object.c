@@ -30,7 +30,7 @@ object make_and_modify_binding(object environment, char* name, object value) /* 
 /* fonction qui cherche une variable dans 1'environnement et renvoie binding si trouve, sinon renvoie NULL */
 object search_env(char* name, object env)
 {   DEBUG_MSG("Searching %s in an environment",name);
-	print_env(env);
+	/*print_env(env); */
     object obj_temp=car(env);
     string string;
     if (obj_temp==nil)
@@ -73,7 +73,7 @@ object search_under(char* name,object env) {
     object env_temp = env;
     object o;
     while (env_temp!=nil)
-    {   
+    {
 	o = search_env(name,env_temp);
         if (o != NULL)
         {

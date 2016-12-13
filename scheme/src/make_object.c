@@ -44,7 +44,7 @@ object make_boolean (unsigned int i) {
 }
 
 object make_integer(int i) {
-    DEBUG_MSG("Making an int");
+    DEBUG_MSG("Making an int of value %d",i);
     object t = make_object(SFS_NUMBER);
     t->this.number.numtype = NUM_INTEGER;
     t->this.number.this.integer = i;
@@ -113,10 +113,10 @@ object make_compound(object parameters, object body, object environnement)
     o->this.compound.envt=environnement;
     return o;
 }
-	
+
 /* fonction qui permet de crer un objet sans type */
 object make_no_type(void){
 	DEBUG_MSG("Making a no type object");
 	return make_object(SFS_NO_TYPE);
 }
-	
+

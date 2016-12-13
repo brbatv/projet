@@ -51,10 +51,10 @@ void init_primitive ( object env ) {
 
 /* arithmetique */
 object plus(object o) /* besoin en parametre l'obj dont le car est le 1er nombre à sommer ; retourne la somme en object*/
-{
+{ DEBUG_MSG("Adding something");
     int s=0;
     object obj_temp=o;
-    if (number_of_pair(o)>=2)
+    if (number_of_pair(o)>=1)
     {
         while (obj_temp!=nil)
         {   if(isnumber(car(obj_temp)))
@@ -69,7 +69,7 @@ object plus(object o) /* besoin en parametre l'obj dont le car est le 1er nombre
         return make_integer(s);
     }
     else {
-        WARNING_MSG("needs at least 2 parameters");
+        WARNING_MSG("needs at least 1 parameters");
         return NULL;
     }
 }
@@ -77,13 +77,14 @@ object plus(object o) /* besoin en parametre l'obj dont le car est le 1er nombre
 object minus(object o) /* renvoie x1 - ( x2 + x3 + ... xn) */
 {
 
-    object obj_temp=cdr(o);
     if (number_of_pair(o)>=2)
-    {
+    {object obj_temp=cdr(o);
+    DEBUG_MSG("printing minus OBJECFT"); sfs_print(o);
         if (isnumber(car(o)))
         {
             int s=get_number(car(o));
-            s=s-get_number(plus(obj_temp));
+            int n=get_number(plus(obj_temp));
+            s=s-n;
             return make_integer(s);
         }
         else {

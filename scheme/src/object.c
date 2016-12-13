@@ -27,7 +27,8 @@ char* get_string (object o,char* str)
 }
 
 int get_number (object o)
-{   return o->this.number.this.integer;
+{   /*if (!isnumber(o)) {return NULL;}*/
+return o->this.number.this.integer;
 }
 
 char get_character (object o)

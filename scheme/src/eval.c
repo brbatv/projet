@@ -14,7 +14,7 @@
 
 object define_eval(object input,object env) { /* input = parametres! */
 
-    
+
     string  name_of_new_variable;
     string  str;
     object  o;
@@ -29,7 +29,7 @@ object define_eval(object input,object env) { /* input = parametres! */
         strcpy(name_of_new_variable,get_symbol(car(input),str));
         DEBUG_MSG("%s",name_of_new_variable);
 	o = sfs_eval(cadr(input),env);
-	
+
         if(o == NULL) {
             return NULL;
         }
@@ -55,7 +55,7 @@ object define_eval(object input,object env) { /* input = parametres! */
         object lambda = make_pair(parametres,cdr(input));
         o = lambda_eval (lambda,env);
         make_and_modify_binding(env,name_of_new_variable,o);
-	return make_no_type();	
+	return make_no_type();
     }
     else return NULL;
 
@@ -156,17 +156,6 @@ object or_eval(object o,object env) {
 
 }
 
-/* fonction qui evalue la forme begin */
-object begin_eval(object input, object env) {
-    object o = arguments_eval_primitives(input,env);
-    int i;
-    int  n=number_of_pair(o);
-    for (i=1; i<=n-1; i++)
-    {
-        o=cdr(o);
-    }
-    return  car(o);
-}
 
 /* fonction qui evalue la forme lambda */
 object lambda_eval(object input, object env) {
@@ -189,7 +178,6 @@ object lambda_eval(object input, object env) {
             }
             o = cdr(o);
         }
-
         return make_compound(car(input),cdr(input),env);
     }
 }
@@ -221,6 +209,7 @@ object sfs_eval( object input, object env) {
             get_symbol(input,str);
 	    DEBUG_MSG("Searching the val of the atom symbol");
             val = search_val_under(str,env);
+
             if(val!=NULL) return val; /* le symbole est bien defini dans l'environnement courant */
             else {
                 WARNING_MSG("Unknown symbol %s",str);
@@ -234,7 +223,7 @@ object sfs_eval( object input, object env) {
 
     if (ispair(input)) {
 
-	
+
         object 	symb = car(input);
         object 	parametres = cdr(input);
         object	val = NULL;
@@ -308,11 +297,11 @@ object sfs_eval( object input, object env) {
 		DEBUG_MSG("transmission d'erreur, cas sfs_eval avant primitive/compound");
 		return NULL;
 		}
-	
+
         /* cas des primitives */
         if(isprimitive(val)) {
             DEBUG_MSG("primitive recognized");
-            object arg_eval=arguments_eval_primitives(parametres,env);
+            object arg_eval=arguments_eval_begin(parametres,env);
             if(arg_eval==NULL)
             {
                 return NULL;
@@ -323,23 +312,45 @@ object sfs_eval( object input, object env) {
         /* cas des agregats */
         if(iscompound(val)) {
             DEBUG_MSG("compound recognized");
+            int number_of_parameters_needed=number_of_pair(val->this.compound.parms);
+            int number_of_given_parameters=number_of_pair(parametres);
+
+            if (number_of_given_parameters!=number_of_parameters_needed)
+            {WARNING_MSG("Wrong number of parameters. Given : %d. Expected : %d",number_of_given_parameters,number_of_parameters_needed); return NULL;}
+
+            else
+            {
+            sfs_print(parametres);
             object local_env = make_env(val->this.compound.envt);
-            return compound_eval(val,parametres,local_env);
+            return compound_eval(val,parametres,local_env);}
 
         }
     }
 
     return NULL;
 }
-
+/* fonction qui evalue la forme begin */
+object begin_eval(object input, object env) {
+    object o = arguments_eval_begin(input,env);
+    if (o==NULL) {return NULL;}
+    int i;
+    int  n=number_of_pair(o);
+    for (i=1; i<=n-1; i++)
+    {
+        o=cdr(o);
+    }
+    return  car(o);
+}
 
 /* fonction qui evalue tous les arguments d'une primitives */
-object arguments_eval_primitives ( object input ,object env) {
+/*object arguments_eval_primitives ( object input ,object env) {
 
     object p = input;
     DEBUG_MSG("evaluating arguments of a primitive");
     while (!isnil(p)) {
         modify_car(p,sfs_eval(car(p),env));
+        DEBUG_MSG("PRINTING HERE BUDDY");
+        sfs_print(input);
         if (car(p) == NULL)
         {
             return NULL; /* pour gerer si un symbole est inconnu par exemple */
@@ -348,28 +359,49 @@ object arguments_eval_primitives ( object input ,object env) {
     }
     return input;
 
-}
+} */
 
-/* fonction qui evalue tous les arguments d'un begin en prenant soin d'effectuer l'evalutation dans un autre arbre dupplique */
-object arguments_eval_begin ( object input ,object env) {
+/* fonction qui evalue tous les arguments d'un begin en prenant soin d'effectuer l'evalutation dans un autre arbre duplique */
+object arguments_eval_begin ( object input , object env) {
 
-    
-    DEBUG_MSG("evaluating arguments for a begin or a compound");
+DEBUG_MSG("evaluating arguments for a begin or a compound");
+
+
     int n = number_of_pair(input);
 	int i;
-	object new_input;
+	object new_input = nil;
 	object p , p_new;
-	
+
 	/* recreation d'un arbre d'instructions */
 	for(i = 0 ; i<n ; i++ ){
 		new_input = make_pair(nil,new_input);
 	}
+	p_new = new_input;
+	p = input;
+
 	while(!isnil(p) && !isnil(p_new)){
-		modify_car(p_new,car(p));
+        DEBUG_MSG("SHIT STARTS HERE");
+		modify_car(p_new,sfs_eval(car(p),env)); /* apres cette ligne : change le body du compound */
+        DEBUG_MSG("SHIT ENDS HERE");
+    if (car(p_new) == NULL)
+        {
+            return NULL; /* pour gerer si un symbole est inconnu par exemple */
+        }
 		p_new = cdr(p_new);
 		p = cdr(p);
 	}
-    return arguments_eval_primitives(new_input,env);
+
+    return new_input;
+}
+
+object body_eval(object body, object env_local) /* fonction qui execute le body d'une fonction dans un environnement avec ses variables deja pretes */ {
+
+object  o = sfs_eval(car(body),env_local);
+sfs_print(o);
+sfs_print(body);
+
+return o;
+
 }
 
 
@@ -377,14 +409,17 @@ object arguments_eval_begin ( object input ,object env) {
 object compound_eval(object comp , object par_val , object env){
 	DEBUG_MSG("evaluation d'un agregat");
 	string str;
-	string str2;	
+	string str2;
 	object par = comp->this.compound.parms;
+	DEBUG_MSG("Creation de l'environnement local puis affichage :");
 	while(!isnil(par) && !isnil(par_val)){
 		strcpy(str,get_symbol(car(par),str2));
 		make_and_modify_binding(env,str,car(par_val));
+
 		par = cdr(par);
 		par_val = cdr(par_val);
 	}
+    print_env(env);
+/*sfs_print(comp->this.compound.body);*/
 	return begin_eval(comp->this.compound.body,env);
-
 }
