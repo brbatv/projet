@@ -17,7 +17,7 @@ object define_eval(object input,object env) { /* input = parametres! */
     
     string  name_of_new_variable;
     string  str;
-    object  o = sfs_eval(cadr(input),env);
+    object  o;
 
     if (number_of_pair(input)!=2)
     {
@@ -28,7 +28,8 @@ object define_eval(object input,object env) { /* input = parametres! */
     {
         strcpy(name_of_new_variable,get_symbol(car(input),str));
         DEBUG_MSG("%s",name_of_new_variable);
-
+	o = sfs_eval(cadr(input),env);
+	
         if(o == NULL) {
             return NULL;
         }
@@ -41,7 +42,7 @@ object define_eval(object input,object env) { /* input = parametres! */
 
 
     if (ispair(car(input)))
-    {   DEBUG_MSG("Cas espere dun compound dans define");
+    {   DEBUG_MSG("Cas d'un compound defini directement dans define");
         if (issymbol(caar(input)))
         {
             strcpy(name_of_new_variable,get_symbol(caar(input),str));
@@ -52,9 +53,9 @@ object define_eval(object input,object env) { /* input = parametres! */
         }
         object parametres = cdar(input);
         object lambda = make_pair(parametres,cdr(input));
-        o= lambda_eval (lambda,env);
+        o = lambda_eval (lambda,env);
         make_and_modify_binding(env,name_of_new_variable,o);
-	return make_no_type();
+	return make_no_type();	
     }
     else return NULL;
 
@@ -157,7 +158,7 @@ object or_eval(object o,object env) {
 
 /* fonction qui evalue la forme begin */
 object begin_eval(object input, object env) {
-    object o= arguments_eval_primitives(input,env);
+    object o = arguments_eval_primitives(input,env);
     int i;
     int  n=number_of_pair(o);
     for (i=1; i<=n-1; i++)
@@ -171,7 +172,7 @@ object begin_eval(object input, object env) {
 object lambda_eval(object input, object env) {
 
     int n = number_of_pair(input);
-    if (n > 2) {
+    if (n < 2) {
         WARNING_MSG("lambda needs at least 2 arguments");
         return NULL;
     }
@@ -180,9 +181,9 @@ object lambda_eval(object input, object env) {
         return NULL;
     }
     else {
-        object o = caar(input);
+        object o = car(input);
         while (!isnil(o)) {
-            if(!issymbol(o)) {
+            if(!issymbol(car(o))) {
                 WARNING_MSG("lambda's parameters must be symbols");
                 return NULL;
             }
@@ -212,11 +213,13 @@ object sfs_eval( object input, object env) {
     DEBUG_MSG("Evaluation has started");
     if (isatom(input)) {
         if(issymbol(input)) {
+	    DEBUG_MSG("Evaluating an atom symbol");
             if(isform(input)) {
                 WARNING_MSG("A form has to be in a pair");
                 return NULL;
             }
             get_symbol(input,str);
+	    DEBUG_MSG("Searching the val of the atom symbol");
             val = search_val_under(str,env);
             if(val!=NULL) return val; /* le symbole est bien defini dans l'environnement courant */
             else {
@@ -231,7 +234,7 @@ object sfs_eval( object input, object env) {
 
     if (ispair(input)) {
 
-
+	
         object 	symb = car(input);
         object 	parametres = cdr(input);
         object	val = NULL;
@@ -301,7 +304,11 @@ object sfs_eval( object input, object env) {
         }
 
         val = sfs_eval(symb,env);
-
+	if (val == NULL){
+		DEBUG_MSG("transmission d'erreur, cas sfs_eval avant primitive/compound");
+		return NULL;
+		}
+	
         /* cas des primitives */
         if(isprimitive(val)) {
             DEBUG_MSG("primitive recognized");
@@ -343,12 +350,34 @@ object arguments_eval_primitives ( object input ,object env) {
 
 }
 
+/* fonction qui evalue tous les arguments d'un begin en prenant soin d'effectuer l'evalutation dans un autre arbre dupplique */
+object arguments_eval_begin ( object input ,object env) {
+
+    
+    DEBUG_MSG("evaluating arguments for a begin or a compound");
+    int n = number_of_pair(input);
+	int i;
+	object new_input;
+	object p , p_new;
+	
+	/* recreation d'un arbre d'instructions */
+	for(i = 0 ; i<n ; i++ ){
+		new_input = make_pair(nil,new_input);
+	}
+	while(!isnil(p) && !isnil(p_new)){
+		modify_car(p_new,car(p));
+		p_new = cdr(p_new);
+		p = cdr(p);
+	}
+    return arguments_eval_primitives(new_input,env);
+}
+
+
 /* fonction qui evalue un appel a l'agregat comp pour les valeurs de parametres par dans l'environnement env */
 object compound_eval(object comp , object par_val , object env){
 	DEBUG_MSG("evaluation d'un agregat");
 	string str;
-	string str2;
-	
+	string str2;	
 	object par = comp->this.compound.parms;
 	while(!isnil(par) && !isnil(par_val)){
 		strcpy(str,get_symbol(car(par),str2));

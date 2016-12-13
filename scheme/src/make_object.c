@@ -90,6 +90,7 @@ object make_pair(object car , object cdr ) {
 }
 
 object make_primitive(object(*function)(object)) {
+    DEBUG_MSG("making a primitive");
     object prim = make_object(SFS_PRIMITIVE);
     prim->this.primitive = function;
     return prim;
@@ -105,13 +106,14 @@ object make_env(object env) {
 
 object make_compound(object parameters, object body, object environnement)
 {
+    DEBUG_MSG("making a compound");
     object o=make_object(SFS_COMPOUND);
     o->this.compound.parms=parameters;
     o->this.compound.body=body;
     o->this.compound.envt=environnement;
     return o;
 }
-
+	
 /* fonction qui permet de crer un objet sans type */
 object make_no_type(void){
 	DEBUG_MSG("Making a no type object");

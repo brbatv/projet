@@ -89,8 +89,9 @@ int main ( int argc, char *argv[] ) {
         usage_error( argv[0] );
         exit( EXIT_SUCCESS );
     }
+	
 
-    object current_env=init_interpreter();
+    object current_env = init_interpreter();
 
     /*par defaut : mode shell interactif */
     fp = stdin;

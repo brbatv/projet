@@ -1,5 +1,6 @@
 #include "object.h"
 #include "mem.h"
+#include "print.h"
 
 /* fonction qui permet de créer un nouveau binding en tete d'environnement de nom name et de valeur nil */
 object make_binding(char* name, object environment) {
@@ -26,15 +27,16 @@ object make_and_modify_binding(object environment, char* name, object value) /* 
     return car(o);
 }
 
-/* fonction qui cherche une variable dans 1'environnement et renvoie binding si trouve, sinon renvoie nil */
+/* fonction qui cherche une variable dans 1'environnement et renvoie binding si trouve, sinon renvoie NULL */
 object search_env(char* name, object env)
-{   DEBUG_MSG("Searching %s in environment...",name);
+{   DEBUG_MSG("Searching %s in an environment",name);
+	print_env(env);
     object obj_temp=car(env);
     string string;
     if (obj_temp==nil)
     {
-        DEBUG_MSG("Environment is empty you stupid. Returning NIL");
-        return nil;
+        DEBUG_MSG("Environment is empty you stupid. Returning NULL");
+        return NULL;
     }
     while (ispair(obj_temp))
     {
@@ -56,7 +58,7 @@ object search_env(char* name, object env)
 
 /* fonction qui cherche une variable dans 1'environnement et renvoie sa valeur si trouve, sinon renvoie NULL */
 object search_val_env(char* name, object env) {
-
+    DEBUG_MSG("Searching the value of %s in an environment",name);
     object o = search_env(name,env);
     if(o == NULL)
         return NULL;
@@ -65,27 +67,29 @@ object search_val_env(char* name, object env) {
 }
 
 
-/* fonction qui cherche une variable dans ts les environnement en dessous et renvoie binding si trouve, sinon renvoie nil */
+/* fonction qui cherche une variable dans ts les environnements en dessous et renvoie binding si trouve, sinon renvoie NULL */
 object search_under(char* name,object env) {
+    DEBUG_MSG("Searching %s in the environments under",name);
     object env_temp = env;
-
+    object o;
     while (env_temp!=nil)
-    {
-        if (search_env(name,env_temp)!=nil)
+    {   
+	o = search_env(name,env_temp);
+        if (o != NULL)
         {
-            return search_env(name,env_temp);
+            return o;
         }
         env_temp=cdr(env_temp);
     }
-    return nil;
+    return NULL;
 
 }
 
 /* fonction qui cherche une variable dans ts les environnement en dessous et renvoie sa valeur si trouve, sinon renvoie NULL */
 object search_val_under(char* name,object env) {
-
+    DEBUG_MSG("Searching the value of %s in the environments under",name);
     object o = search_under(name,env);
-    if(isnil(o))
+    if(o == NULL)
         return NULL;
     else return cdr(o);
 

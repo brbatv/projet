@@ -44,7 +44,7 @@ object car(object o) {
     }
     else {
         DEBUG_MSG("CALLING THE CAR OF AN ATOM");
-        return nil;
+        return NULL;
     }
 
 }
@@ -57,7 +57,7 @@ object cdr(object o) {
     }
     else {
         DEBUG_MSG("CALLING THE CDR OF AN ATOM");
-        return nil;
+        return NULL;
     }
 
 }
