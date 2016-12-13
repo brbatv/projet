@@ -342,8 +342,8 @@ object begin_eval(object input, object env) {
     return  car(o);
 }
 
-/* fonction qui evalue tous les arguments d'une primitives */
-/*object arguments_eval_primitives ( object input ,object env) {
+/*fonction qui evalue tous les arguments d'une primitives */
+object arguments_eval_primitives ( object input ,object env) {
 
     object p = input;
     DEBUG_MSG("evaluating arguments of a primitive");
@@ -359,7 +359,7 @@ object begin_eval(object input, object env) {
     }
     return input;
 
-} */
+}
 
 /* fonction qui evalue tous les arguments d'un begin en prenant soin d'effectuer l'evalutation dans un autre arbre duplique */
 object arguments_eval_begin ( object input , object env) {
