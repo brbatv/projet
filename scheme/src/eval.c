@@ -12,7 +12,7 @@
 #include "print.h"
 #include "object.h"
 
-object define_eval(object input,object env) { /* input = parametres! */
+object define_eval(object input , object env_in , object env_out) { /* input = parametres! */
 
 
     string  name_of_new_variable;
@@ -28,14 +28,14 @@ object define_eval(object input,object env) { /* input = parametres! */
     {
         strcpy(name_of_new_variable,get_symbol(car(input),str));
         DEBUG_MSG("%s",name_of_new_variable);
-	o = sfs_eval(cadr(input),env);
+	o = sfs_eval(cadr(input),env_in);
 
         if(o == NULL) {
             return NULL;
         }
         else {
 
-            make_and_modify_binding(env,name_of_new_variable,o);
+            make_and_modify_binding(env_out,name_of_new_variable,o);
 	    return make_no_type();
         }
     }
@@ -53,8 +53,8 @@ object define_eval(object input,object env) { /* input = parametres! */
         }
         object parametres = cdar(input);
         object lambda = make_pair(parametres,cdr(input));
-        o = lambda_eval (lambda,env);
-        make_and_modify_binding(env,name_of_new_variable,o);
+        o = lambda_eval (lambda,env_in);
+        make_and_modify_binding(env_out,name_of_new_variable,o);
 	return make_no_type();
     }
     else return NULL;
@@ -184,8 +184,55 @@ object lambda_eval(object input, object env) {
 
 /* fonction qui evalue la forme let */
 object let_eval(object input, object env) {
+	
+	object current_env = make_env(env);
+	object p = car(input);
+	int n = number_of_pair(car(p));
+	if(n < 1){
+		WARNING_MSG("Invalid let");	
+		return NULL;
+		}
+	int i;
+	for(i = 0; i < n ; i++ ){
+		define_eval(car(p),env,current_env);
+		p = cdr(p);
+		}
 
-    return input;
+	n = number_of_pair(input);
+	if(n < 2){
+		WARNING_MSG("Invalid let");	
+		return NULL;
+		}
+	
+	
+    return begin_eval(cdr(input),current_env);
+
+}
+
+/* fonction qui evalue la forme let* */
+object letstar_eval(object input, object env) {
+	
+	object current_env = make_env(env);
+	object p = car(input);
+	int n = number_of_pair(car(p));
+	if(n < 1){
+		WARNING_MSG("Invalid let");	
+		return NULL;
+		}
+	int i;
+	for(i = 0; i < n ; i++ ){
+		define_eval(car(p),env,env);
+		p = cdr(p);
+		}
+
+	n = number_of_pair(input);
+	if(n < 2){
+		WARNING_MSG("Invalid let");	
+		return NULL;
+		}
+	
+	
+    return begin_eval(cdr(input),current_env);
 
 }
 
@@ -242,7 +289,7 @@ object sfs_eval( object input, object env) {
         /* cas define */
         if(isdefine(symb))
         {   DEBUG_MSG("define recognized");
-            return define_eval(parametres,env);
+            return define_eval(parametres,env,env);
         }
 
         /* cas if */
@@ -291,6 +338,14 @@ object sfs_eval( object input, object env) {
             return let_eval(parametres,env);
 
         }
+	
+		/* cas let* */
+		if (isletstar(symb))
+        {   DEBUG_MSG("let* recognized");
+
+            return letstar_eval(parametres,env);
+
+        }
 
         val = sfs_eval(symb,env);
 	if (val == NULL){
@@ -301,7 +356,7 @@ object sfs_eval( object input, object env) {
         /* cas des primitives */
         if(isprimitive(val)) {
             DEBUG_MSG("primitive recognized");
-            object arg_eval=arguments_eval_begin(parametres,env);
+            object arg_eval=arguments_eval(parametres,env);
             if(arg_eval==NULL)
             {
                 return NULL;
@@ -320,7 +375,6 @@ object sfs_eval( object input, object env) {
 
             else
             {
-            sfs_print(parametres);
             object local_env = make_env(val->this.compound.envt);
             return compound_eval(val,parametres,local_env);}
 
@@ -331,7 +385,7 @@ object sfs_eval( object input, object env) {
 }
 /* fonction qui evalue la forme begin */
 object begin_eval(object input, object env) {
-    object o = arguments_eval_begin(input,env);
+    object o = arguments_eval(input,env);
     if (o==NULL) {return NULL;}
     int i;
     int  n=number_of_pair(o);
@@ -342,27 +396,10 @@ object begin_eval(object input, object env) {
     return  car(o);
 }
 
-/*fonction qui evalue tous les arguments d'une primitives */
-object arguments_eval_primitives ( object input ,object env) {
 
-    object p = input;
-    DEBUG_MSG("evaluating arguments of a primitive");
-    while (!isnil(p)) {
-        modify_car(p,sfs_eval(car(p),env));
-        DEBUG_MSG("PRINTING HERE BUDDY");
-        sfs_print(input);
-        if (car(p) == NULL)
-        {
-            return NULL; /* pour gerer si un symbole est inconnu par exemple */
-        }
-        p = cdr(p);
-    }
-    return input;
-
-}
 
 /* fonction qui evalue tous les arguments d'un begin en prenant soin d'effectuer l'evalutation dans un autre arbre duplique */
-object arguments_eval_begin ( object input , object env) {
+object arguments_eval ( object input , object env) {
 
 DEBUG_MSG("evaluating arguments for a begin or a compound");
 
@@ -380,9 +417,7 @@ DEBUG_MSG("evaluating arguments for a begin or a compound");
 	p = input;
 
 	while(!isnil(p) && !isnil(p_new)){
-        DEBUG_MSG("SHIT STARTS HERE");
 		modify_car(p_new,sfs_eval(car(p),env)); /* apres cette ligne : change le body du compound */
-        DEBUG_MSG("SHIT ENDS HERE");
     if (car(p_new) == NULL)
         {
             return NULL; /* pour gerer si un symbole est inconnu par exemple */
@@ -397,8 +432,6 @@ DEBUG_MSG("evaluating arguments for a begin or a compound");
 object body_eval(object body, object env_local) /* fonction qui execute le body d'une fonction dans un environnement avec ses variables deja pretes */ {
 
 object  o = sfs_eval(car(body),env_local);
-sfs_print(o);
-sfs_print(body);
 
 return o;
 
@@ -419,7 +452,5 @@ object compound_eval(object comp , object par_val , object env){
 		par = cdr(par);
 		par_val = cdr(par_val);
 	}
-    print_env(env);
-/*sfs_print(comp->this.compound.body);*/
 	return begin_eval(comp->this.compound.body,env);
 }

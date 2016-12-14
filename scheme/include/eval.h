@@ -18,16 +18,16 @@ extern "C" {
 
 #include "object.h"
 
-object define_eval(object input,object env);
+object define_eval(object input,object env_in,object env_out);
 object if_eval(object input,object env);
 object and_eval(object input,object env);
 object or_eval(object input,object env);
 object begin_eval(object input,object env);
 object lambda_eval(object input,object env);
 object let_eval(object input,object env);
+object letstar_eval(object input, object env);
 object sfs_eval(object input,object env);
-object arguments_eval_primitives (object input,object env);
-object arguments_eval_begin ( object input ,object env);
+object arguments_eval( object input ,object env);
 /*object instructions_eval ( object input ,object env);*/
 object compound_eval(object comp , object par , object env);
 

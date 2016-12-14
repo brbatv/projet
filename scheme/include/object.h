@@ -86,6 +86,7 @@ int isform(object);
 int isbegin(object);
 int islambda(object);
 int islet(object);
+int isletstar(object);
 /*fin de gestion des formes*/
 int isprimitive(object);
 int iscompound(object);

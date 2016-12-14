@@ -14,9 +14,11 @@ object make_binding(char* name, object environment) {
 }
 
 object modify_binding(object binding, object value)
-{   string string;
+{   
+	string str;
+	get_symbol(car(binding),str);
     modify_cdr(binding,value);
-    DEBUG_MSG("Modifying value for %s ; type of existing value is %s and the new value is %s",get_symbol(car(binding),string),whattype(cdr(binding)),whattype(value));
+    DEBUG_MSG("Modifying value for %s ; type of existing value is %s and the new value is %s",str,whattype(cdr(binding)),whattype(value));
     return cdr(binding); /* renvoie la valeur du binding*/
 }
 
