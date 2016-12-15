@@ -68,7 +68,7 @@ void sfs_print_pair( object o) {
         if (isatom(cdr(o)) && !isnil(cdr(o)))
         {   DEBUG_MSG("is it a cons ?");
             sfs_print(car(o));
-            printf(".");
+            printf(" . ");
             sfs_print(cdr(o));
             printf(")");
             return;
