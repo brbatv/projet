@@ -10,4 +10,4 @@
 (symbol? 'pop 45)
 (integer? 45 12 3 5 6 89 7 4)
 (integer? 9 ())
-(char? 
+(char? #\w #\newline #\space)

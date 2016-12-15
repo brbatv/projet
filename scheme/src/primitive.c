@@ -79,7 +79,7 @@ object minus(object o) /* renvoie x1 - ( x2 + x3 + ... xn) */
 
     if (number_of_pair(o)>=2)
     {object obj_temp=cdr(o);
-    DEBUG_MSG("printing minus OBJECFT"); sfs_print(o);
+    DEBUG_MSG("printing minus OBJECFT");
         if (isnumber(car(o)))
         {
             int s=get_number(car(o));

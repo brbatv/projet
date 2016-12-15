@@ -367,8 +367,8 @@ object sfs_eval( object input, object env) {
         /* cas des agregats */
         if(iscompound(val)) {
             DEBUG_MSG("compound recognized");
-            int number_of_parameters_needed=number_of_pair(val->this.compound.parms);
-            int number_of_given_parameters=number_of_pair(parametres);
+            int number_of_parameters_needed = number_of_pair(val->this.compound.parms);
+            int number_of_given_parameters = number_of_pair(parametres);
 
             if (number_of_given_parameters!=number_of_parameters_needed)
             {WARNING_MSG("Wrong number of parameters. Given : %d. Expected : %d",number_of_given_parameters,number_of_parameters_needed); return NULL;}
@@ -376,7 +376,9 @@ object sfs_eval( object input, object env) {
             else
             {
             object local_env = make_env(val->this.compound.envt);
-            return compound_eval(val,parametres,local_env);}
+			/* evaluation des parametres avant l'evaluation de l'agregat */
+			parametres = arguments_eval(parametres,env);
+            return compound_eval(val , parametres , local_env);}
 
         }
     }
