@@ -1,9 +1,9 @@
 ;;;;;;;;;;;;;;;; Script de test ;;;;;;;;;;;;;;;;
 ; TEST_RETURN_CODE=PASS
-; TEST_COMMENT= test_count
+; TEST_COMMENT= test_factoriel
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(define (fact n) (if (= n 0) 1 (* (fact (- n 1)) n)))
+(define (fact n) (if (= 0 n) 1 (* (fact (- n 1)) n)))
 (fact 0)
 (fact 1)
 (fact 2)

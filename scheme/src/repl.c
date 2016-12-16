@@ -55,7 +55,13 @@ object init_interpreter ( void ) {
     make_binding("let",top_level);
     make_binding("begin",top_level);
     make_binding("lambda",top_level);
-    return top_level;
+
+	/* initialisation de map */
+	uint here = 0;
+	sfs_eval(sfs_read("(define (map  proc items) (if (null? items) '() (cons (proc (car  items)) (map  proc (cdr  items)))))",&here),top_level);
+
+	return top_level;
+
 }
 
 int main ( int argc, char *argv[] ) {
